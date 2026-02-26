@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading Test 1 - Carnivorous Plants</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Reading mode */
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+
+        .test-wrapper.reading-mode .reading-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .questions-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .reading-text {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .questions-list {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .panel-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+
+        .test-wrapper.reading-mode .question-nav {
+            background: #d6cdb8;
+        }
+
+        .test-wrapper.reading-mode .bottom-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        .candidate {
+            background: #2d4b77;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        .question-types {
+            background: #0f2a44;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            border: 1px solid #e6b422;
+        }
+
+        .timer {
+            background: #0f2a44;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: monospace;
+            border: 1px solid #e6b422;
+        }
+
+        /* Reading mode toggle */
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reading-mode-toggle:hover {
+            background: #3e5f8a;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid #e6b422;
+        }
+
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Font Size Controls */
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+        }
+
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        /* Question Navigator */
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #e6b422;
+            color: #1e3a5f;
+            border-color: #e6b422;
+        }
+
+        .nav-btn.answered {
+            background: #4CAF50;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .nav-btn.answered:hover {
+            background: #66bb6a;
+        }
+
+        .nav-btn.unanswered {
+            background: #e0e0e0;
+            color: #757575;
+            border-color: #9e9e9e;
+        }
+
+        .nav-btn.unanswered:hover {
+            background: #bdbdbd;
+            color: #424242;
+        }
+
+        .nav-btn.active {
+            border: 3px solid #e6b422;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Main area with resize */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .reading-panel {
+            width: 45%;
+            background: #fffcf5;
+            border-right: 2px solid #b0aa9a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .questions-panel {
+            width: 55%;
+            background: #f8f6f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Panel headers */
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .reading-text {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.7;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .questions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 25px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* Font size classes */
+        .reading-text.font-small, .questions-list.font-small {
+            font-size: 13px;
+        }
+        .reading-text.font-small p, .questions-list.font-small p,
+        .reading-text.font-small li, .questions-list.font-small li {
+            font-size: 13px;
+        }
+
+        .reading-text.font-medium, .questions-list.font-medium {
+            font-size: 15px;
+        }
+        .reading-text.font-medium p, .questions-list.font-medium p,
+        .reading-text.font-medium li, .questions-list.font-medium li {
+            font-size: 15px;
+        }
+
+        .reading-text.font-large, .questions-list.font-large {
+            font-size: 17px;
+        }
+        .reading-text.font-large p, .questions-list.font-large p,
+        .reading-text.font-large li, .questions-list.font-large li {
+            font-size: 17px;
+        }
+
+        /* Reading content styles */
+        .reading-text h1 {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .reading-text h3 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+        }
+
+        .reading-text p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .reading-text em {
+            color: #5a4a3a;
+            font-style: italic;
+        }
+
+        /* Right-click highlight menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+        }
+
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Màu highlight đậm hơn */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+            padding: 0 2px;
+            border-bottom: 1px solid #f1c40f;
+        }
+
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+            padding: 0 2px;
+            border-bottom: 1px solid #2e7d32;
+        }
+
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+            padding: 0 2px;
+            border-bottom: 1px solid #d81b60;
+        }
+
+        /* Answer highlight - màu vàng đậm */
+        .answer-highlight {
+            background-color: #f9e79f;
+            padding: 2px 0;
+            border-radius: 4px;
+            border-bottom: 2px solid #f1c40f;
+            transition: all 0.3s ease;
+        }
+
+        /* Question highlight */
+        .question-highlight {
+            background-color: #fef9e7;
+            border-left: 4px solid #f1c40f;
+            padding-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        /* Questions styles */
+        .questions-list h3 {
+            font-size: 22px;
+            color: #1e3a5f;
+            margin: 20px 0 15px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .questions-list h4 {
+            font-size: 20px;
+            color: #1e3a5f;
+            margin: 25px 0 15px;
+        }
+
+        .questions-list h5 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+
+        .questions-list h6 {
+            font-size: 17px;
+            color: #1e3a5f;
+            margin: 15px 0 10px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+            list-style-type: disc;
+        }
+
+        .questions-list li {
+            margin: 8px 0;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .questions-list p {
+            margin: 10px 0;
+        }
+
+        .note-box {
+            background: #f0ebe0;
+            border-left: 4px solid #e6b422;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .bold-text {
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .fill-input {
+            padding: 5px 10px;
+            border: 1px solid #9a8c7a;
+            border-radius: 5px;
+            width: 140px;
+            font-size: 14px;
+            margin: 0 5px;
+            background: white;
+        }
+
+        .fill-input.correct {
+            border: 2px solid #4CAF50;
+            background-color: #e8f5e8;
+        }
+
+        .fill-input.incorrect {
+            border: 2px solid #f44336;
+            background-color: #ffebee;
+        }
+
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .tf-group {
+            margin: 5px 0 15px 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tf-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .tf-option.correct .tf-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .tf-option.incorrect .tf-text {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        /* Answer tracking */
+        .answer-badge {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 13px;
+        }
+
+        /* Eye icon for answers */
+        .eye-icon {
+            display: inline-block;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .eye-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .eye-icon.active {
+            opacity: 1;
+            color: #e6b422;
+        }
+
+        .question-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-right: 5px;
+            min-width: 25px;
+        }
+
+        .tf-statement {
+            flex: 1;
+        }
+
+        /* Bottom bar */
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d4b77;
+        }
+
+        .btn-primary:disabled {
+            background: #9aaec2;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-success:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .progress {
+            background: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border: 1px solid #1e3a5f;
+            font-size: 14px;
+        }
+
+        .result-stats {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Explanation panel */
+        .explanation-panel {
+            background: #fffef9;
+            border-left: 4px solid #e6b422;
+            padding: 12px 20px;
+            margin: 0 20px 12px 20px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .explanation-panel.show {
+            display: block;
+        }
+
+        .explanation-header {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .close-btn:hover {
+            color: #1e3a5f;
+        }
+
+        .explanation-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .answer-feedback {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .answer-feedback.correct {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .answer-feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .question-item.highlight-question {
+            border-left: 3px solid #f1c40f;
+            background-color: #fef9e7;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-wrapper" id="testWrapper">
+        <!-- Header -->
+        <div class="ielts-header">
+            <div class="brand">
+                <div class="ielts-logo">IELTS</div>
+                <div class="candidate">Vol 7 - Test 1</div>
+                <div class="question-types">Notes Completion • True/False/Not Given</div>
+                
+                <!-- Reading Mode Toggle -->
+                <div class="reading-mode-toggle" id="readingModeToggle">
+                    <div class="toggle-switch" id="toggleSwitch"></div>
+                    <span class="toggle-label">Đọc sách</span>
+                </div>
+
+                <!-- Font Size Controls -->
+                <div class="font-controls">
+                    <button class="font-btn" id="fontSmall" title="Chữ nhỏ">A-</button>
+                    <button class="font-btn active" id="fontMedium" title="Chữ vừa">A</button>
+                    <button class="font-btn" id="fontLarge" title="Chữ lớn">A+</button>
+                </div>
+            </div>
+            <div class="timer" id="timerDisplay">60:00</div>
+        </div>
+
+        <!-- Question Navigator -->
+        <div class="question-nav">
+            <span style="font-weight: 600; color: #1e3a5f; font-size: 14px;">Câu:</span>
+            <div class="nav-buttons" id="navButtons">
+                <!-- Sẽ được tạo bằng JavaScript -->
+            </div>
+        </div>
+
+        <!-- Main Content with Resizable Columns -->
+        <div class="main-area" id="mainArea">
+            <!-- Reading Column -->
+            <div class="reading-panel" id="readingPanel">
+                <div class="panel-header">
+                    <span>READING PASSAGE 1</span>
+		<span style="color: #d32f2f; font-size: 12px; font-style: italic; font-weight: normal;">* Không highlight các câu khác đoạn cùng lúc!</span>
+                </div>
+                <div class="reading-text font-medium" id="readingContent">
+                    <h1>CARNIVOROUS PLANT</h1>
+                    <p><em>They attract insects and then eat their flesh. Is that any way for a plant to behave?</em></p>
+                    
+                    <p>The naturalist and author of Origin of Species, Charles Darwin, was fascinated by carnivorous plants. In 1860, soon after he came across his first carnivorous plant - the sundew, Drosera - he wrote, 'I care more about Drosera than the origin of all the species in the world.' He spent months running experiments on the plants. He dropped flies and bits of meat on their leaves and watched them slowly fold their sticky tentacles over their prey. He thought it incredible that brushing a leaf with a single strand of human hair was enough to bring about a response. Yet sundews, he observed, ignored raindrops. To react to such a false alarm, he reasoned, would obviously be a great evil to the plant. This was no accident. This was adaptation.</p>
+                    
+                    <p>Darwin expanded his studies from sundews to other species in his book Insectivorous Plants. He was amazed at the quickness and power of the Venus flytrap. He showed that when one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes that could dissolve the prey. He noted that a leaf took more than a week to reopen after closing, and reasoned that the interlocking spines along the margin of the leaf allowed tiny insects to escape, saving the plant the expense of digesting an insufficient meal.</p>
+                    
+                    <p>Today, biologists using 21st-century tools to study cells and DNA are beginning to understand how these plants hunt, eat, and digest - and how these strange adaptations came about in the first place. Alexander Volkov, a plant physiologist at Oakwood University in Alabama, believes he has figured out the Venus flytrap's secret. 'This,' Volkov declares, 'is an electrical plant.'</p>
+                    
+                    <p>When an insect brushes against a hair on the leaf of a Venus flytrap, the movement sets off an electric charge. The charge builds up inside the tissue of the leaf but is not enough to stimulate the snap, which keeps the Venus flytrap from reacting to false alarms, such as raindrops. An insect, however, is likely to brush a second hair, adding enough electric charge for the leaf to close.</p>
+                    
+                    <p>Volkov's experiments reveal that the electric charge travels down fluid-filled tunnels in a leaf, which opens up pores in cell membranes. Water rushes from the cells on the inside of the leaf to those on the outside, causing the leaf to rapidly flip in shape from convex to concave, like a soft contact lens. As the leaves flip, they snap together, trapping an insect inside.</p>
+                    
+                    <p>The bladderwort plant has an equally sophisticated way of setting its underwater trap. It pumps water out of tiny air sacs or bladders, lowering the pressure inside. When a water flea or some other small creature swims past, it bends hairs on the bladder, causing a flap to spring apart. The low pressure sucks water in, carrying the creature along with it. In one five-hundredth of a second, the flap swings shut again. The cells in the bladder then begin to pump water out again, creating a new vacuum. Many other species of carnivorous plants act like living flypaper, catching animals on sticky tentacles. Pitcher plants use yet another strategy, growing long tube-shaped leaves into which insects fall. Some of the largest have pitchers up to 30cm deep and can consume whole frogs unlucky enough to fall into them. Sophisticated chemistry helps make the pitcher a death trap.</p>
+                    
+                    <p>Nicholas Gotelli, of the University of Vermont, is trying to figure out what evolutionary forces pushed these plants towards meat. Carnivorous plants clearly benefit from eating animals; when scientists feed pitcher plants extra bugs, the plants get bigger. But the benefits of eating flesh are not the ones you might expect. Carnivorous animals, like ourselves, use the carbon in protein and the fat in meat to build muscles and store energy. Carnivorous plants, however, take nitrogen and phosphorus from the flesh in order to build light-harvesting enzymes. Eating animals, in other words, lets carnivorous plants do what all plants do: grow by taking energy directly from the sun.</p>
+                    
+                    <p>Unfortunately, they do a really bad job of it. That's because they have to use a lot of energy to make the equipment they need to catch animals - the enzymes, the pumps, the sticky tentacles, and so on. A pitcher or a flytrap is not very good at photosynthesis because, unlike plants with ordinary leaves, they do not have flat solar panels that can absorb lots of sunlight. Gotelli suspects that only under special conditions are the benefits of being carnivorous greater than the costs. The poor soil of bogs and swamps, where many carnivorous plants grow, offers little nitrogen and phosphorus, so carnivorous plants enjoy an advantage there over 'conventional' plants. Also, bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis to survive. 'They're stuck, and they're making the best of it,' says Aaron Ellison of Harvard University.</p>
+                    
+                    <p>Unfortunately, the adaptations that enable carnivorous plants to survive in harsh habitats also make them extremely sensitive to environmental changes. Chemical fertilizers used in agriculture and pollution from power plants are adding extra nitrogen to many bogs in North America. Carnivorous plants are so finely adapted to low levels of nitrogen that this extra fertilizer is overloading their systems. Humans also threaten carnivorous plants in other ways. The black market trade in exotic carnivorous plants is strong, but even if this can be prevented, carnivorous plants will continue to suffer from other dangers. Their habitat is disappearing, to be replaced by shopping centers and houses. The suppression of wildfires by government agencies allows other plants to grow quickly and outcompete the Venus flytraps. Good news, perhaps, for flies. But a loss for all who delight in the inventiveness of evolution.</p>
+                </div>
+            </div>
+
+            <!-- Resizer Handle -->
+            <div class="resizer" id="resizer"></div>
+
+            <!-- Questions Column -->
+            <div class="questions-panel" id="questionsPanel">
+                <div class="panel-header">
+                    <span>QUESTIONS 1-13</span>
+                    <span class="answer-badge" id="answeredCount">0/13 answered</span>
+                </div>
+                <div class="questions-list font-medium" id="questionsContent">
+                    <!-- Questions 1-5 -->
+                    <h3>Questions 1-5</h3>
+                    <p><em>Complete the notes below.</em></p>
+                    <p><em>Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                    
+                    <h4>Carnivorous Plants</h4>
+                    
+                    <h5>Darwin's experiments</h5>
+                    
+                    <h6>Drosera</h6>
+                    <ul>
+                        <li>He put insects and small amounts of meat onto leaves and observed what happened.</li>
+                        <li>He was amazed that one human hair triggered a response.</li>
+                        <li>
+                            <div class="question-wrapper">
+                                <span>He understood why the plant did not respond to <span class="bold-text" data-question="1">1</span></span>
+                                <input class="fill-input" id="q1" data-answer="raindrops" placeholder="answer">
+                                <span class="eye-icon" data-question="1" style="display: none;">👁️</span>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <h6>Venus Flytrap</h6>
+                    <ul>
+                        <li>
+                            <div class="question-wrapper">
+                                <span>He demonstrated how leaves close and then, for a short period, act like a <span class="bold-text" data-question="2">2</span></span>
+                                <input class="fill-input" id="q2" data-answer="stomach" placeholder="answer">
+                                <span class="eye-icon" data-question="2" style="display: none;">👁️</span>
+                            </div>
+                        </li>
+                        <li>He noted the structure of leaves ensures small insects are released.</li>
+                    </ul>
+                    
+                    <h5>Biology today</h5>
+                    
+                    <h6>Venus Flytrap</h6>
+                    <ul>
+                        <li>If insects come into contact with leaf hairs, their movement produces an electric charge.</li>
+                        <li>
+                            <div class="question-wrapper">
+                                <span>The charge enters fluid-filled tunnels, causing <span class="bold-text" data-question="3">3</span></span>
+                                <input class="fill-input" id="q3" data-answer="pores" placeholder="answer"> in the cell walls to open.
+                                <span class="eye-icon" data-question="3" style="display: none;">👁️</span>
+                            </div>
+                        </li>
+                        <li>Water moves between cells and then the leaf changes from convex to concave, trapping the insect inside.</li>
+                    </ul>
+                    
+                    <h6>Bladderwort</h6>
+                    <ul>
+                        <li>Hairs bend when insects swim past, resulting in opening of a flap.</li>
+                        <li>Water is sucked in.</li>
+                        <li>
+                            <div class="question-wrapper">
+                                <span>When water is pumped out of bladder cells, a <span class="bold-text" data-question="4">4</span></span>
+                                <input class="fill-input" id="q4" data-answer="vacuum" placeholder="answer"> builds up inside.
+                                <span class="eye-icon" data-question="4" style="display: none;">👁️</span>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <h6>Pitcher Plants</h6>
+                    <ul>
+                        <li>The plants have tube-shaped leaves that insects fall into.</li>
+                        <li>
+                            <div class="question-wrapper">
+                                <span>Some plants are big enough to capture and eat <span class="bold-text" data-question="5">5</span></span>
+                                <input class="fill-input" id="q5" data-answer="frogs" placeholder="answer">
+                                <span class="eye-icon" data-question="5" style="display: none;">👁️</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Questions 6-13 -->
+                    <h3 style="margin-top: 30px;">Questions 6-13</h3>
+                    <p><em>Do the following statements agree with the information given in Reading Passage 1?</em></p>
+                    <p>In boxes 6-13 on your answer sheet, write</p>
+                    
+                    <div class="note-box">
+                        <p><strong>TRUE</strong> if the statement agrees with the information</p>
+                        <p><strong>FALSE</strong> if the statement contradicts the information</p>
+                        <p><strong>NOT GIVEN</strong> if there is no information on this</p>
+                    </div>
+
+                    <ol style="list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 20px;" class="question-item" id="q6-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">6.</span>
+                                <span class="tf-statement">Pitcher plants increase in size after they have digested a lot of insects.</span>
+                                <span class="eye-icon" data-question="6" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q6-group">
+                                <label class="tf-option"><input type="radio" name="q6" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q6" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q6" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q7-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">7.</span>
+                                <span class="tf-statement">Carnivorous plants produce light-harvesting enzymes with the nutrients they extract from animals.</span>
+                                <span class="eye-icon" data-question="7" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q7-group">
+                                <label class="tf-option"><input type="radio" name="q7" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q7" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q7" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q8-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">8.</span>
+                                <span class="tf-statement">Pitcher plants and Venus flytraps are more efficient at photosynthesis than plants with ordinary leaves.</span>
+                                <span class="eye-icon" data-question="8" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q8-group">
+                                <label class="tf-option"><input type="radio" name="q8" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q8" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q8" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q9-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">9.</span>
+                                <span class="tf-statement">Venus flytraps are better adapted to the soil of swamps and bogs than other carnivorous plants.</span>
+                                <span class="eye-icon" data-question="9" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q9-group">
+                                <label class="tf-option"><input type="radio" name="q9" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q9" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q9" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q10-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">10.</span>
+                                <span class="tf-statement">Carnivorous plants frequently find it difficult to photosynthesise in bogs due to a lack of sunlight.</span>
+                                <span class="eye-icon" data-question="10" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q10-group">
+                                <label class="tf-option"><input type="radio" name="q10" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q10" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q10" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q11-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">11.</span>
+                                <span class="tf-statement">Scientists have campaigned to reduce the amount of nitrogen that is released into the soil by agricultural practices.</span>
+                                <span class="eye-icon" data-question="11" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q11-group">
+                                <label class="tf-option"><input type="radio" name="q11" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q11" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q11" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q12-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">12.</span>
+                                <span class="tf-statement">A lot of exotic carnivorous plants are sold illegally.</span>
+                                <span class="eye-icon" data-question="12" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q12-group">
+                                <label class="tf-option"><input type="radio" name="q12" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q12" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q12" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q13-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">13.</span>
+                                <span class="tf-statement">Preventing wildfires is beneficial to the Venus flytrap.</span>
+                                <span class="eye-icon" data-question="13" style="display: none;">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q13-group">
+                                <label class="tf-option"><input type="radio" name="q13" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q13" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q13" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="bottom-bar">
+            <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+            <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+            <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+            <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+            <div class="result-stats" id="resultStats" style="display: none;"></div>
+        </div>
+
+        <!-- Explanation Panel -->
+        <div class="explanation-panel" id="explanationPanel">
+            <div class="explanation-header">
+                <span id="explanationTitle">Giải thích câu hỏi</span>
+                <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+            </div>
+            <div class="explanation-content" id="explanationText">
+                Nhấn vào biểu tượng con mắt để xem giải thích.
+            </div>
+        </div>
+
+        <!-- Right-click Context Menu -->
+        <div class="context-menu" id="contextMenu">
+            <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+            <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+            <div onclick="applyHighlight('pink')">Highlight hồng</div>
+            <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBAL VARIABLES ====================
+        let selectedRange = null;
+        let selectedTarget = null;
+        let currentHighlightedQuestion = null;
+        let examSubmitted = false;
+        let explanationMode = false;
+        let startTime = Date.now();
+        let endTime = null;
+        let readingMode = false;
+        
+        // Answer key from explanation file
+        const answerKey = {
+            q1: 'raindrops', q2: 'stomach', q3: 'pores', q4: 'vacuum', q5: 'frogs',
+            q6: 'TRUE', q7: 'TRUE', q8: 'FALSE', q9: 'NOT GIVEN', q10: 'FALSE',
+            q11: 'NOT GIVEN', q12: 'TRUE', q13: 'FALSE'
+        };
+
+        // Mapping câu hỏi với câu văn chứa đáp án (dùng để highlight cả câu)
+        const answerLocations = {
+            q1: { text: "Yet sundews, he observed, ignored raindrops." },
+            q2: { text: "He showed that when one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes that could dissolve the prey." },
+            q3: { text: "Volkov's experiments reveal that the electric charge travels down fluid-filled tunnels in a leaf, which opens up pores in cell membranes." },
+            q4: { text: "The cells in the bladder then begin to pump water out again, creating a new vacuum." },
+            q5: { text: "Some of the largest have pitchers up to 30cm deep and can consume whole frogs unlucky enough to fall into them." },
+            q6: { text: "when scientists feed pitcher plants extra bugs, the plants get bigger." },
+            q7: { text: "Carnivorous plants, however, take nitrogen and phosphorus from the flesh in order to build light-harvesting enzymes." },
+            q8: { text: "A pitcher or a flytrap is not very good at photosynthesis because, unlike plants with ordinary leaves, they do not have flat solar panels that can absorb lots of sunlight." },
+            q9: { text: "The poor soil of bogs and swamps, where many carnivorous plants grow, offers little nitrogen and phosphorus, so carnivorous plants enjoy an advantage there over 'conventional' plants." },
+            q10: { text: "Also, bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis to survive." },
+            q11: { text: "Chemical fertilizers used in agriculture and pollution from power plants are adding extra nitrogen to many bogs in North America." },
+            q12: { text: "The black market trade in exotic carnivorous plants is strong, but even if this can be prevented, carnivorous plants will continue to suffer from other dangers." },
+            q13: { text: "The suppression of wildfires by government agencies allows other plants to grow quickly and outcompete the Venus flytraps." }
+        };
+
+        // Explanations from the provided docx
+        const explanations = {
+            q1: "<strong>Đáp án: raindrops</strong><br><br><strong>Giải thích:</strong> 'Yet sundews, he observed, ignored raindrops. To react to such a false alarm ... would be a great evil to the plant.' Darwin realized they did NOT respond to raindrops → correct.",
+            q2: "<strong>Đáp án: stomach</strong><br><br><strong>Giải thích:</strong> 'When one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes ...' So the leaf temporarily acted like a stomach → correct.",
+            q3: "<strong>Đáp án: pores</strong><br><br><strong>Giải thích:</strong> 'The electric charge ... opens up pores in cell membranes.' That's exactly what opens when the charge travels down tunnels → correct.",
+            q4: "<strong>Đáp án: vacuum</strong><br><br><strong>Giải thích:</strong> 'The cells ... pump water out again, creating a new vacuum.' So inside the bladder, a vacuum builds up → correct.",
+            q5: "<strong>Đáp án: frogs</strong><br><br><strong>Giải thích:</strong> 'Some of the largest have pitchers up to 30cm deep and can consume whole frogs ...' The large pitcher plants can eat frogs → correct.",
+            q6: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'When scientists feed pitcher plants extra bugs, the plants get bigger.' That means they increase in size after eating many insects → TRUE.",
+            q7: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'Carnivorous plants ... take nitrogen and phosphorus ... in order to build light-harvesting enzymes.' Exactly matches the statement → TRUE.",
+            q8: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'A pitcher or flytrap is not very good at photosynthesis ... unlike plants with ordinary leaves.' They are less efficient, not more efficient → FALSE.",
+            q9: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> It says carnivorous plants in general do better in bogs and swamps, but it never compares Venus flytraps vs other carnivorous plants → NOT GIVEN.",
+            q10: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'Bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis.' Not 'difficult to photosynthesise due to lack of sunlight' → FALSE.",
+            q11: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> It says nitrogen pollution from agriculture harms them, but does not mention scientists campaigning to reduce it → NOT GIVEN.",
+            q12: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'The black market trade in exotic carnivorous plants is strong ...' That means many are sold illegally → TRUE.",
+            q13: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'The suppression of wildfires ... allows other plants to grow quickly and outcompete the Venus flytraps.' So preventing fires is bad for Venus flytraps → FALSE."
+        };
+
+        // ==================== TIMER ====================
+        let timeLeft = 3600;
+        const timerEl = document.getElementById('timerDisplay');
+        const timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        // ==================== READING MODE TOGGLE ====================
+        const testWrapper = document.getElementById('testWrapper');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        
+        document.getElementById('readingModeToggle').addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                testWrapper.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                testWrapper.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // ==================== FONT SIZE CONTROLS ====================
+        document.getElementById('fontSmall').addEventListener('click', function() {
+            setFontSize('small');
+        });
+        document.getElementById('fontMedium').addEventListener('click', function() {
+            setFontSize('medium');
+        });
+        document.getElementById('fontLarge').addEventListener('click', function() {
+            setFontSize('large');
+        });
+
+        function setFontSize(size) {
+            // Update buttons
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            if (size === 'small') document.getElementById('fontSmall').classList.add('active');
+            if (size === 'medium') document.getElementById('fontMedium').classList.add('active');
+            if (size === 'large') document.getElementById('fontLarge').classList.add('active');
+            
+            // Update reading panel
+            const readingContent = document.getElementById('readingContent');
+            readingContent.classList.remove('font-small', 'font-medium', 'font-large');
+            readingContent.classList.add(`font-${size}`);
+            
+            // Update questions panel
+            const questionsContent = document.getElementById('questionsContent');
+            questionsContent.classList.remove('font-small', 'font-medium', 'font-large');
+            questionsContent.classList.add(`font-${size}`);
+        }
+
+        // ==================== RESIZE COLUMNS ====================
+        const readingPanel = document.getElementById('readingPanel');
+        const questionsPanel = document.getElementById('questionsPanel');
+        const resizer = document.getElementById('resizer');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const mainArea = document.getElementById('mainArea');
+            const rect = mainArea.getBoundingClientRect();
+            let readingWidth = e.clientX - rect.left - 4;
+            
+            if (readingWidth < 250) readingWidth = 250;
+            if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+            
+            readingPanel.style.width = readingWidth + 'px';
+            questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // ==================== NAVIGATION BUTTONS ====================
+        function createNavButtons() {
+            const navContainer = document.getElementById('navButtons');
+            navContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 13; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn unanswered';
+                btn.textContent = i;
+                btn.setAttribute('data-question', i);
+                
+                btn.addEventListener('click', function() {
+                    const qNum = this.getAttribute('data-question');
+                    scrollToQuestion(qNum);
+                    
+                    // Cập nhật active state
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                
+                navContainer.appendChild(btn);
+            }
+        }
+
+        function scrollToQuestion(questionNum) {
+            let element = null;
+            
+            if (questionNum <= 5) {
+                // Câu 1-5: tìm input tương ứng
+                element = document.getElementById(`q${questionNum}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.focus();
+                }
+            } else {
+                // Câu 6-13: tìm question-item
+                element = document.getElementById(`q${questionNum}-item`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            // Cập nhật active state trên nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-question') === questionNum.toString()) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateNavButtons() {
+            for (let i = 1; i <= 13; i++) {
+                const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+                if (!btn) continue;
+                
+                let isAnswered = false;
+                
+                if (i <= 5) {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') {
+                        isAnswered = true;
+                    }
+                } else {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                        isAnswered = true;
+                    }
+                }
+                
+                btn.classList.remove('answered', 'unanswered');
+                btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+            }
+        }
+
+        // ==================== COUNT ANSWERS ====================
+        function updateAnswerCount() {
+            let answered = 0;
+            
+            // Count fill inputs 1-5
+            for (let i = 1; i <= 5; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input && input.value.trim() !== '') answered++;
+            }
+            
+            // Count radio groups 6-13
+            for (let i = 6; i <= 13; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                    answered++;
+                }
+            }
+            
+            document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+            document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+            
+            // Update nav buttons
+            updateNavButtons();
+        }
+
+        // Auto update on input change
+        document.querySelectorAll('.fill-input').forEach(el => {
+            el.addEventListener('input', function() {
+                updateAnswerCount();
+            });
+        });
+        
+        document.querySelectorAll('input[type="radio"]').forEach(el => {
+            el.addEventListener('change', function() {
+                updateAnswerCount();
+            });
+        });
+
+        // ==================== RIGHT-CLICK HIGHLIGHT ====================
+        const contextMenu = document.getElementById('contextMenu');
+        
+        // Right click trên reading panel
+        document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            
+            selectedRange = selection.getRangeAt(0);
+            selectedTarget = 'reading';
+            
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+
+        // Right click trên questions panel
+        document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            
+            selectedRange = selection.getRangeAt(0);
+            selectedTarget = 'questions';
+            
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        // Hàm highlight đã được sửa để xử lý nhiều dòng và khác đoạn
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            
+            try {
+                const span = document.createElement('span');
+                span.className = `highlight-${color}`;
+                
+                // Lấy range hiện tại
+                const range = selectedRange.cloneRange();
+                
+                // Xóa selection cũ
+                window.getSelection().removeAllRanges();
+                
+                // Thử extract và insert - cách này hoạt động tốt với range phức tạp
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+                
+            } catch (e) {
+                console.log('Lỗi highlight:', e);
+                alert('Không thể highlight đoạn văn bản này. Vui lòng thử lại với đoạn khác.');
+            }
+            
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // Hàm xóa highlight
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            
+            try {
+                // Tìm tất cả các highlight trong vùng chọn
+                const range = selectedRange.cloneRange();
+                const highlights = document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink');
+                
+                highlights.forEach(highlight => {
+                    // Kiểm tra xem highlight có nằm trong vùng chọn không
+                    if (range.intersectsNode(highlight)) {
+                        const parent = highlight.parentNode;
+                        // Giữ lại nội dung text
+                        while (highlight.firstChild) {
+                            parent.insertBefore(highlight.firstChild, highlight);
+                        }
+                        parent.removeChild(highlight);
+                    }
+                });
+            } catch (e) {
+                console.log('Lỗi khi xóa highlight:', e);
+            }
+            
+            // Xóa selection
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // ==================== CLEAR HIGHLIGHTS ====================
+        function clearAllHighlights() {
+            // Xóa highlight trong bài đọc
+            document.querySelectorAll('.answer-highlight').forEach(el => {
+                el.classList.remove('answer-highlight');
+            });
+            
+            // Xóa highlight trong câu hỏi
+            document.querySelectorAll('.question-highlight').forEach(el => {
+                el.classList.remove('question-highlight');
+            });
+            
+            document.querySelectorAll('.eye-icon.active').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            currentHighlightedQuestion = null;
+        }
+
+        // ==================== HIGHLIGHT QUESTION ====================
+        function highlightQuestion(questionNum) {
+            // Xóa highlight cũ
+            document.querySelectorAll('.question-highlight').forEach(el => {
+                el.classList.remove('question-highlight');
+            });
+            
+            // Highlight câu hỏi tương ứng
+            if (questionNum <= 5) {
+                // Câu 1-5: tìm dòng chứa input
+                const input = document.getElementById(`q${questionNum}`);
+                if (input) {
+                    const listItem = input.closest('li');
+                    if (listItem) {
+                        listItem.classList.add('question-highlight');
+                    }
+                }
+            } else {
+                // Câu 6-13: tìm question-item
+                const questionItem = document.getElementById(`q${questionNum}-item`);
+                if (questionItem) {
+                    questionItem.classList.add('question-highlight');
+                }
+            }
+        }
+
+        // ==================== HIGHLIGHT ANSWER LOCATION ====================
+        function highlightAnswerLocation(questionNum) {
+            // Clear previous highlights in reading
+            document.querySelectorAll('.answer-highlight').forEach(el => {
+                el.classList.remove('answer-highlight');
+            });
+            
+            const readingContent = document.getElementById('readingContent');
+            const location = answerLocations[`q${questionNum}`];
+            
+            if (!location) return false;
+            
+            // Highlight question
+            highlightQuestion(questionNum);
+            
+            // Tìm và highlight câu văn chứa đáp án
+            const text = location.text;
+            const paragraphs = readingContent.getElementsByTagName('p');
+            
+            for (let p of paragraphs) {
+                if (p.textContent.includes(text)) {
+                    try {
+                        // Tạo range để highlight
+                        const range = document.createRange();
+                        const startIndex = p.textContent.indexOf(text);
+                        
+                        if (startIndex !== -1 && p.firstChild) {
+                            range.setStart(p.firstChild, startIndex);
+                            range.setEnd(p.firstChild, startIndex + text.length);
+                            
+                            // Tạo span highlight
+                            const span = document.createElement('span');
+                            span.className = 'answer-highlight';
+                            
+                            range.surroundContents(span);
+                            
+                            // Scroll vào view
+                            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            
+                            // Đánh dấu eye icon active
+                            const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                            if (eyeIcon) eyeIcon.classList.add('active');
+                            
+                            currentHighlightedQuestion = questionNum;
+                            return true;
+                        }
+                    } catch (e) {
+                        console.log('Không thể highlight đoạn này:', e);
+                    }
+                    break;
+                }
+            }
+            return false;
+        }
+
+        // ==================== SHOW EXPLANATION ====================
+        function showExplanation(questionNum) {
+            if (!explanationMode) return;
+            
+            const expKey = `q${questionNum}`;
+            
+            if (explanations[expKey]) {
+                document.getElementById('explanationPanel').classList.add('show');
+                document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+                
+                let explanationHtml = explanations[expKey];
+                
+                // Thêm feedback về câu trả lời
+                if (examSubmitted) {
+                    const userAnswer = getUserAnswer(questionNum);
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    
+                    if (userAnswer && userAnswer.toString().trim() !== '') {
+                        const isCorrect = userAnswer.toString().toLowerCase().trim() === correctAnswer.toString().toLowerCase().trim();
+                        explanationHtml += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}">`;
+                        explanationHtml += `<strong>Câu trả lời của bạn:</strong> ${userAnswer}<br>`;
+                        if (!isCorrect) {
+                            explanationHtml += `<strong>Đáp án đúng:</strong> ${correctAnswer}`;
+                        }
+                        explanationHtml += `</div>`;
+                    }
+                }
+                
+                document.getElementById('explanationText').innerHTML = explanationHtml;
+                
+                // Highlight vị trí đáp án
+                setTimeout(() => {
+                    highlightAnswerLocation(questionNum);
+                }, 100);
+            }
+        }
+
+        // ==================== GET USER ANSWER ====================
+        function getUserAnswer(questionNum) {
+            if (questionNum <= 5) {
+                const input = document.getElementById(`q${questionNum}`);
+                return input ? input.value.trim() : null;
+            } else {
+                const selected = document.querySelector(`input[name="q${questionNum}"]:checked`);
+                return selected ? selected.value : null;
+            }
+        }
+
+        // ==================== MARK ANSWERS ====================
+        function markAnswers() {
+            // Mark fill-in answers 1-5
+            for (let i = 1; i <= 5; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswer = answerKey[`q${i}`];
+                    
+                    // Xóa classes cũ
+                    input.classList.remove('correct', 'incorrect');
+                    
+                    // Xóa badge cũ
+                    const oldBadge = input.parentNode.querySelector('.correct-answer-badge');
+                    if (oldBadge) oldBadge.remove();
+                    
+                    if (userAnswer) {
+                        if (userAnswer === correctAnswer) {
+                            input.classList.add('correct');
+                        } else {
+                            input.classList.add('incorrect');
+                            
+                            // Thêm badge đáp án đúng
+                            const badge = document.createElement('span');
+                            badge.className = 'correct-answer-badge';
+                            badge.textContent = correctAnswer;
+                            input.parentNode.appendChild(badge);
+                        }
+                    }
+                }
+            }
+            
+            // Mark True/False answers 6-13
+            for (let i = 6; i <= 13; i++) {
+                const group = document.getElementById(`q${i}-group`);
+                if (!group) continue;
+                
+                const options = group.querySelectorAll('.tf-option');
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctAnswer = answerKey[`q${i}`];
+                
+                options.forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                    const radio = option.querySelector('input[type="radio"]');
+                    
+                    if (radio.value === correctAnswer) {
+                        option.classList.add('correct');
+                    }
+                    
+                    if (selected && radio.value === selected.value && radio.value !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+            }
+        }
+
+        // ==================== CALCULATE RESULTS ====================
+        function calculateResults() {
+            let correct = 0;
+            let total = 13;
+            
+            for (let i = 1; i <= 5; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    if (userAnswer === answerKey[`q${i}`]) correct++;
+                }
+            }
+            
+            for (let i = 6; i <= 13; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && selected.value === answerKey[`q${i}`]) correct++;
+            }
+            
+            const percentage = Math.round(correct / total * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            return {
+                correct,
+                total,
+                percentage,
+                timeString: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+            };
+        }
+
+        // ==================== SETUP EYE ICONS ====================
+        function setupEyeIcons() {
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const questionNum = this.getAttribute('data-question');
+                    
+                    // Nếu click vào eye icon đang active thì xóa highlight
+                    if (this.classList.contains('active')) {
+                        clearAllHighlights();
+                        document.getElementById('explanationPanel').classList.remove('show');
+                    } else {
+                        showExplanation(questionNum);
+                    }
+                });
+            });
+        }
+
+        document.getElementById('closeExplanation').addEventListener('click', () => {
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // ==================== SUBMIT ====================
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            if (examSubmitted) return;
+            
+            // Kiểm tra câu chưa làm
+            let unanswered = [];
+            for (let i = 1; i <= 13; i++) {
+                let isAnswered = false;
+                
+                if (i <= 5) {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') isAnswered = true;
+                } else {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) isAnswered = true;
+                }
+                
+                if (!isAnswered) unanswered.push(i);
+            }
+            
+            if (unanswered.length > 0) {
+                const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm: ${unanswered.join(', ')}. Bạn có chắc muốn nộp bài?`);
+                if (!confirmSubmit) return;
+            }
+            
+            examSubmitted = true;
+            endTime = Date.now();
+            
+            // Mark answers
+            markAnswers();
+            
+            // Calculate results
+            const results = calculateResults();
+            
+            // Show result stats
+            const resultStats = document.getElementById('resultStats');
+            resultStats.style.display = 'inline-block';
+            resultStats.textContent = `Kết quả: ${results.correct}/${results.total} (${results.percentage}%) - Thời gian: ${results.timeString}`;
+            
+            // Enable explain button
+            document.getElementById('explainBtn').disabled = false;
+            
+            // Update submit button
+            this.disabled = true;
+            this.textContent = 'Đã nộp bài';
+            
+            // Show result in explanation panel
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
+            document.getElementById('explanationText').innerHTML = `
+                <h4>Kết quả bài làm:</h4>
+                <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
+                <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
+                <p><strong>Thời gian làm bài:</strong> ${results.timeString}</p>
+                <p>Nhấn "Xem giải thích" để xem chi tiết từng câu.</p>
+            `;
+        });
+
+        // ==================== EXPLAIN ====================
+        document.getElementById('explainBtn').addEventListener('click', function() {
+            if (!examSubmitted) return;
+            
+            explanationMode = true;
+            
+            // Hiện eye icons cho tất cả câu
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.style.display = 'inline-block';
+            });
+            
+            // Disable explain button
+            this.disabled = true;
+            this.textContent = 'Đang xem giải thích';
+            
+            // Ẩn kết quả
+            document.getElementById('explanationPanel').classList.remove('show');
+            
+            // Xóa highlight cũ
+            clearAllHighlights();
+        });
+
+        // ==================== RESET ====================
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Bạn có chắc muốn reset tất cả? Mọi câu trả lời sẽ bị xóa.')) {
+                // Reset variables
+                examSubmitted = false;
+                explanationMode = false;
+                startTime = Date.now();
+                
+                // Clear all inputs 1-5
+                for (let i = 1; i <= 5; i++) {
+                    const input = document.getElementById(`q${i}`);
+                    if (input) {
+                        input.value = '';
+                        input.classList.remove('correct', 'incorrect');
+                        
+                        // Xóa badge nếu có
+                        const badge = input.parentNode.querySelector('.correct-answer-badge');
+                        if (badge) badge.remove();
+                    }
+                }
+                
+                // Clear all radio buttons 6-13
+                for (let i = 6; i <= 13; i++) {
+                    const radios = document.querySelectorAll(`input[name="q${i}"]`);
+                    radios.forEach(radio => radio.checked = false);
+                    
+                    const group = document.getElementById(`q${i}-group`);
+                    if (group) {
+                        group.querySelectorAll('.tf-option').forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                        });
+                    }
+                }
+                
+                // Hide eye icons
+                document.querySelectorAll('.eye-icon').forEach(icon => {
+                    icon.style.display = 'none';
+                });
+                
+                // Reset buttons
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').textContent = 'Nộp bài';
+                document.getElementById('explainBtn').disabled = true;
+                document.getElementById('explainBtn').textContent = 'Xem giải thích';
+                
+                // Hide result stats
+                document.getElementById('resultStats').style.display = 'none';
+                
+                // Hide explanation panel
+                document.getElementById('explanationPanel').classList.remove('show');
+                
+                // Clear highlights
+                document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink, .answer-highlight, .question-highlight').forEach(el => {
+                    const parent = el.parentNode;
+                    if (parent) {
+                        while (el.firstChild) {
+                            parent.insertBefore(el.firstChild, el);
+                        }
+                        parent.removeChild(el);
+                    }
+                });
+                clearAllHighlights();
+                
+                // Update answer count
+                updateAnswerCount();
+                
+                // Reset nav active
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+        });
+
+        // Initialize
+        createNavButtons();
+        updateAnswerCount();
+        setupEyeIcons();
+    </script>
+</body>
+</html>
