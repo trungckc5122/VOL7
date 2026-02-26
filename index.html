@@ -792,7 +792,6 @@
             <div class="reading-panel" id="readingPanel">
                 <div class="panel-header">
                     <span>READING PASSAGE 1</span>
-					<span style="color: #d32f2f; font-size: 12px; font-style: italic; font-weight: normal;">* Không highlight các câu khác đoạn cùng lúc!</span>
                 </div>
                 <div class="reading-text font-medium" id="readingContent">
                     <h1>CARNIVOROUS PLANT</h1>
@@ -1462,60 +1461,71 @@
             }
         }
 
-        // ==================== HIGHLIGHT ANSWER LOCATION ====================
-        function highlightAnswerLocation(questionNum) {
-            // Clear previous highlights in reading
-            document.querySelectorAll('.answer-highlight').forEach(el => {
-                el.classList.remove('answer-highlight');
-            });
-            
-            const readingContent = document.getElementById('readingContent');
-            const location = answerLocations[`q${questionNum}`];
-            
-            if (!location) return false;
-            
-            // Highlight question
-            highlightQuestion(questionNum);
-            
-            // Tìm và highlight câu văn chứa đáp án
-            const text = location.text;
-            const paragraphs = readingContent.getElementsByTagName('p');
-            
-            for (let p of paragraphs) {
-                if (p.textContent.includes(text)) {
-                    try {
-                        // Tạo range để highlight
-                        const range = document.createRange();
-                        const startIndex = p.textContent.indexOf(text);
-                        
-                        if (startIndex !== -1 && p.firstChild) {
-                            range.setStart(p.firstChild, startIndex);
-                            range.setEnd(p.firstChild, startIndex + text.length);
-                            
-                            // Tạo span highlight
-                            const span = document.createElement('span');
-                            span.className = 'answer-highlight';
-                            
-                            range.surroundContents(span);
-                            
-                            // Scroll vào view
-                            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            
-                            // Đánh dấu eye icon active
-                            const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
-                            if (eyeIcon) eyeIcon.classList.add('active');
-                            
-                            currentHighlightedQuestion = questionNum;
-                            return true;
-                        }
-                    } catch (e) {
-                        console.log('Không thể highlight đoạn này:', e);
-                    }
-                    break;
-                }
+       // ==================== HIGHLIGHT ANSWER LOCATION ====================
+function highlightAnswerLocation(questionNum) {
+    // Clear previous highlights in reading
+    document.querySelectorAll('.answer-highlight').forEach(el => {
+        const parent = el.parentNode;
+        if (parent) {
+            // Giữ lại nội dung nhưng xóa span highlight
+            while (el.firstChild) {
+                parent.insertBefore(el.firstChild, el);
             }
-            return false;
+            parent.removeChild(el);
         }
+    });
+    
+    const readingContent = document.getElementById('readingContent');
+    const location = answerLocations[`q${questionNum}`];
+    
+    if (!location) return false;
+    
+    // Highlight question
+    highlightQuestion(questionNum);
+    
+    // Tìm và highlight câu văn chứa đáp án - dùng cách tiếp cận khác
+    const text = location.text;
+    const paragraphs = readingContent.getElementsByTagName('p');
+    
+    for (let p of paragraphs) {
+        if (p.textContent.includes(text)) {
+            try {
+                // Tìm vị trí của text trong paragraph
+                const html = p.innerHTML;
+                const index = html.indexOf(text);
+                
+                if (index !== -1) {
+                    // Thay thế bằng cách dùng regex để bọc span
+                    const newHtml = html.replace(
+                        text, 
+                        `<span class="answer-highlight">${text}</span>`
+                    );
+                    p.innerHTML = newHtml;
+                    
+                    // Scroll vào view
+                    const highlighted = p.querySelector('.answer-highlight');
+                    if (highlighted) {
+                        highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    
+                    // Đánh dấu eye icon active
+                    document.querySelectorAll('.eye-icon').forEach(icon => {
+                        icon.classList.remove('active');
+                    });
+                    const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                    if (eyeIcon) eyeIcon.classList.add('active');
+                    
+                    currentHighlightedQuestion = questionNum;
+                    return true;
+                }
+            } catch (e) {
+                console.log('Không thể highlight đoạn này:', e);
+            }
+            break;
+        }
+    }
+    return false;
+}
 
         // ==================== SHOW EXPLANATION ====================
         function showExplanation(questionNum) {
