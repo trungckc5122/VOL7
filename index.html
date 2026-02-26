@@ -411,26 +411,23 @@
             color: white;
         }
 
-        /* Màu highlight đậm hơn */
+        /* Màu highlight - chỉ tô màu, không gạch chân */
         .highlight-yellow {
             background-color: #f9e79f;
             border-radius: 3px;
             padding: 0 2px;
-            border-bottom: 1px solid #f1c40f;
         }
 
         .highlight-green {
             background-color: #a9d6b0;
             border-radius: 3px;
             padding: 0 2px;
-            border-bottom: 1px solid #2e7d32;
         }
 
         .highlight-pink {
             background-color: #fbb9c0;
             border-radius: 3px;
             padding: 0 2px;
-            border-bottom: 1px solid #d81b60;
         }
 
         /* Answer highlight - màu vàng đậm */
@@ -438,8 +435,6 @@
             background-color: #f9e79f;
             padding: 2px 0;
             border-radius: 4px;
-            border-bottom: 2px solid #f1c40f;
-            transition: all 0.3s ease;
         }
 
         /* Question highlight */
@@ -797,7 +792,7 @@
             <div class="reading-panel" id="readingPanel">
                 <div class="panel-header">
                     <span>READING PASSAGE 1</span>
-		<span style="color: #d32f2f; font-size: 12px; font-style: italic; font-weight: normal;">* Không highlight các câu khác đoạn cùng lúc!</span>
+					<span style="color: #d32f2f; font-size: 12px; font-style: italic; font-weight: normal;">* Không highlight các câu khác đoạn cùng lúc!</span>
                 </div>
                 <div class="reading-text font-medium" id="readingContent">
                     <h1>CARNIVOROUS PLANT</h1>
@@ -1335,7 +1330,7 @@
             contextMenu.style.display = 'none';
         });
 
-        // Hàm highlight đã được sửa để xử lý nhiều dòng và khác đoạn
+        // Hàm highlight - chỉ tô màu, không gạch chân
         window.applyHighlight = (color) => {
             if (!selectedRange) return;
             
@@ -1349,14 +1344,44 @@
                 // Xóa selection cũ
                 window.getSelection().removeAllRanges();
                 
-                // Thử extract và insert - cách này hoạt động tốt với range phức tạp
-                const contents = range.extractContents();
-                span.appendChild(contents);
-                range.insertNode(span);
-                
+                // Thử extract và insert
+                try {
+                    const contents = range.extractContents();
+                    span.appendChild(contents);
+                    range.insertNode(span);
+                } catch (e) {
+                    console.log('Lỗi extract range:', e);
+                    
+                    // Cách 2: Xử lý thủ công cho range phức tạp
+                    const startContainer = range.startContainer;
+                    const endContainer = range.endContainer;
+                    const startOffset = range.startOffset;
+                    const endOffset = range.endOffset;
+                    
+                    // Nếu cùng một node
+                    if (startContainer === endContainer) {
+                        const text = startContainer.textContent;
+                        const parent = startContainer.parentNode;
+                        
+                        // Tạo các node mới
+                        const beforeText = document.createTextNode(text.substring(0, startOffset));
+                        const highlightText = document.createElement('span');
+                        highlightText.className = `highlight-${color}`;
+                        highlightText.textContent = text.substring(startOffset, endOffset);
+                        const afterText = document.createTextNode(text.substring(endOffset));
+                        
+                        // Thay thế node cũ
+                        parent.replaceChild(afterText, startContainer);
+                        parent.insertBefore(highlightText, afterText);
+                        parent.insertBefore(beforeText, highlightText);
+                    } else {
+                        // Với range phức tạp, dùng cách đơn giản hơn
+                        alert('Không thể highlight đoạn văn bản phức tạp này. Vui lòng chọn đoạn ngắn hơn.');
+                    }
+                }
             } catch (e) {
                 console.log('Lỗi highlight:', e);
-                alert('Không thể highlight đoạn văn bản này. Vui lòng thử lại với đoạn khác.');
+                alert('Có lỗi khi highlight. Vui lòng thử lại.');
             }
             
             contextMenu.style.display = 'none';
@@ -1376,7 +1401,6 @@
                     // Kiểm tra xem highlight có nằm trong vùng chọn không
                     if (range.intersectsNode(highlight)) {
                         const parent = highlight.parentNode;
-                        // Giữ lại nội dung text
                         while (highlight.firstChild) {
                             parent.insertBefore(highlight.firstChild, highlight);
                         }
