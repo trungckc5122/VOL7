@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOL 7 - Reading Test 2 - Passage 1 - Olive Oil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Reading mode */
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+
+        .test-wrapper.reading-mode .reading-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .questions-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .reading-text {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .questions-list {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .panel-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+
+        .test-wrapper.reading-mode .question-nav {
+            background: #d6cdb8;
+        }
+
+        .test-wrapper.reading-mode .bottom-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        .candidate {
+            background: #2d4b77;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        .question-types {
+            background: #0f2a44;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            border: 1px solid #e6b422;
+        }
+
+        .timer {
+            background: #0f2a44;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: monospace;
+            border: 1px solid #e6b422;
+        }
+
+        /* Reading mode toggle */
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reading-mode-toggle:hover {
+            background: #3e5f8a;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid #e6b422;
+        }
+
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Font Size Controls */
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+        }
+
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        /* Question Navigator */
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #e6b422;
+            color: #1e3a5f;
+            border-color: #e6b422;
+        }
+
+        .nav-btn.answered {
+            background: #4CAF50;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .nav-btn.answered:hover {
+            background: #66bb6a;
+        }
+
+        .nav-btn.unanswered {
+            background: #e0e0e0;
+            color: #757575;
+            border-color: #9e9e9e;
+        }
+
+        .nav-btn.unanswered:hover {
+            background: #bdbdbd;
+            color: #424242;
+        }
+
+        .nav-btn.active {
+            border: 3px solid #e6b422;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Main area with resize */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .reading-panel {
+            width: 45%;
+            background: #fffcf5;
+            border-right: 2px solid #b0aa9a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .questions-panel {
+            width: 55%;
+            background: #f8f6f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Panel headers */
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .reading-text {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.7;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .questions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 25px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* Font size classes */
+        .reading-text.font-small, .questions-list.font-small {
+            font-size: 13px;
+        }
+        .reading-text.font-small p, .questions-list.font-small p,
+        .reading-text.font-small li, .questions-list.font-small li {
+            font-size: 13px;
+        }
+
+        .reading-text.font-medium, .questions-list.font-medium {
+            font-size: 15px;
+        }
+        .reading-text.font-medium p, .questions-list.font-medium p,
+        .reading-text.font-medium li, .questions-list.font-medium li {
+            font-size: 15px;
+        }
+
+        .reading-text.font-large, .questions-list.font-large {
+            font-size: 17px;
+        }
+        .reading-text.font-large p, .questions-list.font-large p,
+        .reading-text.font-large li, .questions-list.font-large li {
+            font-size: 17px;
+        }
+
+        /* Reading content styles */
+        .reading-text h1 {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .reading-text h3 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+        }
+
+        .reading-text p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .reading-text em {
+            color: #5a4a3a;
+            font-style: italic;
+        }
+
+        /* Right-click highlight menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+        }
+
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Màu highlight - chỉ tô màu, không gạch chân */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        /* Dynamic highlight */
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+        }
+        
+        .dynamic-highlight.keyword-underline,
+        .dynamic-highlight.style-text-decoration {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+            background-color: #fff3cd;
+        }
+
+        /* Question highlight */
+        .question-highlight {
+            background-color: #fef9e7;
+            border-left: 4px solid #f1c40f;
+            padding-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        /* Questions styles */
+        .questions-list h3 {
+            font-size: 22px;
+            color: #1e3a5f;
+            margin: 20px 0 15px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .questions-list h4 {
+            font-size: 20px;
+            color: #1e3a5f;
+            margin: 25px 0 15px;
+        }
+
+        .questions-list h5 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+
+        .questions-list h6 {
+            font-size: 17px;
+            color: #1e3a5f;
+            margin: 15px 0 10px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+            list-style-type: disc;
+        }
+
+        .questions-list li {
+            margin: 8px 0;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .questions-list p {
+            margin: 10px 0;
+        }
+
+        .note-box {
+            background: #f0ebe0;
+            border-left: 4px solid #e6b422;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .bold-text {
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .fill-input {
+            padding: 5px 10px;
+            border: 1px solid #9a8c7a;
+            border-radius: 5px;
+            width: 140px;
+            font-size: 14px;
+            margin: 0 5px;
+            background: white;
+        }
+
+        .fill-input.correct {
+            border: 2px solid #4CAF50;
+            background-color: #e8f5e8;
+        }
+
+        .fill-input.incorrect {
+            border: 2px solid #f44336;
+            background-color: #ffebee;
+        }
+
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .tf-group {
+            margin: 5px 0 15px 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tf-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .tf-option.correct .tf-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .tf-option.incorrect .tf-text {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        /* Answer tracking */
+        .answer-badge {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 13px;
+        }
+
+        /* Eye icon for answers */
+        .eye-icon {
+            display: none;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .eye-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .eye-icon.active {
+            opacity: 1;
+            color: #e6b422;
+        }
+
+        .question-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-right: 5px;
+            min-width: 25px;
+        }
+
+        .tf-statement {
+            flex: 1;
+        }
+
+        /* Bottom bar */
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d4b77;
+        }
+
+        .btn-primary:disabled {
+            background: #9aaec2;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-success:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .progress {
+            background: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border: 1px solid #1e3a5f;
+            font-size: 14px;
+        }
+
+        .result-stats {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Explanation panel */
+        .explanation-panel {
+            background: #fffef9;
+            border-left: 4px solid #e6b422;
+            padding: 12px 20px;
+            margin: 0 20px 12px 20px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .explanation-panel.show {
+            display: block;
+        }
+
+        .explanation-header {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .close-btn:hover {
+            color: #1e3a5f;
+        }
+
+        .explanation-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .answer-feedback {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .answer-feedback.correct {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .answer-feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .question-item.highlight-question {
+            border-left: 3px solid #f1c40f;
+            background-color: #fef9e7;
+        }
+
+        /* Flow chart styles - đã chỉnh sửa để giống ảnh */
+        .flow-chart {
+            margin: 20px 0 20px 20px;
+            font-size: 15px;
+        }
+        .flow-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+        .flow-arrow {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #5a4a3a;
+            font-weight: 500;
+        }
+        .flow-item {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+        .flow-number {
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-right: 8px;
+            min-width: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-wrapper" id="testWrapper">
+        <!-- Header -->
+        <div class="ielts-header">
+            <div class="brand">
+                <div class="ielts-logo">IELTS</div>
+                <div class="candidate">Vol 7 - Test 2</div>
+                <div class="question-types">T/F/NG • Flow-chart Completion</div>
+                
+                <!-- Reading Mode Toggle -->
+                <div class="reading-mode-toggle" id="readingModeToggle">
+                    <div class="toggle-switch" id="toggleSwitch"></div>
+                    <span class="toggle-label">Đọc sách</span>
+                </div>
+
+                <!-- Font Size Controls -->
+                <div class="font-controls">
+                    <button class="font-btn" id="fontSmall" title="Chữ nhỏ">A-</button>
+                    <button class="font-btn active" id="fontMedium" title="Chữ vừa">A</button>
+                    <button class="font-btn" id="fontLarge" title="Chữ lớn">A+</button>
+                </div>
+            </div>
+            <div class="timer" id="timerDisplay">60:00</div>
+        </div>
+
+        <!-- Question Navigator -->
+        <div class="question-nav">
+            <span style="font-weight: 600; color: #1e3a5f; font-size: 14px;">Câu:</span>
+            <div class="nav-buttons" id="navButtons">
+                <!-- Sẽ được tạo bằng JavaScript -->
+            </div>
+        </div>
+
+        <!-- Main Content with Resizable Columns -->
+        <div class="main-area" id="mainArea">
+            <!-- Reading Column -->
+            <div class="reading-panel" id="readingPanel">
+                <div class="panel-header">
+                    <span>READING PASSAGE 1</span>
+                    <span class="warning-text">The early history of olive oil</span>
+                </div>
+                <div class="reading-text font-medium" id="readingContent">
+                    <h3>The early history of olive oil</h3>
+                    
+                    <p><strong>A</strong> Olive oil is produced from the fruit of the olive tree, which is a member of the Oleaceae plant family. The trees require some cold weather during the year, but also tolerate hot, dry conditions, and do not like moisture when they are flowering. They actually produce better when subjected to these stressful conditions, and as a result, olive trees have traditionally been grown on land where little else will survive.</p>
+                    
+                    <p><strong>B</strong> Archaeologists today are divided over exactly where the first domestication of the olive occurred: some say it was in the area which is now Iran, Syria, Jordan and Egypt, while others contend it was in mainland Greece or on the island of Crete. The one thing that can be said with certainty is that cultivation began at least 6,000 years ago and spread slowly westward across the lands bordering on the Mediterranean Sea. Olive oil was used for a variety of purposes during these early times, including as a pharmacological ointment and in rituals for anointing royalty.</p>
+                    
+                    <p><strong>C</strong> The ancient Greeks believed the olive tree was a priceless gift from the goddess Athena and used its oil in sacred religious rituals. In fact, the Greek poet Homer called olive oil ‘liquid gold’, and during the 6th and 7th centuries BC Greek law forbade the cutting down of olive trees and made it punishable by death. The ancient Middle Eastern ruler King David valued his groves of olive trees and his olive oil warehouses so much that he posted guards around the clock to protect them.</p>
+                    
+                    <p><strong>D</strong> Over the years, olive oil developed other uses. Its employment in cooking dates at least as far back as the 5th century BC, as described by the Greek philosopher Plato. Its use as an aid to beauty and health later became ingrained in many Mediterranean cultures. The Romans, for example, are said to have used generous amounts on their bodies to moisturise their skin after bathing. With the spread of the Roman Empire, olive oil became a major commodity and its trade promoted commerce throughout the ancient world. It is generally believed that in the 1st-2nd century BC, olive trees were taken to North Africa and then to Spain, which was later to become the world’s largest producer of olive oil. Artefacts found at various Mediterranean archaeological sites include olive oil storage vessels with olive plant residue still in them. Historical evidence still in existence in the form of wall paintings and ancient manuscripts (including the works of the Roman naturalist and philosopher, Pliny the Elder) all record production techniques and the various uses of olive oil.</p>
+                    
+                    <p><strong>E</strong> Making olive oil in those early days was a laborious process accomplished without mechanisation. Processing or milling the fruit involved several distinct stages to extract the liquid. The olives were harvested from the trees by hand or by beating the fruit from the trees with long sticks. The olives were then rinsed and crushed to separate out the large seed found in the centre of each. The remaining seedless flesh was put in woven bags and pressed. Hot water was then poured over the bags to separate the oil from the solid bits of olive. The liquid produced in this process, consisting of oil and water, was drained into stone basins or tanks, where it was allowed to settle and separate. In cold weather a bit of salt was added to speed up the process. As much oil as possible was drawn off the water, but the result was still not pure oil. Therefore, this impure mixture was allowed once more to settle in vats and then separated in order to refine the product.</p>
+                    
+                    <p><strong>F</strong> The waste water from the milling process, which is called amurca, is a bitter-tasting and foul-smelling liquid. In many ancient civilisations it was often simply discarded, causing serious pollution because of its acidity and high salt content. However, in the Roman period it was regarded as a very useful substance. When spread on surfaces, amurca forms a hard finish and therefore it was often applied to the floors of grain storage buildings where it hardened, keeping out water, mud and pests. When boiled down amurca was applied to leather to soften it so that it was easier to shape into articles of clothing and shoes. It could also be eaten by farm animals and was, in fact, fed to livestock suffering from malnutrition. According to ancient texts, amurca was also utilised in moderate amounts by farmers as a fertiliser or as a pesticide helping them to protect their crops from insects and even small rodents.</p>
+                </div>
+            </div>
+
+            <!-- Resizer Handle -->
+            <div class="resizer" id="resizer"></div>
+
+            <!-- Questions Column -->
+            <div class="questions-panel" id="questionsPanel">
+                <div class="panel-header">
+                    <span>QUESTIONS 1-13</span>
+                    <span class="answer-badge" id="answeredCount">0/13 answered</span>
+                </div>
+                <div class="questions-list font-medium" id="questionsContent">
+                    <!-- Questions 1-6 T/F/NG -->
+                    <h3>Questions 1-6</h3>
+                    <p><em>Do the following statements agree with the information given in Reading Passage 1?</em></p>
+                    <p>In boxes 1-6 on your answer sheet, write</p>
+                    
+                    <div class="note-box">
+                        <p><strong>TRUE</strong> if the statement agrees with the information</p>
+                        <p><strong>FALSE</strong> if the statement contradicts the information</p>
+                        <p><strong>NOT GIVEN</strong> if there is no information on this</p>
+                    </div>
+
+                    <ol style="list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 20px;" class="question-item" id="q1-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">1.</span>
+                                <span class="tf-statement">In the cultivation of olives, a period without rain is advantageous.</span>
+                                <span class="eye-icon" data-question="1">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q1-group">
+                                <label class="tf-option"><input type="radio" name="q1" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q1" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q1" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q2-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">2.</span>
+                                <span class="tf-statement">The most fertile fields are usually chosen for growing olives.</span>
+                                <span class="eye-icon" data-question="2">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q2-group">
+                                <label class="tf-option"><input type="radio" name="q2" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q2" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q2" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q3-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">3.</span>
+                                <span class="tf-statement">In ancient Greece, the olive tree was said to have divine origins.</span>
+                                <span class="eye-icon" data-question="3">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q3-group">
+                                <label class="tf-option"><input type="radio" name="q3" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q3" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q3" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q4-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">4.</span>
+                                <span class="tf-statement">Olive oil was more costly to buy in Greece than gold.</span>
+                                <span class="eye-icon" data-question="4">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q4-group">
+                                <label class="tf-option"><input type="radio" name="q4" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q4" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q4" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q5-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">5.</span>
+                                <span class="tf-statement">Plato mentions the use of olive oil in the preparation of food.</span>
+                                <span class="eye-icon" data-question="5">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q5-group">
+                                <label class="tf-option"><input type="radio" name="q5" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q5" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q5" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q6-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">6.</span>
+                                <span class="tf-statement">North African farmers initially resisted the introduction of olive trees.</span>
+                                <span class="eye-icon" data-question="6">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q6-group">
+                                <label class="tf-option"><input type="radio" name="q6" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q6" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q6" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <!-- Questions 7-9 flow-chart - ĐÃ CHỈNH SỬA THEO ẢNH -->
+                    <h3>Questions 7-9</h3>
+                    <p><em>Complete the flow-chart below.</em></p>
+                    <p><em>Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                    
+                    <h4>Ancient olive oil processing</h4>
+                    
+                    <div class="flow-chart">
+                        <!-- Dòng 1: olives are harvested... -->
+                        <div class="flow-row">
+                            <div class="flow-item">
+                                <span>olives are harvested by picking them or </span>
+                                <span class="flow-number">7</span>
+                                <input class="fill-input" id="q7" data-answer="beating" placeholder="answer" style="width:100px;">
+                                <span> the trees</span>
+                                <span class="eye-icon" data-question="7">👁️</span>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        
+                        <!-- Dòng 2: milling stage -->
+                        <div class="flow-row">
+                            <span>milling stage</span>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        
+                        <!-- Dòng 3: olives are washed... -->
+                        <div class="flow-row">
+                            <span>olives are washed and crushed and seeds removed</span>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        
+                        <!-- Dòng 4: olive flesh is placed in... -->
+                        <div class="flow-row">
+                            <div class="flow-item">
+                                <span>olive flesh is placed in </span>
+                                <span class="flow-number">8</span>
+                                <input class="fill-input" id="q8" data-answer="bags" placeholder="answer" style="width:100px;">
+                                <span> and pressed</span>
+                                <span class="eye-icon" data-question="8">👁️</span>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        
+                        <!-- Dòng 5: water is poured... -->
+                        <div class="flow-row">
+                            <span>water is poured over the mixture</span>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        
+                        <!-- Dòng 6: resulting liquid... -->
+                        <div class="flow-row">
+                            <div class="flow-item">
+                                <span>resulting liquid is given time to settle and separate, and </span>
+                                <span class="flow-number">9</span>
+                                <input class="fill-input" id="q9" data-answer="salt" placeholder="answer" style="width:100px;">
+                                <span> is used to aid the process</span>
+                                <span class="eye-icon" data-question="9">👁️</span>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        
+                        <!-- Dòng 7: oil is drawn off... -->
+                        <div class="flow-row">
+                            <span>oil is drawn off and separation repeated</span>
+                        </div>
+                    </div>
+
+                    <!-- Answer key section (hidden in display but referenced) -->
+                    <div style="display: none;" data-answers>7 beating 8 bags 9 salt</div>
+
+                    <!-- amurca questions (Questions 10-13 from the answer sheet) -->
+                    <h3 style="margin-top: 30px;">Questions 10-13</h3>
+                    <p><em>Complete the notes below using information from the passage.</em></p>
+                    <p><em>Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                    
+                    <h4>Uses of amurca (waste water from olive milling)</h4>
+                    
+                    <ul style="list-style-type: none; padding-left: 5px;">
+                        <li style="margin-bottom: 15px;">
+                            <span class="question-wrapper">
+                                <span class="question-number">10.</span> Discarding it caused serious 
+                                <input class="fill-input" id="q10" data-answer="pollution" placeholder="answer">
+                                <span class="eye-icon" data-question="10">👁️</span>
+                            </span>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <span class="question-wrapper">
+                                <span class="question-number">11.</span> Applied to 
+                                <input class="fill-input" id="q11" data-answer="floors" placeholder="answer"> of grain storage buildings
+                                <span class="eye-icon" data-question="11">👁️</span>
+                            </span>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <span class="question-wrapper">
+                                <span class="question-number">12.</span> Boiled down and applied to 
+                                <input class="fill-input" id="q12" data-answer="leather" placeholder="answer"> to soften it
+                                <span class="eye-icon" data-question="12">👁️</span>
+                            </span>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <span class="question-wrapper">
+                                <span class="question-number">13.</span> Used as a 
+                                <input class="fill-input" id="q13" data-answer="pesticide" placeholder="answer"> to protect crops
+                                <span class="eye-icon" data-question="13">👁️</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="bottom-bar">
+            <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+            <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+            <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+            <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+            <div class="result-stats" id="resultStats" style="display: none;"></div>
+        </div>
+
+        <!-- Explanation Panel -->
+        <div class="explanation-panel" id="explanationPanel">
+            <div class="explanation-header">
+                <span id="explanationTitle">Giải thích câu hỏi</span>
+                <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+            </div>
+            <div class="explanation-content" id="explanationText">
+                Nhấn vào biểu tượng con mắt để xem giải thích.
+            </div>
+        </div>
+
+        <!-- Right-click Context Menu -->
+        <div class="context-menu" id="contextMenu">
+            <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+            <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+            <div onclick="applyHighlight('pink')">Highlight hồng</div>
+            <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBAL VARIABLES ====================
+        let selectedRange = null;
+        let selectedTarget = null;
+        let currentHighlightedQuestion = null;
+        let examSubmitted = false;
+        let explanationMode = false;
+        let startTime = Date.now();
+        let endTime = null;
+        let readingMode = false;
+        
+        // Answer key from the provided images
+        const answerKey = {
+            q1: 'TRUE', q2: 'FALSE', q3: 'TRUE', q4: 'NOT GIVEN', q5: 'TRUE', q6: 'NOT GIVEN',
+            q7: 'beating', q8: 'bags', q9: 'salt',
+            q10: 'pollution', q11: 'floors', q12: 'leather', q13: 'pesticide'
+        };
+
+        // Mapping câu hỏi với câu văn chứa đáp án (dùng để highlight cả câu)
+        const answerLocations = {
+            q1: { text: "The trees require some cold weather during the year, but also tolerate hot, dry conditions, and do not like moisture when they are flowering. They actually produce better when subjected to these stressful conditions", keywords: ["dry", "do not like moisture"] },
+            q2: { text: "olive trees have traditionally been grown on land where little else will survive.", keywords: ["where little else will survive"] },
+            q3: { text: "The ancient Greeks believed the olive tree was a priceless gift from the goddess Athena", keywords: ["goddess Athena"] },
+            q4: { text: "the Greek poet Homer called olive oil ‘liquid gold’", keywords: ["liquid gold"] },
+            q5: { text: "Its employment in cooking dates at least as far back as the 5th century BC, as described by the Greek philosopher Plato.", keywords: ["Plato"] },
+            q6: { text: "it is generally believed that in the 1st-2nd century BC, olive trees were taken to North Africa and then to Spain", keywords: ["taken to North Africa"] },
+            q7: { text: "The olives were harvested from the trees by hand or by beating the fruit from the trees with long sticks.", keywords: ["beating"] },
+            q8: { text: "The remaining seedless flesh was put in woven bags and pressed.", keywords: ["bags"] },
+            q9: { text: "In cold weather a bit of salt was added to speed up the process.", keywords: ["salt"] },
+            q10: { text: "it was often simply discarded, causing serious pollution because of its acidity and high salt content.", keywords: ["pollution"] },
+            q11: { text: "it was often applied to the floors of grain storage buildings where it hardened", keywords: ["floors"] },
+            q12: { text: "When boiled down amurca was applied to leather to soften it", keywords: ["leather"] },
+            q13: { text: "amurca was also utilised in moderate amounts by farmers as a fertiliser or as a pesticide helping them to protect their crops", keywords: ["pesticide"] }
+        };
+
+        // Explanations from the provided images
+        const explanations = {
+            q1: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'They actually produce better when subjected to these stressful conditions…' (Para A). The passage says olives do better under hot, dry (stressful) conditions → a dry period is advantageous.",
+            q2: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> '…olive trees have traditionally been grown on land where little else will survive.' (Para A). That says olives are grown on poor land, so <strong>not</strong> the most fertile fields.",
+            q3: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'The ancient Greeks believed the olive tree was a priceless gift from the goddess Athena …' (Para C). The passage explicitly states a divine origin in Greek belief.",
+            q4: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Homer called olive oil ‘liquid gold’. (Para C) 'Liquid gold' is stated, but there is no claim that olive oil literally cost more than gold — price comparison not given.",
+            q5: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'Its employment in cooking dates at least as far back as the 5th century BC, as described by the Greek philosopher Plato.' (Para D). Plato is explicitly linked to olive oil used in cooking.",
+            q6: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> 'it is generally believed that in the 1st-2nd century BC, olive trees were taken to North Africa and then to Spain…' (Para D). The passage states trees were taken to North Africa but says nothing about resistance.",
+            q7: "<strong>Đáp án: beating</strong><br><br><strong>Giải thích:</strong> 'The olives were harvested from the trees by hand or by beating the fruit from the trees with long sticks.' (Para E). Beat/ beating is the alternative to picking by hand.",
+            q8: "<strong>Đáp án: bags</strong><br><br><strong>Giải thích:</strong> 'The remaining seedless flesh was put in woven bags and pressed.' (Para E). Flesh put in woven <strong>bags</strong> before pressing.",
+            q9: "<strong>Đáp án: salt</strong><br><br><strong>Giải thích:</strong> 'In cold weather a bit of salt was added to speed up the process.' (Para E). Salt was used to help separation in cold conditions.",
+            q10: "<strong>Đáp án: pollution</strong><br><br><strong>Giải thích:</strong> 'it was often simply discarded, causing serious pollution because of its acidity and high salt content.' (Para F). Discarding amurca caused <strong>pollution</strong>.",
+            q11: "<strong>Đáp án: floors</strong><br><br><strong>Giải thích:</strong> 'When spread on surfaces, amurca forms a hard finish and therefore it was often applied to the floors of grain storage buildings where it hardened…' (Para F). Used on <strong>floors</strong> of grain-storage buildings.",
+            q12: "<strong>Đáp án: leather</strong><br><br><strong>Giải thích:</strong> 'When boiled down amurca was applied to leather to soften it so that it was easier to shape into articles of clothing and shoes.' (Para F). Applied to <strong>leather</strong>.",
+            q13: "<strong>Đáp án: pesticide</strong><br><br><strong>Giải thích:</strong> 'amurca was also utilised in moderate amounts by farmers as a fertiliser or as a pesticide helping them to protect their crops from insects and even small rodents.' (Para F). Used as a <strong>pesticide</strong> to protect crops."
+        };
+
+        // ==================== TIMER ====================
+        let timeLeft = 3600;
+        const timerEl = document.getElementById('timerDisplay');
+        const timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        // ==================== READING MODE TOGGLE ====================
+        const testWrapper = document.getElementById('testWrapper');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        
+        document.getElementById('readingModeToggle').addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                testWrapper.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                testWrapper.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // ==================== FONT SIZE CONTROLS ====================
+        document.getElementById('fontSmall').addEventListener('click', function() { setFontSize('small'); });
+        document.getElementById('fontMedium').addEventListener('click', function() { setFontSize('medium'); });
+        document.getElementById('fontLarge').addEventListener('click', function() { setFontSize('large'); });
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            if (size === 'small') document.getElementById('fontSmall').classList.add('active');
+            if (size === 'medium') document.getElementById('fontMedium').classList.add('active');
+            if (size === 'large') document.getElementById('fontLarge').classList.add('active');
+            
+            document.getElementById('readingContent').classList.remove('font-small', 'font-medium', 'font-large');
+            document.getElementById('readingContent').classList.add(`font-${size}`);
+            document.getElementById('questionsContent').classList.remove('font-small', 'font-medium', 'font-large');
+            document.getElementById('questionsContent').classList.add(`font-${size}`);
+        }
+
+        // ==================== RESIZE COLUMNS ====================
+        const readingPanel = document.getElementById('readingPanel');
+        const questionsPanel = document.getElementById('questionsPanel');
+        const resizer = document.getElementById('resizer');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => { isResizing = true; document.body.style.cursor = 'col-resize'; });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const mainArea = document.getElementById('mainArea');
+            const rect = mainArea.getBoundingClientRect();
+            let readingWidth = e.clientX - rect.left - 4;
+            if (readingWidth < 250) readingWidth = 250;
+            if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+            readingPanel.style.width = readingWidth + 'px';
+            questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+        });
+        document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = 'default'; });
+
+        // ==================== NAVIGATION BUTTONS ====================
+        function createNavButtons() {
+            const navContainer = document.getElementById('navButtons');
+            navContainer.innerHTML = '';
+            for (let i = 1; i <= 13; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn unanswered';
+                btn.textContent = i;
+                btn.setAttribute('data-question', i);
+                btn.addEventListener('click', function() {
+                    const qNum = this.getAttribute('data-question');
+                    scrollToQuestion(qNum);
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                navContainer.appendChild(btn);
+            }
+        }
+
+        function scrollToQuestion(questionNum) {
+            let element = null;
+            if (questionNum <= 6) {
+                element = document.getElementById(`q${questionNum}-item`);
+            } else if (questionNum <= 9) {
+                element = document.getElementById(`q${questionNum}`);
+            } else {
+                element = document.getElementById(`q${questionNum}`);
+            }
+            if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-question') === questionNum.toString()) btn.classList.add('active');
+            });
+        }
+
+        function updateNavButtons() {
+            for (let i = 1; i <= 13; i++) {
+                const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+                if (!btn) continue;
+                let isAnswered = false;
+                if (i <= 6) {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) isAnswered = true;
+                } else {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') isAnswered = true;
+                }
+                btn.classList.remove('answered', 'unanswered');
+                btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+            }
+        }
+
+        // ==================== COUNT ANSWERS ====================
+        function updateAnswerCount() {
+            let answered = 0;
+            for (let i = 1; i <= 6; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+            }
+            for (let i = 7; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input && input.value.trim() !== '') answered++;
+            }
+            document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+            document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+            updateNavButtons();
+        }
+
+        document.querySelectorAll('.fill-input').forEach(el => { el.addEventListener('input', updateAnswerCount); });
+        document.querySelectorAll('input[type="radio"]').forEach(el => { el.addEventListener('change', updateAnswerCount); });
+
+        // ==================== RIGHT-CLICK HIGHLIGHT (simplified) ====================
+        const contextMenu = document.getElementById('contextMenu');
+        document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            selectedRange = selection.getRangeAt(0);
+            selectedTarget = 'reading';
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+        document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            selectedRange = selection.getRangeAt(0);
+            selectedTarget = 'questions';
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+        document.addEventListener('click', () => { contextMenu.style.display = 'none'; });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            try {
+                const span = document.createElement('span');
+                span.className = `highlight-${color}`;
+                const range = selectedRange.cloneRange();
+                window.getSelection().removeAllRanges();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) { alert('Không thể highlight đoạn này.'); }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            try {
+                const range = selectedRange.cloneRange();
+                const highlights = document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink');
+                highlights.forEach(highlight => {
+                    if (range.intersectsNode(highlight)) {
+                        const parent = highlight.parentNode;
+                        while (highlight.firstChild) parent.insertBefore(highlight.firstChild, highlight);
+                        parent.removeChild(highlight);
+                    }
+                });
+            } catch (e) {}
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // ==================== HIGHLIGHT ANSWER LOCATION ====================
+        function clearAllHighlights() {
+            document.querySelectorAll('.dynamic-highlight').forEach(el => {
+                const parent = el.parentNode;
+                while (el.firstChild) parent.insertBefore(el.firstChild, el);
+                parent.removeChild(el);
+            });
+            document.querySelectorAll('.question-highlight').forEach(el => el.classList.remove('question-highlight'));
+            document.querySelectorAll('.eye-icon.active').forEach(el => el.classList.remove('active'));
+            currentHighlightedQuestion = null;
+        }
+
+        function highlightAnswerLocation(questionNum) {
+            clearAllHighlights();
+            const readingContent = document.getElementById('readingContent');
+            const location = answerLocations[`q${questionNum}`];
+            if (!location) return false;
+
+            const paragraphs = readingContent.getElementsByTagName('p');
+            for (let p of paragraphs) {
+                if (p.textContent.includes(location.text)) {
+                    try {
+                        const range = document.createRange();
+                        let found = false;
+                        const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, false);
+                        let node;
+                        while (node = walk.nextNode()) {
+                            const idx = node.textContent.indexOf(location.text);
+                            if (idx !== -1) {
+                                range.setStart(node, idx);
+                                range.setEnd(node, idx + location.text.length);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            const span = document.createElement('span');
+                            span.className = 'dynamic-highlight';
+                            const contents = range.extractContents();
+                            span.appendChild(contents);
+                            range.insertNode(span);
+                            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    } catch (e) {}
+                    break;
+                }
+            }
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.classList.remove('active'));
+            const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+            if (eyeIcon) eyeIcon.classList.add('active');
+            currentHighlightedQuestion = questionNum;
+            return true;
+        }
+
+        // ==================== SHOW EXPLANATION ====================
+        function showExplanation(questionNum) {
+            if (!explanationMode) return;
+            const expKey = `q${questionNum}`;
+            if (explanations[expKey]) {
+                document.getElementById('explanationPanel').classList.add('show');
+                document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+                let explanationHtml = explanations[expKey];
+                if (examSubmitted) {
+                    const userAnswer = getUserAnswer(questionNum);
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    explanationHtml += `<div class="answer-feedback ${userAnswer && userAnswer.toString().toLowerCase().trim() === correctAnswer.toString().toLowerCase().trim() ? 'correct' : 'incorrect'}">`;
+                    explanationHtml += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+                    if (!userAnswer || userAnswer.toString().toLowerCase().trim() !== correctAnswer.toString().toLowerCase().trim()) {
+                        explanationHtml += `<strong>Đáp án đúng:</strong> ${correctAnswer}`;
+                    }
+                    explanationHtml += `</div>`;
+                }
+                document.getElementById('explanationText').innerHTML = explanationHtml;
+                setTimeout(() => highlightAnswerLocation(questionNum), 100);
+            }
+        }
+
+        function getUserAnswer(questionNum) {
+            if (questionNum <= 6) {
+                const selected = document.querySelector(`input[name="q${questionNum}"]:checked`);
+                return selected ? selected.value : null;
+            } else {
+                const input = document.getElementById(`q${questionNum}`);
+                return input ? input.value.trim() : null;
+            }
+        }
+
+        // ==================== MARK ANSWERS ====================
+        function markAnswers() {
+            for (let i = 1; i <= 6; i++) {
+                const group = document.getElementById(`q${i}-group`);
+                if (!group) continue;
+                const options = group.querySelectorAll('.tf-option');
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctAnswer = answerKey[`q${i}`];
+                options.forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                    const radio = option.querySelector('input[type="radio"]');
+                    if (radio.value === correctAnswer) option.classList.add('correct');
+                    if (selected && radio.value === selected.value && radio.value !== correctAnswer) option.classList.add('incorrect');
+                });
+                if (!selected) {
+                    options.forEach(option => {
+                        if (option.querySelector('input[type="radio"]').value === correctAnswer) option.classList.add('correct');
+                    });
+                }
+            }
+            for (let i = 7; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswer = answerKey[`q${i}`];
+                    input.classList.remove('correct', 'incorrect');
+                    const oldBadge = input.parentNode.querySelector('.correct-answer-badge');
+                    if (oldBadge) oldBadge.remove();
+                    if (userAnswer) {
+                        if (userAnswer === correctAnswer) input.classList.add('correct');
+                        else {
+                            input.classList.add('incorrect');
+                            const badge = document.createElement('span');
+                            badge.className = 'correct-answer-badge';
+                            badge.textContent = correctAnswer;
+                            input.parentNode.appendChild(badge);
+                        }
+                    } else {
+                        input.classList.add('incorrect');
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correctAnswer;
+                        input.parentNode.appendChild(badge);
+                    }
+                }
+            }
+        }
+
+        // ==================== SUBMIT ====================
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            if (examSubmitted) return;
+            let unanswered = [];
+            for (let i = 1; i <= 13; i++) {
+                let isAnswered = false;
+                if (i <= 6) { if (document.querySelector(`input[name="q${i}"]:checked`)) isAnswered = true; }
+                else { if (document.getElementById(`q${i}`).value.trim() !== '') isAnswered = true; }
+                if (!isAnswered) unanswered.push(i);
+            }
+            if (unanswered.length > 0 && !confirm(`Bạn còn ${unanswered.length} câu chưa làm. Nộp bài?`)) return;
+            
+            examSubmitted = true;
+            endTime = Date.now();
+            markAnswers();
+            
+            let correct = 0;
+            for (let i = 1; i <= 13; i++) {
+                const userAns = getUserAnswer(i);
+                if (userAns && userAns.toString().toLowerCase().trim() === answerKey[`q${i}`].toLowerCase()) correct++;
+            }
+            const timeTaken = Math.floor((endTime - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            document.getElementById('resultStats').style.display = 'inline-block';
+            document.getElementById('resultStats').textContent = `Kết quả: ${correct}/13 (${Math.round(correct/13*100)}%) - TG: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            document.getElementById('explainBtn').disabled = false;
+            this.disabled = true;
+            this.textContent = 'Đã nộp bài';
+        });
+
+        // ==================== EXPLAIN ====================
+        document.getElementById('explainBtn').addEventListener('click', function() {
+            if (!examSubmitted) return;
+            explanationMode = true;
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'inline-block');
+            this.disabled = true;
+            this.textContent = 'Đang xem giải thích';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // ==================== RESET ====================
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (!confirm('Reset tất cả?')) return;
+            examSubmitted = false; explanationMode = false; startTime = Date.now();
+            for (let i = 1; i <= 6; i++) {
+                document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false);
+                const group = document.getElementById(`q${i}-group`);
+                if (group) group.querySelectorAll('.tf-option').forEach(opt => opt.classList.remove('correct', 'incorrect'));
+            }
+            for (let i = 7; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                    const badge = input.parentNode.querySelector('.correct-answer-badge');
+                    if (badge) badge.remove();
+                }
+            }
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+            document.getElementById('submitBtn').disabled = false; document.getElementById('submitBtn').textContent = 'Nộp bài';
+            document.getElementById('explainBtn').disabled = true; document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            document.getElementById('resultStats').style.display = 'none';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+            updateAnswerCount();
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        });
+
+        // ==================== SETUP EYE ICONS ====================
+        function setupEyeIcons() {
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const questionNum = this.getAttribute('data-question');
+                    showExplanation(questionNum);
+                });
+            });
+        }
+
+        document.getElementById('closeExplanation').addEventListener('click', () => {
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // Initialize
+        createNavButtons();
+        updateAnswerCount();
+        setupEyeIcons();
+    </script>
+</body>
+</html>
