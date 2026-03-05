@@ -239,7 +239,7 @@
         }
 
         .eye-icon {
-            display: inline-block;
+            display: none; /* CHỈ THAY ĐỔI 1: Đổi từ inline-block thành none */
             margin-left: 10px;
             cursor: pointer;
             font-size: 18px;
@@ -1201,6 +1201,7 @@
         
         explanationMode = true;
         
+        // CHỈ THAY ĐỔI 2: Hiện tất cả eye icons
         document.querySelectorAll('.eye-icon').forEach(icon => {
             icon.style.display = 'inline-block';
         });
@@ -1240,6 +1241,7 @@
             
             document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
             
+            // CHỈ THAY ĐỔI 3: Ẩn tất cả eye icons khi reset
             document.querySelectorAll('.eye-icon').forEach(icon => {
                 icon.style.display = 'none';
             });
@@ -1323,6 +1325,11 @@
     createNavButtons();
     updateAnswerCount();
     setupEyeIcons();
+    
+    // CHỈ THAY ĐỔI 4: Đảm bảo eye icons ẩn ban đầu
+    document.querySelectorAll('.eye-icon').forEach(icon => {
+        icon.style.display = 'none';
+    });
     
     document.querySelectorAll('input[type="radio"], .letter-input').forEach(el => {
         el.addEventListener('change', updateAnswerCount);

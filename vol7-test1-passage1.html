@@ -430,21 +430,19 @@
             padding: 0 2px;
         }
 
-        /* Answer highlight - màu vàng đậm */
-        .answer-highlight {
+        /* Dynamic highlight - style giống code mẫu */
+        .dynamic-highlight {
             background-color: #f9e79f;
-            padding: 2px 0;
-            border-radius: 4px;
-            display: inline-block;
-            width: 100%;
+            display: inline;
         }
-
-        /* Keyword underline */
-        .keyword-underline {
+        
+        .dynamic-highlight.keyword-underline,
+        .dynamic-highlight.style-text-decoration {
             text-decoration: underline;
             text-decoration-color: #e67e22;
             text-decoration-thickness: 2px;
             font-weight: 600;
+            background-color: #fff3cd;
         }
 
         /* Question highlight */
@@ -580,7 +578,7 @@
 
         /* Eye icon for answers */
         .eye-icon {
-            display: inline-block;
+            display: none;
             margin-left: 10px;
             cursor: pointer;
             font-size: 18px;
@@ -855,7 +853,7 @@
                             <div class="question-wrapper">
                                 <span>He understood why the plant did not respond to <span class="bold-text" data-question="1">1</span></span>
                                 <input class="fill-input" id="q1" data-answer="raindrops" placeholder="answer">
-                                <span class="eye-icon" data-question="1" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="1">👁️</span>
                             </div>
                         </li>
                     </ul>
@@ -866,7 +864,7 @@
                             <div class="question-wrapper">
                                 <span>He demonstrated how leaves close and then, for a short period, act like a <span class="bold-text" data-question="2">2</span></span>
                                 <input class="fill-input" id="q2" data-answer="stomach" placeholder="answer">
-                                <span class="eye-icon" data-question="2" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="2">👁️</span>
                             </div>
                         </li>
                         <li>He noted the structure of leaves ensures small insects are released.</li>
@@ -881,7 +879,7 @@
                             <div class="question-wrapper">
                                 <span>The charge enters fluid-filled tunnels, causing <span class="bold-text" data-question="3">3</span></span>
                                 <input class="fill-input" id="q3" data-answer="pores" placeholder="answer"> in the cell walls to open.
-                                <span class="eye-icon" data-question="3" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="3">👁️</span>
                             </div>
                         </li>
                         <li>Water moves between cells and then the leaf changes from convex to concave, trapping the insect inside.</li>
@@ -895,7 +893,7 @@
                             <div class="question-wrapper">
                                 <span>When water is pumped out of bladder cells, a <span class="bold-text" data-question="4">4</span></span>
                                 <input class="fill-input" id="q4" data-answer="vacuum" placeholder="answer"> builds up inside.
-                                <span class="eye-icon" data-question="4" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="4">👁️</span>
                             </div>
                         </li>
                     </ul>
@@ -907,7 +905,7 @@
                             <div class="question-wrapper">
                                 <span>Some plants are big enough to capture and eat <span class="bold-text" data-question="5">5</span></span>
                                 <input class="fill-input" id="q5" data-answer="frogs" placeholder="answer">
-                                <span class="eye-icon" data-question="5" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="5">👁️</span>
                             </div>
                         </li>
                     </ul>
@@ -928,7 +926,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">6.</span>
                                 <span class="tf-statement">Pitcher plants increase in size after they have digested a lot of insects.</span>
-                                <span class="eye-icon" data-question="6" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="6">👁️</span>
                             </div>
                             <div class="tf-group" id="q6-group">
                                 <label class="tf-option"><input type="radio" name="q6" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -940,7 +938,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">7.</span>
                                 <span class="tf-statement">Carnivorous plants produce light-harvesting enzymes with the nutrients they extract from animals.</span>
-                                <span class="eye-icon" data-question="7" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="7">👁️</span>
                             </div>
                             <div class="tf-group" id="q7-group">
                                 <label class="tf-option"><input type="radio" name="q7" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -952,7 +950,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">8.</span>
                                 <span class="tf-statement">Pitcher plants and Venus flytraps are more efficient at photosynthesis than plants with ordinary leaves.</span>
-                                <span class="eye-icon" data-question="8" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="8">👁️</span>
                             </div>
                             <div class="tf-group" id="q8-group">
                                 <label class="tf-option"><input type="radio" name="q8" value="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -964,7 +962,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">9.</span>
                                 <span class="tf-statement">Venus flytraps are better adapted to the soil of swamps and bogs than other carnivorous plants.</span>
-                                <span class="eye-icon" data-question="9" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="9">👁️</span>
                             </div>
                             <div class="tf-group" id="q9-group">
                                 <label class="tf-option"><input type="radio" name="q9" value="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -976,7 +974,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">10.</span>
                                 <span class="tf-statement">Carnivorous plants frequently find it difficult to photosynthesise in bogs due to a lack of sunlight.</span>
-                                <span class="eye-icon" data-question="10" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="10">👁️</span>
                             </div>
                             <div class="tf-group" id="q10-group">
                                 <label class="tf-option"><input type="radio" name="q10" value="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -988,7 +986,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">11.</span>
                                 <span class="tf-statement">Scientists have campaigned to reduce the amount of nitrogen that is released into the soil by agricultural practices.</span>
-                                <span class="eye-icon" data-question="11" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="11">👁️</span>
                             </div>
                             <div class="tf-group" id="q11-group">
                                 <label class="tf-option"><input type="radio" name="q11" value="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -1000,7 +998,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">12.</span>
                                 <span class="tf-statement">A lot of exotic carnivorous plants are sold illegally.</span>
-                                <span class="eye-icon" data-question="12" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="12">👁️</span>
                             </div>
                             <div class="tf-group" id="q12-group">
                                 <label class="tf-option"><input type="radio" name="q12" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -1012,7 +1010,7 @@
                             <div class="question-wrapper">
                                 <span class="question-number">13.</span>
                                 <span class="tf-statement">Preventing wildfires is beneficial to the Venus flytrap.</span>
-                                <span class="eye-icon" data-question="13" style="display: none;">👁️</span>
+                                <span class="eye-icon" data-question="13">👁️</span>
                             </div>
                             <div class="tf-group" id="q13-group">
                                 <label class="tf-option"><input type="radio" name="q13" value="TRUE"> <span class="tf-text">TRUE</span></label>
@@ -1072,7 +1070,7 @@
             q11: 'NOT GIVEN', q12: 'TRUE', q13: 'FALSE'
         };
 
-        // Mapping câu hỏi với câu văn chứa đáp án (dùng để highlight cả câu) - Đã thêm keywords để gạch chân
+        // Mapping câu hỏi với câu văn chứa đáp án (dùng để highlight cả câu)
         const answerLocations = {
             q1: { text: "Yet sundews, he observed, ignored raindrops.", keywords: ["raindrops"] },
             q2: { text: "He showed that when one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes that could dissolve the prey.", keywords: ["stomach"] },
@@ -1429,16 +1427,13 @@
 
         // ==================== CLEAR HIGHLIGHTS ====================
         function clearAllHighlights() {
-            // Xóa highlight trong bài đọc
-            document.querySelectorAll('.answer-highlight, .keyword-underline').forEach(el => {
-                // Giải nén nội dung
+            // Xóa tất cả dynamic-highlight
+            document.querySelectorAll('.dynamic-highlight').forEach(el => {
                 const parent = el.parentNode;
                 if (parent) {
-                    // Di chuyển tất cả các node con ra ngoài span
                     while (el.firstChild) {
                         parent.insertBefore(el.firstChild, el);
                     }
-                    // Xóa span rỗng
                     parent.removeChild(el);
                 }
             });
@@ -1483,7 +1478,7 @@
 
         // ==================== HIGHLIGHT ANSWER LOCATION ====================
         function highlightAnswerLocation(questionNum) {
-            // Xóa highlight trước đó nhưng KHÔNG làm hỏng cấu trúc HTML
+            // Xóa highlight trước đó
             clearAllHighlights();
             
             const readingContent = document.getElementById('readingContent');
@@ -1494,7 +1489,7 @@
             // Highlight question
             highlightQuestion(questionNum);
             
-            // Tìm và highlight câu văn chứa đáp án - sử dụng cách an toàn hơn
+            // Tìm và highlight câu văn chứa đáp án
             const fullText = location.text;
             const keywords = location.keywords || [];
             
@@ -1547,7 +1542,7 @@
                                 
                                 // Highlight phần text
                                 const span = document.createElement('span');
-                                span.className = 'answer-highlight';
+                                span.className = 'dynamic-highlight';
                                 
                                 try {
                                     const contents = range.extractContents();
@@ -1561,18 +1556,18 @@
                                 // Gạch chân keywords trong phần đã highlight
                                 keywords.forEach(keyword => {
                                     const keywordRegex = new RegExp(`(${keyword})`, 'gi');
-                                    const highlightSpan = document.querySelector('.answer-highlight');
+                                    const highlightSpan = document.querySelector('.dynamic-highlight');
                                     if (highlightSpan) {
                                         const html = highlightSpan.innerHTML;
                                         highlightSpan.innerHTML = html.replace(
                                             keywordRegex,
-                                            '<span class="keyword-underline">$1</span>'
+                                            '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
                                         );
                                     }
                                 });
                                 
                                 // Scroll vào view
-                                const highlighted = document.querySelector('.answer-highlight');
+                                const highlighted = document.querySelector('.dynamic-highlight');
                                 if (highlighted) {
                                     highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }
@@ -1922,6 +1917,11 @@
                     btn.classList.remove('active');
                 });
             }
+        });
+
+        // Ẩn eye icons ban đầu
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.style.display = 'none';
         });
 
         // Initialize
