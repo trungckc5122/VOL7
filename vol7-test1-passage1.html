@@ -1431,7 +1431,16 @@
         function clearAllHighlights() {
             // Xóa highlight trong bài đọc
             document.querySelectorAll('.answer-highlight, .keyword-underline').forEach(el => {
-                el.classList.remove('answer-highlight', 'keyword-underline');
+                // Giải nén nội dung
+                const parent = el.parentNode;
+                if (parent) {
+                    // Di chuyển tất cả các node con ra ngoài span
+                    while (el.firstChild) {
+                        parent.insertBefore(el.firstChild, el);
+                    }
+                    // Xóa span rỗng
+                    parent.removeChild(el);
+                }
             });
             
             // Xóa highlight trong câu hỏi
@@ -1474,10 +1483,8 @@
 
         // ==================== HIGHLIGHT ANSWER LOCATION ====================
         function highlightAnswerLocation(questionNum) {
-            // Clear previous highlights in reading
-            document.querySelectorAll('.answer-highlight, .keyword-underline').forEach(el => {
-                el.classList.remove('answer-highlight', 'keyword-underline');
-            });
+            // Xóa highlight trước đó nhưng KHÔNG làm hỏng cấu trúc HTML
+            clearAllHighlights();
             
             const readingContent = document.getElementById('readingContent');
             const location = answerLocations[`q${questionNum}`];
@@ -1487,47 +1494,101 @@
             // Highlight question
             highlightQuestion(questionNum);
             
-            // Tìm và highlight câu văn chứa đáp án
+            // Tìm và highlight câu văn chứa đáp án - sử dụng cách an toàn hơn
             const fullText = location.text;
             const keywords = location.keywords || [];
+            
+            // Tìm tất cả các đoạn văn
             const paragraphs = readingContent.getElementsByTagName('p');
             
             for (let p of paragraphs) {
                 if (p.textContent.includes(fullText)) {
                     try {
-                        let html = p.innerHTML;
+                        // Tìm vị trí của text trong đoạn văn
+                        const text = p.textContent;
+                        const startIndex = text.indexOf(fullText);
                         
-                        // Highlight toàn bộ câu
-                        if (html.includes(fullText)) {
-                            html = html.replace(
-                                fullText,
-                                `<span class="answer-highlight">${fullText}</span>`
-                            );
+                        if (startIndex !== -1) {
+                            // Tạo range để highlight
+                            const range = document.createRange();
+                            
+                            // Tìm node chứa text
+                            let currentNode = p.firstChild;
+                            let currentIndex = 0;
+                            
+                            // Hàm đệ quy để tìm node và offset
+                            function findNodeAndOffset(node, targetIndex) {
+                                if (node.nodeType === Node.TEXT_NODE) {
+                                    const length = node.textContent.length;
+                                    if (currentIndex + length > targetIndex) {
+                                        return { node, offset: targetIndex - currentIndex };
+                                    }
+                                    currentIndex += length;
+                                } else {
+                                    for (let child of node.childNodes) {
+                                        const result = findNodeAndOffset(child, targetIndex);
+                                        if (result) return result;
+                                    }
+                                }
+                                return null;
+                            }
+                            
+                            // Tìm node bắt đầu
+                            currentIndex = 0;
+                            const startNodeInfo = findNodeAndOffset(p, startIndex);
+                            
+                            // Tìm node kết thúc
+                            currentIndex = 0;
+                            const endNodeInfo = findNodeAndOffset(p, startIndex + fullText.length);
+                            
+                            if (startNodeInfo && endNodeInfo) {
+                                range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                                range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                                
+                                // Highlight phần text
+                                const span = document.createElement('span');
+                                span.className = 'answer-highlight';
+                                
+                                try {
+                                    const contents = range.extractContents();
+                                    span.appendChild(contents);
+                                    range.insertNode(span);
+                                } catch (e) {
+                                    console.log('Lỗi extract range:', e);
+                                    return false;
+                                }
+                                
+                                // Gạch chân keywords trong phần đã highlight
+                                keywords.forEach(keyword => {
+                                    const keywordRegex = new RegExp(`(${keyword})`, 'gi');
+                                    const highlightSpan = document.querySelector('.answer-highlight');
+                                    if (highlightSpan) {
+                                        const html = highlightSpan.innerHTML;
+                                        highlightSpan.innerHTML = html.replace(
+                                            keywordRegex,
+                                            '<span class="keyword-underline">$1</span>'
+                                        );
+                                    }
+                                });
+                                
+                                // Scroll vào view
+                                const highlighted = document.querySelector('.answer-highlight');
+                                if (highlighted) {
+                                    highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                                
+                                // Đánh dấu eye icon active
+                                document.querySelectorAll('.eye-icon').forEach(icon => {
+                                    icon.classList.remove('active');
+                                });
+                                const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                                if (eyeIcon) eyeIcon.classList.add('active');
+                                
+                                currentHighlightedQuestion = questionNum;
+                                
+                                return true;
+                            }
                         }
-                        
-                        // Gạch chân keywords trong phần đã highlight
-                        keywords.forEach(keyword => {
-                            const regex = new RegExp(`(${keyword})`, 'gi');
-                            html = html.replace(regex, '<span class="keyword-underline">$1</span>');
-                        });
-                        
-                        p.innerHTML = html;
-                        
-                        // Scroll vào view
-                        const highlighted = p.querySelector('.answer-highlight');
-                        if (highlighted) {
-                            highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                        
-                        // Đánh dấu eye icon active
-                        document.querySelectorAll('.eye-icon').forEach(icon => {
-                            icon.classList.remove('active');
-                        });
-                        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
-                        if (eyeIcon) eyeIcon.classList.add('active');
-                        
-                        currentHighlightedQuestion = questionNum;
-                        return true;
                     } catch (e) {
                         console.log('Không thể highlight đoạn này:', e);
                     }
@@ -1564,7 +1625,10 @@
                 
                 document.getElementById('explanationText').innerHTML = explanationHtml;
                 
-                // Highlight vị trí đáp án
+                // Xóa highlight cũ trước khi highlight mới
+                clearAllHighlights();
+                
+                // Highlight vị trí đáp án mới
                 setTimeout(() => {
                     highlightAnswerLocation(questionNum);
                 }, 100);
@@ -1693,17 +1757,14 @@
                     e.stopPropagation();
                     const questionNum = this.getAttribute('data-question');
                     
-                    // Nếu click vào eye icon đang active thì xóa highlight
-                    if (this.classList.contains('active')) {
-                        clearAllHighlights();
-                        document.getElementById('explanationPanel').classList.remove('show');
-                    } else {
-                        showExplanation(questionNum);
-                    }
+                    // Luôn xóa highlight cũ và highlight mới
+                    // Không kiểm tra active class để có thể nhấn lại nhiều lần
+                    showExplanation(questionNum);
                 });
             });
         }
 
+        // ==================== CLOSE EXPLANATION ====================
         document.getElementById('closeExplanation').addEventListener('click', () => {
             document.getElementById('explanationPanel').classList.remove('show');
             clearAllHighlights();
@@ -1729,7 +1790,7 @@
             }
             
             if (unanswered.length > 0) {
-                const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm: ${unanswered.join(', ')}. Bạn có chắc muốn nộp bài?`);
+                const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm. Bạn có chắc muốn nộp bài?`);
                 if (!confirmSubmit) return;
             }
             
@@ -1840,7 +1901,10 @@
                 document.getElementById('explanationPanel').classList.remove('show');
                 
                 // Clear highlights
-                document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink, .answer-highlight, .keyword-underline, .question-highlight').forEach(el => {
+                clearAllHighlights();
+                
+                // Also clear any user highlights
+                document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(el => {
                     const parent = el.parentNode;
                     if (parent) {
                         while (el.firstChild) {
@@ -1849,7 +1913,6 @@
                         parent.removeChild(el);
                     }
                 });
-                clearAllHighlights();
                 
                 // Update answer count
                 updateAnswerCount();
@@ -1867,5 +1930,4 @@
         setupEyeIcons();
     </script>
 </body>
-
 </html>
