@@ -617,30 +617,37 @@
                 <div class="section-divider"></div>
 
                 <!-- Summary 37-39 -->
-                <h3>Questions 37-39</h3>
-                <p><em>Complete the summary below. Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
-                
-                <h4>The use of fire</h4>
-                <p>Neanderthalers could not have survived without fire because the conditions they lived in were 
-                    <span class="question-wrapper">
-                        <input class="letter-input" id="q37" data-answer="sub-arctic" placeholder="answer" style="width:100px;">
-                        <span class="eye-icon" data-question="37">👁️</span>
-                    </span>.
-                </p>
-                <p>Most evidence of purpose-built fires takes the form of ash piles, features of which suggest that the fires lasted a 
-                    <span class="question-wrapper">
-                        <input class="letter-input" id="q38" data-answer="short" placeholder="answer" style="width:70px;">
-                        <span class="eye-icon" data-question="38">👁️</span>
-                    </span> time.
-                </p>
-                <p>It is hard to be certain about the size and structure of the fires, though they were certainly needed to protect the occupants from dangerous 
-                    <span class="question-wrapper">
-                        <input class="letter-input" id="q39" data-answer="predatory animals" placeholder="answer" style="width:150px;">
-                        <span class="eye-icon" data-question="39">👁️</span>
-                    </span>, among other things.
-                </p>
+<h3>Questions 37-39</h3>
+<p><em>Complete the summary below. Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
 
-                <div class="section-divider"></div>
+<h4>The use of fire</h4>
+<div style="background: #f9f7f0; padding: 20px; border-radius: 8px; margin: 15px 0;">
+    <p style="margin-bottom: 15px; line-height: 2;">
+        Neanderthalers could not have survived without fire because the conditions they lived in were 
+        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+            <input class="letter-input" id="q37" data-answer="sub-arctic" placeholder="answer" style="width:100px; margin:0 3px;">
+            <span class="eye-icon" data-question="37" style="display:none; margin-left:2px;">👁️</span>
+        </span>.
+    </p>
+    
+    <p style="margin-bottom: 15px; line-height: 2;">
+        Most evidence of purpose-built fires takes the form of ash piles, features of which suggest that the fires lasted a 
+        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+            <input class="letter-input" id="q38" data-answer="short" placeholder="answer" style="width:70px; margin:0 3px;">
+            <span class="eye-icon" data-question="38" style="display:none; margin-left:2px;">👁️</span>
+        </span> time.
+    </p>
+    
+    <p style="margin-bottom: 5px; line-height: 2;">
+        It is hard to be certain about the size and structure of the fires, though they were certainly needed to protect the occupants from dangerous 
+        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+            <input class="letter-input" id="q39" data-answer="predatory animals" placeholder="answer" style="width:150px; margin:0 3px;">
+            <span class="eye-icon" data-question="39" style="display:none; margin-left:2px;">👁️</span>
+        </span>, among other things.
+    </p>
+</div>
+
+<div class="section-divider"></div>
 
                 <!-- MCQ 40 -->
                 <h3>Question 40</h3>
@@ -1644,5 +1651,46 @@
         }
     });
 </script>
+<script>
+    // Auto-resize input fields based on content
+    function autoResizeInput(input) {
+        // Tạo một span ảo để đo kích thước
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.whiteSpace = 'pre';
+        tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily;
+        tempSpan.style.fontSize = window.getComputedStyle(input).fontSize;
+        tempSpan.style.fontWeight = window.getComputedStyle(input).fontWeight;
+        tempSpan.style.padding = window.getComputedStyle(input).padding;
+        tempSpan.style.border = window.getComputedStyle(input).border;
+        document.body.appendChild(tempSpan);
+        
+        // Hàm cập nhật độ rộng
+        function updateWidth() {
+            let value = input.value || input.placeholder || '';
+            tempSpan.textContent = value;
+            let width = tempSpan.offsetWidth + 20; // Thêm padding
+            input.style.width = Math.max(50, Math.min(300, width)) + 'px'; // Giới hạn min 50px, max 300px
+        }
+        
+        // Cập nhật lần đầu
+        updateWidth();
+        
+        // Cập nhật khi người dùng nhập
+        input.addEventListener('input', updateWidth);
+        input.addEventListener('change', updateWidth);
+    }
+    
+    // Áp dụng cho tất cả các input của câu 37-39
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['q37', 'q38', 'q39'].map(id => document.getElementById(id));
+        inputs.forEach(input => {
+            if (input) {
+                autoResizeInput(input);
+            }
+        });
+    });
+    </script>
 </body>
 </html>

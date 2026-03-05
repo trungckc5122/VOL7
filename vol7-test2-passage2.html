@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOL 7 - Reading Test 2 - Passage 2 - Playing with science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Reading mode */
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+
+        .test-wrapper.reading-mode .reading-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .questions-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .reading-text {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .questions-list {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .panel-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+
+        .test-wrapper.reading-mode .question-nav {
+            background: #d6cdb8;
+        }
+
+        .test-wrapper.reading-mode .bottom-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        .candidate {
+            background: #2d4b77;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        .question-types {
+            background: #0f2a44;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            border: 1px solid #e6b422;
+        }
+
+        .timer {
+            background: #0f2a44;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: monospace;
+            border: 1px solid #e6b422;
+        }
+
+        /* Reading mode toggle */
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reading-mode-toggle:hover {
+            background: #3e5f8a;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid #e6b422;
+        }
+
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Font Size Controls */
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+        }
+
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        /* Question Navigator */
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #e6b422;
+            color: #1e3a5f;
+            border-color: #e6b422;
+        }
+
+        .nav-btn.answered {
+            background: #4CAF50;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .nav-btn.answered:hover {
+            background: #66bb6a;
+        }
+
+        .nav-btn.unanswered {
+            background: #e0e0e0;
+            color: #757575;
+            border-color: #9e9e9e;
+        }
+
+        .nav-btn.unanswered:hover {
+            background: #bdbdbd;
+            color: #424242;
+        }
+
+        .nav-btn.active {
+            border: 3px solid #e6b422;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Main area with resize */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .reading-panel {
+            width: 45%;
+            background: #fffcf5;
+            border-right: 2px solid #b0aa9a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .questions-panel {
+            width: 55%;
+            background: #f8f6f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Panel headers */
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .reading-text {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.7;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .questions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 25px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* Font size classes */
+        .reading-text.font-small, .questions-list.font-small {
+            font-size: 13px;
+        }
+        .reading-text.font-small p, .questions-list.font-small p,
+        .reading-text.font-small li, .questions-list.font-small li {
+            font-size: 13px;
+        }
+
+        .reading-text.font-medium, .questions-list.font-medium {
+            font-size: 15px;
+        }
+        .reading-text.font-medium p, .questions-list.font-medium p,
+        .reading-text.font-medium li, .questions-list.font-medium li {
+            font-size: 15px;
+        }
+
+        .reading-text.font-large, .questions-list.font-large {
+            font-size: 17px;
+        }
+        .reading-text.font-large p, .questions-list.font-large p,
+        .reading-text.font-large li, .questions-list.font-large li {
+            font-size: 17px;
+        }
+
+        /* Reading content styles */
+        .reading-text h1 {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .reading-text h3 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+        }
+
+        .reading-text p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .reading-text em {
+            color: #5a4a3a;
+            font-style: italic;
+        }
+
+        /* Right-click highlight menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+        }
+
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Màu highlight */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        /* Dynamic highlight */
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+        }
+        
+        .keyword-highlight {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+            background-color: #fff3cd;
+            display: inline;
+        }
+
+        /* Question highlight - bỏ border xanh bên trái */
+        .question-highlight {
+            background-color: #fef9e7;
+            transition: all 0.3s ease;
+        }
+
+        /* Questions styles */
+        .questions-list h3 {
+            font-size: 22px;
+            color: #1e3a5f;
+            margin: 20px 0 15px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .questions-list h4 {
+            font-size: 20px;
+            color: #1e3a5f;
+            margin: 25px 0 15px;
+        }
+
+        .questions-list h5 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+            list-style-type: disc;
+        }
+
+        .questions-list li {
+            margin: 8px 0;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .questions-list p {
+            margin: 10px 0;
+        }
+
+        .note-box {
+            background: #f0ebe0;
+            border-left: 4px solid #e6b422;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .bold-text {
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .fill-input {
+            padding: 5px 10px;
+            border: 1px solid #9a8c7a;
+            border-radius: 5px;
+            width: 140px;
+            font-size: 14px;
+            margin: 0 5px;
+            background: white;
+        }
+
+        .fill-input.correct {
+            border: 2px solid #4CAF50;
+            background-color: #e8f5e8;
+        }
+
+        .fill-input.incorrect {
+            border: 2px solid #f44336;
+            background-color: #ffebee;
+        }
+
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .answer-badge {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 13px;
+        }
+
+        /* Eye icon */
+        .eye-icon {
+            display: none;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .eye-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .eye-icon.active {
+            opacity: 1;
+            color: #e6b422;
+        }
+
+        .question-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-right: 5px;
+            min-width: 25px;
+        }
+
+        /* Style cho câu 21-22 */
+        .mcq-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+        
+        .mcq-options {
+            margin-left: 35px;
+            margin-top: 5px;
+        }
+        
+        .mcq-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+        
+        .mcq-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .mcq-option.correct .option-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .mcq-option.incorrect .option-text {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        /* Bottom bar */
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d4b77;
+        }
+
+        .btn-primary:disabled {
+            background: #9aaec2;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-success:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .progress {
+            background: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border: 1px solid #1e3a5f;
+            font-size: 14px;
+        }
+
+        .result-stats {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Explanation panel */
+        .explanation-panel {
+            background: #fffef9;
+            border-left: 4px solid #e6b422;
+            padding: 12px 20px;
+            margin: 0 20px 12px 20px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .explanation-panel.show {
+            display: block;
+        }
+
+        .explanation-header {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .close-btn:hover {
+            color: #1e3a5f;
+        }
+
+        .explanation-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .answer-feedback {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .answer-feedback.correct {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .answer-feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .question-item.highlight-question {
+            background-color: #fef9e7;
+        }
+
+        /* Summary paragraph style */
+        .summary-text {
+            background: #f9f7f0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a5f;
+            margin: 20px 0;
+            line-height: 2.2;
+        }
+        
+        .summary-text .fill-input {
+            margin: 0 3px;
+        }
+        
+        .summary-text .question-wrapper {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-wrapper" id="testWrapper">
+        <!-- Header -->
+        <div class="ielts-header">
+            <div class="brand">
+                <div class="ielts-logo">IELTS</div>
+                <div class="candidate">Vol 7 - Test 2</div>
+                <div class="question-types">Paragraph • MCQ • Summary</div>
+                
+                <div class="reading-mode-toggle" id="readingModeToggle">
+                    <div class="toggle-switch" id="toggleSwitch"></div>
+                    <span class="toggle-label">Đọc sách</span>
+                </div>
+
+                <div class="font-controls">
+                    <button class="font-btn" id="fontSmall">A-</button>
+                    <button class="font-btn active" id="fontMedium">A</button>
+                    <button class="font-btn" id="fontLarge">A+</button>
+                </div>
+            </div>
+            <div class="timer" id="timerDisplay">60:00</div>
+        </div>
+
+        <!-- Question Navigator -->
+        <div class="question-nav">
+            <span style="font-weight: 600; color: #1e3a5f;">Câu:</span>
+            <div class="nav-buttons" id="navButtons"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-area" id="mainArea">
+            <!-- Reading Column - PASSAGE 2 -->
+            <div class="reading-panel" id="readingPanel">
+                <div class="panel-header">
+                    <span>READING PASSAGE 2</span>
+                    <span>Playing with science</span>
+                </div>
+                <div class="reading-text font-medium" id="readingContent">
+                    <h1>Playing with science</h1>
+                    <p><em>Is science always a serious matter? No, says Pierre Laszlo, who believes that scientists are often just like children at play</em></p>
+                    
+                    <h3>A</h3>
+                    <p>The connection between science and play is not often discussed, perhaps because scientists take it for granted, or because they are a little self-conscious about it and therefore try to hide it. In this context, play might describe a number of different activities. Play might involve the exploration of new uses for everyday objects just for curiosity; it could also include word jokes, or the playing of jokes or tricks upon other scientists. The element of play in science is thus an elusive and difficult topic, but it is fundamental to the experience of scientists.</p>
+                    
+                    <h3>B</h3>
+                    <p>One example of this connection is the jigsaw puzzle. Such puzzles present their players with two-dimensional fragments, each with a characteristic shape, from which to reconstruct an overall picture. Guessing the solution of a scientific problem has many similarities to completing a jigsaw puzzle. The scientists inspect each piece of data for a possible fit with its neighbours and, bit by bit, construct a whole argument. People who are good at jigsaw puzzles are able to guess which piece will fit even before trying it. In the same way, the best scientists are those who make the best guesses.</p>
+                    
+                    <h3>C</h3>
+                    <p>But scientists do not play only at out-guessing each other, or at putting together pieces to complete a puzzle. They also regard their work as ‘playing with toys’. Joseph Lambert, a professor of chemistry at Northwestern University in the US, shed some light on this tendency. In a letter he wrote the following: ‘When I grew up, every kid put in some serious sandbox time, and it often involved building… complex sand structures around which fantasies were composed… The organic chemistry labs at Yale and chemical transformations took place… The odours were pleasant, and they were fun in the same way. We mixed things up. The physical process of working with our hands, as with sand, was satisfying… by the end of the year, I knew that I wanted to be an organic chemist, as I realised one could play in the sandbox for a living.’ Indeed, many scientists amuse themselves by playing with various ‘toys’ of their trade, perhaps coming up with ingenious devices to get a particular job done, or diverting a piece of commercial equipment for novel scientific purposes. The apparatus put together by Robert Millikan and Harvey Fletcher to measure the charge of the electron, which involved a perfume atomiser bought at a local pharmacy, is a classic example of such inspired tinkering.</p>
+                    
+                    <h3>D</h3>
+                    <p>Whereas society often keeps a lid on playfulness, science encourages and nurtures it. Take, for example, the funny names that scientists have given to various chemical substances: tristane, windowpane, penguinone or megaphone. Each class of organ molecules includes a few such humorous names. Similar fun is had in other fields of science.</p>
+                    
+                    <h3>E</h3>
+                    <p>Hoaxes are a further aspect of the playfulness of scientists. A relatively recent example concerns the ‘Plate of Brasse’, which stated England’s claim to California and was supposedly left by the English navigator Sir Francis Drake during his visit in 1579. A brass plate thought to be Drake’s was discovered in the 1930s. But in 1977, Helen Michel and Frank Asaro, of the Lawrence Berkeley National Laboratory, showed that the copper and zinc used in the plate were of a higher quality than would have been available in the 1500s. They concluded that Drake’s plate was most likely crafted much closer to the time when it was first brought to light.</p>
+                    
+                    <h3>F</h3>
+                    <p>Shortly afterwards, staff at the University of California announced that the artifact was devised as a practical joke by a group of friends of Herbert E Bolton, who directed the Bancroft Library at the University’s Berkeley campus. Bolton, it seems, was intrigued by tales of Drake having installed a plate to record his visit to California, and often urged his students to look for it. Some of Bolton’s friends decided to play a joke on him, but things misfired after Bolton went public and announced that the relic was authentic before he could be told about the joke.</p>
+                    
+                    <h3>G</h3>
+                    <p>Sometimes hoaxes serve a useful purpose. Some years ago, Nathan Lewis, a professor of chemistry at California Institute of Technology, and a graduate student were doing experiments in the laboratory of a senior professor, Harry Gray. Another co-worker had the habit of going through their data and rushing to Gray with his interpretation. Lewis decided to set a trap for the co-worker. He recalls: ‘I manufactured an NMR spectrum. We left it out as bait. Our colleague took it and wrote up a paper on how important this result was. He was ready to go right to [the Journal of the American Chemical Society... We didn’t let him mail it but this stopped him temporarily from taking our data and interpreting it before making sure that it was right.’</p>
+                    
+                    <h3>H</h3>
+                    <p>But is the playfulness of science usually so helpful? One might argue that to play a practical joke is a waste of time. So why do it? Perhaps play is an inherent part of the human condition. The psychologist’s answer might be that scientists tend to play because science presents them with too much seriousness. Another possibility might be that scientists like to play because they tend to be very young. Some disciplines, mathematics especially, have a reputation for the narrow window of creativity in youth. But it may also be that there is some cognitive value to the playful element in science. Playing with ideas, after all, is what science is all about. A playful, childlike attitude may be extremely fruitful, and scientists should not be too embarrassed to acknowledge that play is often what motivates them.</p>
+                </div>
+            </div>
+
+            <!-- Resizer -->
+            <div class="resizer" id="resizer"></div>
+
+            <!-- Questions Column -->
+            <div class="questions-panel" id="questionsPanel">
+                <div class="panel-header">
+                    <span>QUESTIONS 14-26</span>
+                    <span class="answer-badge" id="answeredCount">0/13 answered</span>
+                </div>
+                <div class="questions-list font-medium" id="questionsContent">
+                    <!-- Questions 14-20 -->
+                    <h3>Questions 14-20</h3>
+                    <p><em>Which paragraph contains the following information? (A-H)</em></p>
+                    
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li class="question-item" id="q14-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">14.</span>
+                                <span>a description of how a test showed some evidence to be fake</span>
+                                <span class="eye-icon" data-question="14">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q14" data-answer="E" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                        <li class="question-item" id="q15-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">15.</span>
+                                <span>reasons why scientists may be unwilling to admit that they play</span>
+                                <span class="eye-icon" data-question="15">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q15" data-answer="A" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                        <li class="question-item" id="q16-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">16.</span>
+                                <span>the result of a trick going wrong</span>
+                                <span class="eye-icon" data-question="16">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q16" data-answer="F" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                        <li class="question-item" id="q17-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">17.</span>
+                                <span>the similarity between a skill used in play and one used in science</span>
+                                <span class="eye-icon" data-question="17">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q17" data-answer="B" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                        <li class="question-item" id="q18-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">18.</span>
+                                <span>how a group of scientists stopped a colleague misusing their results</span>
+                                <span class="eye-icon" data-question="18">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q18" data-answer="G" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                        <li class="question-item" id="q19-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">19.</span>
+                                <span>some examples of the playful nature of scientific language</span>
+                                <span class="eye-icon" data-question="19">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q19" data-answer="D" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                        <li class="question-item" id="q20-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">20.</span>
+                                <span>an example of an everyday object put to a scientific use</span>
+                                <span class="eye-icon" data-question="20">👁️</span>
+                            </div>
+                            <div style="margin-left: 30px; margin-top: 5px;">
+                                <input type="text" class="fill-input" id="q20" data-answer="C" placeholder="A-H" style="width: 60px;" maxlength="1">
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Questions 21-22 -->
+                    <h3 style="margin-top: 30px;">Questions 21-22</h3>
+                    <p><em>Choose <strong>TWO</strong> correct answers. Which TWO of the following reasons are given as possible explanations of scientists' play behaviour?</em></p>
+                    
+                    <!-- Câu 21 -->
+                    <div class="mcq-item" id="q21-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">21.</span>
+                            <span class="eye-icon" data-question="21">👁️</span>
+                        </div>
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q21" value="A"> <span class="option-text">A Play may provide relief from their work.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q21" value="B"> <span class="option-text">B Scientists sometimes spend time as teachers.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q21" value="C"> <span class="option-text">C The age of scientists predisposes them to play.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q21" value="D"> <span class="option-text">D Scientists get ideas from children's questions.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q21" value="E"> <span class="option-text">E Scientists are secretive about their work.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Câu 22 -->
+                    <div class="mcq-item" id="q22-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">22.</span>
+                            <span class="eye-icon" data-question="22">👁️</span>
+                        </div>
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q22" value="A"> <span class="option-text">A Play may provide relief from their work.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q22" value="B"> <span class="option-text">B Scientists sometimes spend time as teachers.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q22" value="C"> <span class="option-text">C The age of scientists predisposes them to play.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q22" value="D"> <span class="option-text">D Scientists get ideas from children's questions.</span>
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q22" value="E"> <span class="option-text">E Scientists are secretive about their work.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Questions 23-26 -->
+                    <h3 style="margin-top: 30px;">Questions 23-26</h3>
+                    <p><em>Complete the summary below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</em></p>
+                    
+                    <div class="summary-text">
+                        <p><strong>Scientists play tricks</strong></p>
+                        <p>The passage gives two examples of tricks arising from the playfulness of scientists. Researchers at Caltech found that a colleague had been stealing their 
+                        <span class="bold-text">23</span> <span class="question-wrapper"><input class="fill-input" id="q23" data-answer="data" placeholder="answer"> <span class="eye-icon" data-question="23">👁️</span></span> 
+                        and used a hoax involving a fake NMR spectrum to trap the offender. Another story concerns a plate which a famous 
+                        <span class="bold-text">24</span> <span class="question-wrapper"><input class="fill-input" id="q24" data-answer="navigator" placeholder="answer"> <span class="eye-icon" data-question="24">👁️</span></span> 
+                        is said to have left behind on a visit to California. The 
+                        <span class="bold-text">25</span> <span class="question-wrapper"><input class="fill-input" id="q25" data-answer="copper and zinc" placeholder="answer"> <span class="eye-icon" data-question="25">👁️</span></span> 
+                        that the plate was made of later revealed that it was a fake, a hoax carried out by friends of the director of the 
+                        <span class="bold-text">26</span> <span class="question-wrapper"><input class="fill-input" id="q26" data-answer="Bancroft Library" placeholder="answer"> <span class="eye-icon" data-question="26">👁️</span></span>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+            <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+            <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+            <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+            <div class="result-stats" id="resultStats" style="display: none;"></div>
+        </div>
+
+        <!-- Explanation Panel -->
+        <div class="explanation-panel" id="explanationPanel">
+            <div class="explanation-header">
+                <span id="explanationTitle">Giải thích câu hỏi</span>
+                <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+            </div>
+            <div class="explanation-content" id="explanationText"></div>
+        </div>
+
+        <!-- Context Menu -->
+        <div class="context-menu" id="contextMenu">
+            <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+            <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+            <div onclick="applyHighlight('pink')">Highlight hồng</div>
+            <div onclick="removeHighlight()">Xóa highlight</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== VARIABLES ====================
+        let selectedRange = null;
+        let examSubmitted = false;
+        let explanationMode = false;
+        let startTime = Date.now();
+        let timeLeft = 3600; // 60 phút
+        let timerInterval;
+        let readingMode = false;
+        
+        // Answer Key
+        const answerKey = {
+            q14: 'E', q15: 'A', q16: 'F', q17: 'B', q18: 'G', q19: 'D', q20: 'C',
+            q21: ['A', 'C'], // Cả A và C đều đúng cho câu 21
+            q22: ['A', 'C'], // Cả A và C đều đúng cho câu 22
+            q23: 'data', q24: 'navigator', q25: 'copper and zinc', q26: 'Bancroft Library'
+        };
+
+        // Answer Locations - ĐÃ SỬA: rút ngắn text để dễ match hơn
+        const answerLocations = {
+            q14: { 
+                text: "But in 1977, Helen Michel and Frank Asaro, of the Lawrence Berkeley National Laboratory, showed that the copper and zinc used in the plate were of a higher quality than would have been available in the 1500s.",
+                keywords: ["showed", "copper and zinc", "higher quality"]
+            },
+            q15: { 
+                text: "The connection between science and play is not often discussed, perhaps because scientists take it for granted, or because they are a little self-conscious about it and therefore try to hide it.",
+                keywords: ["self-conscious", "try to hide it"]
+            },
+            q16: { 
+                text: "Some of Bolton’s friends decided to play a joke on him, but things misfired after Bolton went public and announced that the relic was authentic before he could be told about",
+                keywords: ["misfired", "went public", "before he could be told"]
+            },
+            q17: { 
+                text: "Guessing the solution of a scientific problem has many similarities to completing a jigsaw puzzle.",
+                keywords: ["similarities", "jigsaw puzzle"]
+            },
+            q18: { 
+                text: "Lewis decided to set a trap for the co-worker. He recalls: ‘I manufactured an NMR spectrum. We left it out as bait",
+                keywords: ["trap", "manufactured an NMR spectrum", "bait"]
+            },
+            q19: { 
+                text: "Take, for example, the funny names that scientists have given to various chemical substances: tristane, windowpane, penguinone or megaphone.",
+                keywords: ["funny names", "tristane", "windowpane", "penguinone", "megaphone"]
+            },
+            q20: { 
+                text: "The apparatus put together by Robert Millikan and Harvey Fletcher to measure the charge of the electron, which involved a perfume atomiser bought at a local pharmacy, is a classic example of such inspired tinkering.",
+                keywords: ["perfume atomiser", "local pharmacy"]
+            },
+            q21: { 
+                text: "psychologist’s answer might be that scientists tend to play because science presents them with too much seriousness. Another possibility might be that scientists like to play because they tend to be very young.",
+                keywords: ["psychologist's answer", "too much seriousness", "Another possibility", "very young"]
+            },
+            q22: { 
+                text: "psychologist’s answer might be that scientists tend to play because science presents them with too much seriousness. Another possibility might be that scientists like to play because they tend to be very young.",
+                keywords: ["psychologist's answer", "too much seriousness", "Another possibility", "very young"]
+            },
+            q23: { 
+                text: "Another co-worker had the habit of going through their data and rushing to Gray with his interpretation.",
+                keywords: ["data"]
+            },
+            q24: { 
+                text: "claim to California and was supposedly left by the English navigator Sir Francis Drake during his visit in 1579. A brass plate thought to be Drake’s was discovered in the 1930s",
+                keywords: ["navigator", "Sir Francis Drake"]
+            },
+            q25: { 
+                text: "But in 1977, Helen Michel and Frank Asaro, of the Lawrence Berkeley National Laboratory, showed that the copper and zinc used in the plate were of a higher quality than would have been available in the 1500s.",
+                keywords: ["copper and zinc"]
+            },
+            q26: { 
+                text: "Shortly afterwards, staff at the University of California announced that the artifact was devised as a practical joke by a group of friends of Herbert E Bolton, who directed the Bancroft Library at the University's Berkeley campus.",
+                keywords: ["Bancroft Library"]
+            }
+        };
+
+        // Explanations
+        const explanations = {
+            q14: "<strong>Đáp án: E</strong><br><br><strong>Giải thích:</strong> 'in 1977, Helen Michel and Frank Asaro… showed that the copper and zinc used in the plate were of a higher quality than would have been available in the 1500s. They concluded that Drake’s plate was most likely crafted much closer to the time when it was first brought to light.' Đoạn E mô tả kiểm tra và kết luận đồ giả.",
+            q15: "<strong>Đáp án: A</strong><br><br><strong>Giải thích:</strong> 'scientists are a little self-conscious about it and therefore try to hide it.' (A) – họ ngại thừa nhận mình chơi đùa.",
+            q16: "<strong>Đáp án: F</strong><br><br><strong>Giải thích:</strong> 'things misfired after Bolton went public and announced that the relic was authentic before he could be told about the joke.' (F) – trò đùa hỏng.",
+            q17: "<strong>Đáp án: B</strong><br><br><strong>Giải thích:</strong> 'Guessing the solution of a scientific problem has many similarities to completing a jigsaw puzzle.' So sánh kỹ năng ghép hình với phỏng đoán khoa học.",
+            q18: "<strong>Đáp án: G</strong><br><br><strong>Giải thích:</strong> 'I manufactured an NMR spectrum. We left it out as bait... this stopped him temporarily from taking our data.' Đặt bẫy đồng nghiệp.",
+            q19: "<strong>Đáp án: D</strong><br><br><strong>Giải thích:</strong> 'the funny names that scientists have given to various chemical substances: tristane, windowpane, penguinone or megaphone.'",
+            q20: "<strong>Đáp án: C</strong><br><br><strong>Giải thích:</strong> 'The apparatus... involved a perfume atomiser bought at a local pharmacy.' Dùng vật dụng hàng ngày cho khoa học.",
+            q21: "<strong>Đáp án: A hoặc C</strong><br><br><strong>Giải thích:</strong> 'scientists tend to play because science presents them with too much seriousness.' (A) và 'scientists like to play because they tend to be very young.' (C) – Cả A và C đều đúng cho câu 21 và 22.",
+            q22: "<strong>Đáp án: A hoặc C</strong><br><br><strong>Giải thích:</strong> 'scientists tend to play because science presents them with too much seriousness.' (A) và 'scientists like to play because they tend to be very young.' (C) – Cả A và C đều đúng cho câu 21 và 22.",
+            q23: "<strong>Đáp án: data</strong><br><br><strong>Giải thích:</strong> 'Another co-worker had the habit of going through their data' – đồng nghiệp lấy dữ liệu của họ.",
+            q24: "<strong>Đáp án: navigator</strong><br><br><strong>Giải thích:</strong> 'left by the English navigator Sir Francis Drake' – một nhà hàng hải nổi tiếng.",
+            q25: "<strong>Đáp án: copper and zinc</strong><br><br><strong>Giải thích:</strong> 'the copper and zinc used in the plate were of a higher quality' – phân tích chất liệu cho thấy là giả.",
+            q26: "<strong>Đáp án: Bancroft Library</strong><br><br><strong>Giải thích:</strong> 'friends of Herbert E Bolton, who directed the Bancroft Library' – bạn của giám đốc thư viện Bancroft."
+        };
+
+        // ==================== TIMER ====================
+        const timerEl = document.getElementById('timerDisplay');
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (!examSubmitted && timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+        
+        // Bắt đầu timer khi load trang
+        startTimer();
+
+        // ==================== READING MODE TOGGLE ====================
+        const testWrapper = document.getElementById('testWrapper');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        
+        document.getElementById('readingModeToggle').addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                testWrapper.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                testWrapper.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // ==================== FONT SIZE CONTROLS ====================
+        document.getElementById('fontSmall').addEventListener('click', function() {
+            setFontSize('small');
+        });
+        document.getElementById('fontMedium').addEventListener('click', function() {
+            setFontSize('medium');
+        });
+        document.getElementById('fontLarge').addEventListener('click', function() {
+            setFontSize('large');
+        });
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            if (size === 'small') document.getElementById('fontSmall').classList.add('active');
+            if (size === 'medium') document.getElementById('fontMedium').classList.add('active');
+            if (size === 'large') document.getElementById('fontLarge').classList.add('active');
+            
+            const readingContent = document.getElementById('readingContent');
+            readingContent.classList.remove('font-small', 'font-medium', 'font-large');
+            readingContent.classList.add(`font-${size}`);
+            
+            const questionsContent = document.getElementById('questionsContent');
+            questionsContent.classList.remove('font-small', 'font-medium', 'font-large');
+            questionsContent.classList.add(`font-${size}`);
+        }
+
+        // ==================== RESIZE COLUMNS ====================
+        const readingPanel = document.getElementById('readingPanel');
+        const questionsPanel = document.getElementById('questionsPanel');
+        const resizer = document.getElementById('resizer');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const mainArea = document.getElementById('mainArea');
+            const rect = mainArea.getBoundingClientRect();
+            let readingWidth = e.clientX - rect.left - 4;
+            
+            if (readingWidth < 250) readingWidth = 250;
+            if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+            
+            readingPanel.style.width = readingWidth + 'px';
+            questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // ==================== NAVIGATION ====================
+        function createNavButtons() {
+            const nav = document.getElementById('navButtons');
+            nav.innerHTML = '';
+            for (let i = 14; i <= 26; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn unanswered';
+                btn.textContent = i;
+                btn.setAttribute('data-question', i);
+                btn.addEventListener('click', function() {
+                    scrollToQuestion(this.getAttribute('data-question'));
+                });
+                nav.appendChild(btn);
+            }
+        }
+
+        function scrollToQuestion(q) {
+            if (q <= 20) {
+                document.getElementById(`q${q}-item`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (q >= 23) {
+                document.getElementById(`q${q}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                document.getElementById(`q${q}-item`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.nav-btn[data-question="${q}"]`)?.classList.add('active');
+        }
+
+        // ==================== COUNT ANSWERS ====================
+        function updateAnswerCount() {
+            let answered = 0;
+            
+            // 14-20
+            for (let i = 14; i <= 20; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input && input.value.trim() !== '') answered++;
+            }
+            
+            // 21
+            if (document.querySelector('input[name="q21"]:checked')) answered++;
+            
+            // 22
+            if (document.querySelector('input[name="q22"]:checked')) answered++;
+            
+            // 23-26
+            for (let i = 23; i <= 26; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input && input.value.trim() !== '') answered++;
+            }
+            
+            document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+            document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+            
+            // Update nav buttons
+            for (let i = 14; i <= 26; i++) {
+                const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+                if (!btn) continue;
+                
+                let isAnswered = false;
+                if (i <= 20) {
+                    const input = document.getElementById(`q${i}`);
+                    isAnswered = input && input.value.trim() !== '';
+                } else if (i >= 23) {
+                    const input = document.getElementById(`q${i}`);
+                    isAnswered = input && input.value.trim() !== '';
+                } else if (i === 21) {
+                    isAnswered = document.querySelector('input[name="q21"]:checked') !== null;
+                } else if (i === 22) {
+                    isAnswered = document.querySelector('input[name="q22"]:checked') !== null;
+                }
+                
+                btn.classList.remove('answered', 'unanswered');
+                btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+            }
+        }
+
+        // Auto update
+        document.querySelectorAll('.fill-input').forEach(el => {
+            el.addEventListener('input', updateAnswerCount);
+        });
+        
+        document.querySelectorAll('input[type="radio"]').forEach(el => {
+            el.addEventListener('change', updateAnswerCount);
+        });
+
+        // ==================== RIGHT-CLICK HIGHLIGHT ====================
+        const contextMenu = document.getElementById('contextMenu');
+        
+        document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            selectedRange = selection.getRangeAt(0);
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+
+        document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            selectedRange = selection.getRangeAt(0);
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            try {
+                const span = document.createElement('span');
+                span.className = `highlight-${color}`;
+                const range = selectedRange.cloneRange();
+                window.getSelection().removeAllRanges();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) {
+                alert('Không thể highlight đoạn này.');
+            }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            try {
+                const range = selectedRange.cloneRange();
+                const highlights = document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink');
+                highlights.forEach(highlight => {
+                    if (range.intersectsNode(highlight)) {
+                        const parent = highlight.parentNode;
+                        while (highlight.firstChild) parent.insertBefore(highlight.firstChild, highlight);
+                        parent.removeChild(highlight);
+                    }
+                });
+            } catch (e) {}
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // ==================== CLEAR ALL HIGHLIGHTS ====================
+        function clearAllHighlights() {
+            document.querySelectorAll('.dynamic-highlight').forEach(el => {
+                const parent = el.parentNode;
+                while (el.firstChild) parent.insertBefore(el.firstChild, el);
+                parent.removeChild(el);
+            });
+            document.querySelectorAll('.question-highlight').forEach(el => el.classList.remove('question-highlight'));
+            document.querySelectorAll('.eye-icon.active').forEach(el => el.classList.remove('active'));
+        }
+
+// ==================== CLEAR ALL HIGHLIGHTS ====================
+function clearAllHighlights() {
+    // Xóa dynamic-highlight (phần highlight đáp án)
+    document.querySelectorAll('.dynamic-highlight').forEach(el => {
+        const parent = el.parentNode;
+        if (parent) {
+            // Chuyển tất cả children của span highlight lên trước khi xóa span
+            while (el.firstChild) {
+                parent.insertBefore(el.firstChild, el);
+            }
+            parent.removeChild(el);
+        }
+    });
+    
+    // Xóa keyword-highlight nếu còn sót
+    document.querySelectorAll('.keyword-highlight').forEach(el => {
+        const parent = el.parentNode;
+        if (parent) {
+            while (el.firstChild) {
+                parent.insertBefore(el.firstChild, el);
+            }
+            parent.removeChild(el);
+        }
+    });
+    
+    // Xóa highlight của câu hỏi
+    document.querySelectorAll('.question-highlight').forEach(el => {
+        el.classList.remove('question-highlight');
+    });
+    
+    // Xóa active của eye icon
+    document.querySelectorAll('.eye-icon.active').forEach(el => {
+        el.classList.remove('active');
+    });
+}
+
+// ==================== HIGHLIGHT ANSWER LOCATION ====================
+function highlightAnswerLocation(questionNum) {
+    // Xóa tất cả highlight cũ trước khi highlight mới
+    clearAllHighlights();
+    
+    const loc = answerLocations[`q${questionNum}`];
+    if (!loc) return false;
+    
+    // Highlight question trong panel câu hỏi
+    if (questionNum <= 20) {
+        const item = document.getElementById(`q${questionNum}-item`);
+        if (item) item.classList.add('question-highlight');
+    } else if (questionNum >= 23) {
+        const input = document.getElementById(`q${questionNum}`);
+        if (input) {
+            const wrapper = input.closest('.question-wrapper');
+            if (wrapper && wrapper.parentNode) {
+                wrapper.parentNode.classList.add('question-highlight');
+            }
+        }
+    } else {
+        const item = document.getElementById(`q${questionNum}-item`);
+        if (item) item.classList.add('question-highlight');
+    }
+    
+    // Active eye icon - xóa active cũ và set active mới
+    document.querySelectorAll('.eye-icon.active').forEach(icon => icon.classList.remove('active'));
+    const currentEyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+    if (currentEyeIcon) currentEyeIcon.classList.add('active');
+    
+    // Tìm và highlight trong reading panel
+    const reading = document.getElementById('readingContent');
+    const paragraphs = reading.getElementsByTagName('p');
+    
+    // Hàm tìm node và offset
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) {
+                return { node, offset: targetPos - currentPos.value };
+            }
+            currentPos.value += len;
+        } else {
+            for (let child of node.childNodes) {
+                const result = findNodeAndOffset(child, targetPos, currentPos);
+                if (result) return result;
+            }
+        }
+        return null;
+    }
+    
+    // Thử tìm text chính xác trước
+    for (let p of paragraphs) {
+        if (p.textContent.includes(loc.text)) {
+            try {
+                const text = p.textContent;
+                const startIdx = text.indexOf(loc.text);
+                
+                if (startIdx !== -1) {
+                    let currentPos = {value: 0};
+                    const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                    
+                    currentPos = {value: 0};
+                    const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                    
+                    if (startNodeInfo && endNodeInfo) {
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                        range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        // Highlight keywords bên trong
+                        loc.keywords.forEach(keyword => {
+                            try {
+                                const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                                const highlightSpan = document.querySelector('.dynamic-highlight:last-child');
+                                if (highlightSpan) {
+                                    const html = highlightSpan.innerHTML;
+                                    highlightSpan.innerHTML = html.replace(
+                                        regex,
+                                        '<span class="keyword-highlight">$1</span>'
+                                    );
+                                }
+                            } catch (e) {
+                                console.log('Keyword highlight error:', e);
+                            }
+                        });
+                        
+                        // Scroll vào view
+                        setTimeout(() => {
+                            const highlighted = document.querySelector('.dynamic-highlight');
+                            if (highlighted) {
+                                highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 100);
+                        
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.log('Highlight error:', e);
+            }
+            break;
+        }
+    }
+    
+    // Fallback: tìm bằng keyword nếu không tìm thấy text chính xác
+    for (let p of paragraphs) {
+        for (let keyword of loc.keywords) {
+            if (p.textContent.includes(keyword)) {
+                try {
+                    // Xóa highlight cũ trước khi tạo mới
+                    clearAllHighlights();
+                    
+                    // Highlight cả đoạn chứa keyword
+                    const range = document.createRange();
+                    range.selectNodeContents(p);
+                    
+                    const span = document.createElement('span');
+                    span.className = 'dynamic-highlight';
+                    
+                    const contents = range.extractContents();
+                    span.appendChild(contents);
+                    range.insertNode(span);
+                    
+                    // Scroll vào view
+                    setTimeout(() => {
+                        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                    
+                    return true;
+                } catch (e) {
+                    console.log('Fallback highlight error:', e);
+                }
+                break;
+            }
+        }
+    }
+    
+    return false;
+}
+        // ==================== SHOW EXPLANATION ====================
+        function showExplanation(questionNum) {
+            if (!explanationMode && !examSubmitted) return;
+            
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+            
+            let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+            
+            if (examSubmitted) {
+                const userAnswer = getUserAnswer(questionNum);
+                const correct = answerKey[`q${questionNum}`];
+                
+                html += `<div class="answer-feedback ${userAnswer ? 'incorrect' : 'incorrect'}">`;
+                html += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+                
+                // Kiểm tra nếu là câu 21-22 thì đáp án có thể là A hoặc C
+                if (questionNum == 21 || questionNum == 22) {
+                    if (userAnswer && (userAnswer == 'A' || userAnswer == 'C')) {
+                        html += `<strong>✅ Đúng!</strong> (Cả A và C đều đúng)`;
+                    } else {
+                        html += `<strong>Đáp án đúng:</strong> A hoặc C`;
+                    }
+                } else {
+                    if (!userAnswer || userAnswer.toString().toLowerCase().trim() !== correct.toString().toLowerCase().trim()) {
+                        html += `<strong>Đáp án đúng:</strong> ${correct}`;
+                    } else {
+                        html += `<strong>✅ Đúng!</strong>`;
+                    }
+                }
+                
+                html += `</div>`;
+            }
+            
+            document.getElementById('explanationText').innerHTML = html;
+            
+            setTimeout(() => highlightAnswerLocation(questionNum), 100);
+        }
+
+        function getUserAnswer(q) {
+            if (q <= 20 || q >= 23) {
+                return document.getElementById(`q${q}`)?.value.trim() || null;
+            } else if (q === 21) {
+                const checked = document.querySelector('input[name="q21"]:checked');
+                return checked ? checked.value : null;
+            } else if (q === 22) {
+                const checked = document.querySelector('input[name="q22"]:checked');
+                return checked ? checked.value : null;
+            }
+            return null;
+        }
+
+        // ==================== MARK ANSWERS ====================
+        function markAnswers() {
+            // 14-20
+            for (let i = 14; i <= 20; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (!input) continue;
+                
+                const user = input.value.trim().toUpperCase();
+                const correct = answerKey[`q${i}`];
+                
+                input.classList.remove('correct', 'incorrect');
+                const oldBadge = input.parentNode.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                
+                if (user === correct) {
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('incorrect');
+                    if (user !== correct) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correct;
+                        input.parentNode.appendChild(badge);
+                    }
+                }
+            }
+            
+            // 21 - Cả A và C đều đúng
+            document.querySelectorAll('#q21-item .mcq-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                const radio = opt.querySelector('input');
+                if (radio.value === 'A' || radio.value === 'C') {
+                    opt.classList.add('correct'); // Đánh dấu cả A và C là đúng
+                }
+                if (radio.checked && radio.value !== 'A' && radio.value !== 'C') {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // 22 - Cả A và C đều đúng
+            document.querySelectorAll('#q22-item .mcq-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                const radio = opt.querySelector('input');
+                if (radio.value === 'A' || radio.value === 'C') {
+                    opt.classList.add('correct'); // Đánh dấu cả A và C là đúng
+                }
+                if (radio.checked && radio.value !== 'A' && radio.value !== 'C') {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // 23-26 - Thêm badge kế bên con mắt
+            for (let i = 23; i <= 26; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (!input) continue;
+                
+                const user = input.value.trim().toLowerCase();
+                const correct = answerKey[`q${i}`].toLowerCase();
+                
+                input.classList.remove('correct', 'incorrect');
+                const wrapper = input.closest('.question-wrapper');
+                if (wrapper) {
+                    const oldBadge = wrapper.querySelector('.correct-answer-badge');
+                    if (oldBadge) oldBadge.remove();
+                }
+                
+                if (user === correct) {
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('incorrect');
+                    // Thêm badge vào wrapper chứ không phải input.parentNode
+                    const wrapper = input.closest('.question-wrapper');
+                    if (wrapper) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = answerKey[`q${i}`];
+                        wrapper.appendChild(badge);
+                    }
+                }
+            }
+        }
+
+        // ==================== SUBMIT ====================
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            if (examSubmitted) return;
+            
+            // Dừng timer lại khi nộp bài
+            stopTimer();
+            
+            // Kiểm tra câu chưa làm - chỉ đếm số lượng, không liệt kê
+            let unansweredCount = 0;
+            for (let i = 14; i <= 26; i++) {
+                let isAnswered = false;
+                if (i <= 20) {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') isAnswered = true;
+                } else if (i >= 23) {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') isAnswered = true;
+                } else if (i === 21) {
+                    if (document.querySelector('input[name="q21"]:checked')) isAnswered = true;
+                } else if (i === 22) {
+                    if (document.querySelector('input[name="q22"]:checked')) isAnswered = true;
+                }
+                
+                if (!isAnswered) unansweredCount++;
+            }
+            
+            if (unansweredCount > 0) {
+                if (!confirm(`Bạn còn ${unansweredCount} câu chưa làm.\n\nBạn có chắc muốn nộp bài?`)) {
+                    // Nếu không nộp thì bật lại timer
+                    startTimer();
+                    return;
+                }
+            }
+            
+            examSubmitted = true;
+            markAnswers();
+            
+            document.getElementById('explainBtn').disabled = false;
+            this.disabled = true;
+            this.textContent = 'Đã nộp bài';
+            
+            // Tính kết quả
+            let correct = 0;
+            for (let i = 14; i <= 26; i++) {
+                const userAns = getUserAnswer(i);
+                if (userAns) {
+                    const correctAns = answerKey[`q${i}`];
+                    
+                    // Xử lý đặc biệt cho câu 21-22
+                    if (i == 21 || i == 22) {
+                        // Nếu đáp án là A hoặc C thì tính là đúng
+                        if (userAns == 'A' || userAns == 'C') {
+                            correct++;
+                        }
+                    } else {
+                        if (userAns.toString().toLowerCase().trim() === correctAns.toString().toLowerCase().trim()) {
+                            correct++;
+                        }
+                    }
+                }
+            }
+            
+            const timeTaken = 3600 - timeLeft; // Thời gian đã làm (giây)
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            document.getElementById('resultStats').style.display = 'inline-block';
+            document.getElementById('resultStats').textContent = `Kết quả: ${correct}/13 (${Math.round(correct/13*100)}%) - TG: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
+            document.getElementById('explanationText').innerHTML = `<p><strong>Số câu đúng:</strong> ${correct}/13</p><p><strong>Thời gian làm bài:</strong> ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}</p><p>Nhấn "Xem giải thích" và click vào eye icon để xem chi tiết.</p>`;
+        });
+
+        // ==================== EXPLAIN ====================
+        document.getElementById('explainBtn').addEventListener('click', function() {
+            explanationMode = true;
+            document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'inline-block');
+            this.disabled = true;
+            this.textContent = 'Đang xem giải thích';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // ==================== RESET ====================
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (!confirm('Reset tất cả?')) return;
+            
+            // Dừng timer cũ và reset lại
+            stopTimer();
+            timeLeft = 3600;
+            updateTimerDisplay();
+            startTimer();
+            
+            examSubmitted = false;
+            explanationMode = false;
+            startTime = Date.now();
+            
+            // Reset 14-20
+            for (let i = 14; i <= 20; i++) {
+                const inp = document.getElementById(`q${i}`);
+                if (inp) {
+                    inp.value = '';
+                    inp.classList.remove('correct', 'incorrect');
+                    inp.parentNode.querySelectorAll('.correct-answer-badge').forEach(b => b.remove());
+                }
+            }
+            
+            // Reset 21-22
+            document.querySelectorAll('input[name="q21"], input[name="q22"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.mcq-option').forEach(opt => opt.classList.remove('correct', 'incorrect'));
+            
+            // Reset 23-26
+            for (let i = 23; i <= 26; i++) {
+                const inp = document.getElementById(`q${i}`);
+                if (inp) {
+                    inp.value = '';
+                    inp.classList.remove('correct', 'incorrect');
+                    const wrapper = inp.closest('.question-wrapper');
+                    if (wrapper) {
+                        wrapper.querySelectorAll('.correct-answer-badge').forEach(b => b.remove());
+                    }
+                }
+            }
+            
+            document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'none');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Nộp bài';
+            document.getElementById('explainBtn').disabled = true;
+            document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            document.getElementById('resultStats').style.display = 'none';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+            updateAnswerCount();
+        });
+
+        // ==================== CLOSE EXPLANATION ====================
+        document.getElementById('closeExplanation').addEventListener('click', () => {
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // ==================== SETUP EYE ICONS ====================
+        function setupEyeIcons() {
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    showExplanation(this.getAttribute('data-question'));
+                });
+            });
+        }
+
+        // ==================== INIT ====================
+        createNavButtons();
+        updateAnswerCount();
+        setupEyeIcons();
+        document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'none');
+    </script>
+<script>
+    // Auto-resize input fields based on content
+    function autoResizeInput(input) {
+        // Tạo một span ảo để đo kích thước
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.whiteSpace = 'pre';
+        tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily;
+        tempSpan.style.fontSize = window.getComputedStyle(input).fontSize;
+        tempSpan.style.fontWeight = window.getComputedStyle(input).fontWeight;
+        tempSpan.style.padding = window.getComputedStyle(input).padding;
+        tempSpan.style.border = window.getComputedStyle(input).border;
+        document.body.appendChild(tempSpan);
+        
+        // Hàm cập nhật độ rộng
+        function updateWidth() {
+            let value = input.value || input.placeholder || '';
+            tempSpan.textContent = value;
+            let width = tempSpan.offsetWidth + 20; // Thêm padding
+            input.style.width = Math.max(50, Math.min(300, width)) + 'px'; // Giới hạn min 50px, max 300px
+        }
+        
+        // Cập nhật lần đầu
+        updateWidth();
+        
+        // Cập nhật khi người dùng nhập
+        input.addEventListener('input', updateWidth);
+        input.addEventListener('change', updateWidth);
+    }
+    
+    // Áp dụng cho tất cả các input của câu 37-39
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['q23', 'q24', 'q25', 'q26' ].map(id => document.getElementById(id));
+        inputs.forEach(input => {
+            if (input) {
+                autoResizeInput(input);
+            }
+        });
+    });
+    </script>
+</body>
+</html>

@@ -567,6 +567,7 @@
     let explanationMode = false;
     let startTime = Date.now();
     let readingMode = false;
+    let timerRunning = true; // THÊM: Biến kiểm soát đồng hồ
 
     // ANSWER KEY
     const answerKey = {
@@ -596,7 +597,7 @@
     let timeLeft = 3600;
     const timerEl = document.getElementById('timerDisplay');
     const timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
+        if (timeLeft > 0 && timerRunning) { // SỬA: Thêm điều kiện timerRunning
             timeLeft--;
             const mins = Math.floor(timeLeft / 60);
             const secs = timeLeft % 60;
@@ -1157,6 +1158,8 @@
 
     // ==================== SUBMIT ====================
     document.getElementById('submitBtn').addEventListener('click', () => {
+        timerRunning = false; // THÊM: Dừng đồng hồ ngay khi nhấn nộp bài
+        
         if (examSubmitted) return;
         
         let unanswered = [];
@@ -1166,7 +1169,10 @@
         
         if (unanswered.length > 0) {
             const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm. Bạn có chắc muốn nộp bài?`);
-            if (!confirmSubmit) return;
+            if (!confirmSubmit) {
+                timerRunning = true; // THÊM: Cho đồng hồ chạy lại nếu hủy nộp bài
+                return;
+            }
         }
         
         examSubmitted = true;
@@ -1218,6 +1224,10 @@
     // ==================== RESET ====================
     document.getElementById('resetBtn').addEventListener('click', () => {
         if (confirm('Bạn có chắc muốn reset tất cả?')) {
+            timerRunning = true; // THÊM: Cho đồng hồ chạy lại
+            timeLeft = 3600; // THÊM: Reset thời gian về 60 phút
+            timerEl.textContent = '60:00'; // THÊM: Cập nhật hiển thị
+            
             examSubmitted = false;
             explanationMode = false;
             startTime = Date.now();
