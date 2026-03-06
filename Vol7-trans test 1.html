@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vol 7 Test 1 - Song ngữ Anh Việt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1600px;
+            background: #ecf0f1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        /* Reading mode */
+        .app-container.reading-mode {
+            background: #f8f5e6;
+        }
+        .app-container.reading-mode .col-content {
+            background: #fffaf0;
+        }
+        .app-container.reading-mode .col-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+        .app-container.reading-mode .status-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f2a44 100%);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+
+        .brand h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #e6b422;
+        }
+
+        .passage-selector {
+            display: flex;
+            gap: 10px;
+            background: #1a2f44;
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #e6b422;
+        }
+
+        .passage-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .passage-btn:hover {
+            background: #2d4b77;
+        }
+
+        .passage-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .timer {
+            background: #1a2f44;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 1.5rem;
+            border: 1px solid #e6b422;
+        }
+
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: 0.3s;
+            border: 1px solid #e6b422;
+        }
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+            margin-left: 15px;
+        }
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Main area with resizable columns */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background: #bdc3c7;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
+        }
+
+        .column.en-column {
+            width: 50%;
+        }
+
+        .column.vi-column {
+            width: 50%;
+        }
+
+        .col-header {
+            background: #d2cbbc;
+            padding: 10px 18px;
+            font-weight: 700;
+            color: #1e3a5f;
+            border-bottom: 2px solid #b0aa9a;
+            font-size: 1rem;
+        }
+
+        .col-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            line-height: 1.8;
+            font-size: 16px;
+            background: #fffcf5;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Font size classes */
+        .col-content.font-small {
+            font-size: 14px;
+        }
+        .col-content.font-medium {
+            font-size: 16px;
+        }
+        .col-content.font-large {
+            font-size: 18px;
+        }
+
+        /* Typography */
+        .col-content h1 {
+            font-size: 1.9rem;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+
+        .col-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+
+        .col-content em {
+            color: #5d3a1a;
+            font-style: italic;
+        }
+
+        .col-content strong {
+            color: #1e3a5f;
+        }
+
+        /* Right-click menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+            min-width: 160px;
+        }
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Highlight colors */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+        }
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+        }
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            background: #d2cbbc;
+            padding: 8px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            border-top: 1px solid #b0aa9a;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+        }
+
+        .btn {
+            padding: 4px 16px;
+            border: none;
+            border-radius: 30px;
+            background: #1e3a5f;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #2d4b77;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #1e3a5f;
+            color: #1e3a5f;
+        }
+        .btn-outline:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="brand">
+            <h1>IELTS Vol 7 · Test 1</h1>
+        </div>
+        <div class="passage-selector" id="passageSelector">
+            <button class="passage-btn active" data-passage="1">Passage 1</button>
+            <button class="passage-btn" data-passage="2">Passage 2</button>
+            <button class="passage-btn" data-passage="3">Passage 3</button>
+        </div>
+        <div class="header-controls">
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+          
+        </div>
+    </div>
+
+    <!-- Main resizable columns -->
+    <div class="main-area" id="mainArea">
+        <!-- Cột gốc -->
+        <div class="column en-column" id="enColumn">
+            <div class="col-header">Bản gốc</div>
+            <div class="col-content font-medium" id="enContent"></div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+        <!-- Cột dịch -->
+        <div class="column vi-column" id="viColumn">
+            <div class="col-header">Bản dịch</div>
+            <div class="col-content font-medium" id="viContent"></div>
+        </div>
+    </div>
+
+    <!-- Status bar -->
+<!-- Status bar -->
+<div class="status-bar">
+    <span>Bôi đen văn bản → nhấp chuột phải để highlight màu</span>
+    <button class="btn btn-outline" id="resetHighlightBtn">Xóa tất cả highlight</button>
+    <button class="btn btn-outline" id="syncScrollBtn" style="background: #e6b422; color: #1e3a5f; border: 1px solid #1e3a5f;">Đồng bộ cuộn: BẬT</button>
+</div>
+
+    <!-- Right-click menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đoạn chọn</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DỮ LIỆU PASSAGE
+        const passages = {
+            1: {
+                en: [
+                    "<h1>CARNIVOROUS PLANTS</h1>",
+                    "<p><em>They attract insects and then eat their flesh. Is that any way for a plant to behave?</em></p>",
+                    "<p>The naturalist and author of Origin of Species, Charles Darwin, was fascinated by carnivorous plants. In 1860, soon after he came across his first carnivorous plant - the sundew, Drosera - he wrote, 'I care more about Drosera than the origin of all the species in the world.' He spent months running experiments on the plants. He dropped flies and bits of meat on their leaves and watched them slowly fold their sticky tentacles over their prey. He thought it incredible that brushing a leaf with a single strand of human hair was enough to bring about a response. Yet sundews, he observed, ignored raindrops. To react to such a false alarm, he reasoned, would obviously be a great evil to the plant. This was no accident. This was adaptation.</p>",
+                    "<p>Darwin expanded his studies from sundews to other species in his book Insectivorous Plants. He was amazed at the quickness and power of the Venus flytrap. He showed that when one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes that could dissolve the prey. He noted that a leaf took more than a week to reopen after closing, and reasoned that the interlocking spines along the margin of the leaf allowed tiny insects to escape, saving the plant the expense of digesting an insufficient meal.</p>",
+                    "<p>Today, biologists using 21st-century tools to study cells and DNA are beginning to understand how these plants hunt, eat, and digest - and how these strange adaptations came about in the first place. Alexander Volkov, a plant physiologist at Oakwood University in Alabama, believes he has figured out the Venus flytrap's secret. 'This,' Volkov declares, 'is an electrical plant.'</p>",
+                    "<p>When an insect brushes against a hair on the leaf of a Venus flytrap, the movement sets off an electric charge. The charge builds up inside the tissue of the leaf but is not enough to stimulate the snap, which keeps the Venus flytrap from reacting to false alarms, such as raindrops. An insect, however, is likely to brush a second hair, adding enough electric charge for the leaf to close.</p>",
+                    "<p>Volkov's experiments reveal that the electric charge travels down fluid-filled tunnels in a leaf, which opens up pores in cell membranes. Water rushes from the cells on the inside of the leaf to those on the outside, causing the leaf to rapidly flip in shape from convex to concave, like a soft contact lens. As the leaves flip, they snap together, trapping an insect inside.</p>",
+                    "<p>The bladderwort plant has an equally sophisticated way of setting its underwater trap. It pumps water out of tiny air sacs or bladders, lowering the pressure inside. When a water flea or some other small creature swims past, it bends hairs on the bladder, causing a flap to spring apart. The low pressure sucks water in, carrying the creature along with it. In one five-hundredth of a second, the flap swings shut again. The cells in the bladder then begin to pump water out again, creating a new vacuum. Many other species of carnivorous plants act like living flypaper, catching animals on sticky tentacles. Pitcher plants use yet another strategy, growing long tube-shaped leaves into which insects fall. Some of the largest have pitchers up to 30cm deep and can consume whole frogs unlucky enough to fall into them. Sophisticated chemistry helps make the pitcher a death trap.</p>",
+                    "<p>Nicholas Gotelli, of the University of Vermont, is trying to figure out what evolutionary forces pushed these plants towards meat. Carnivorous plants clearly benefit from eating animals; when scientists feed pitcher plants extra bugs, the plants get bigger. But the benefits of eating flesh are not the ones you might expect. Carnivorous animals, like ourselves, use the carbon in protein and the fat in meat to build muscles and store energy. Carnivorous plants, however, take nitrogen and phosphorus from the flesh in order to build light-harvesting enzymes. Eating animals, in other words, lets carnivorous plants do what all plants do: grow by taking energy directly from the sun.</p>",
+                    "<p>Unfortunately, they do a really bad job of it. That's because they have to use a lot of energy to make the equipment they need to catch animals - the enzymes, the pumps, the sticky tentacles, and so on. A pitcher or a flytrap is not very good at photosynthesis because, unlike plants with ordinary leaves, they do not have flat solar panels that can absorb lots of sunlight. Gotelli suspects that only under special conditions are the benefits of being carnivorous greater than the costs. The poor soil of bogs and swamps, where many carnivorous plants grow, offers little nitrogen and phosphorus, so carnivorous plants enjoy an advantage there over 'conventional' plants. Also, bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis to survive. 'They're stuck, and they're making the best of it,' says Aaron Ellison of Harvard University.</p>",
+                    "<p>Unfortunately, the adaptations that enable carnivorous plants to survive in harsh habitats also make them extremely sensitive to environmental changes. Chemical fertilizers used in agriculture and pollution from power plants are adding extra nitrogen to many bogs in North America. Carnivorous plants are so finely adapted to low levels of nitrogen that this extra fertilizer is overloading their systems. Humans also threaten carnivorous plants in other ways. The black market trade in exotic carnivorous plants is strong, but even if this can be prevented, carnivorous plants will continue to suffer from other dangers. Their habitat is disappearing, to be replaced by shopping centers and houses. The suppression of wildfires by government agencies allows other plants to grow quickly and outcompete the Venus flytraps. Good news, perhaps, for flies. But a loss for all who delight in the inventiveness of evolution.</p>"
+                ],
+                vi: [
+                    "<h1>THỰC VẬT ĂN THỊT</h1>",
+                    "<p><em>Chúng thu hút côn trùng và sau đó ăn thịt chúng. Liệu đó có phải là cách hành xử của một loài thực vật?</em></p>",
+                    "<p>Nhà tự nhiên học kiêm tác giả cuốn Nguồn gốc các loài, Charles Darwin, đã bị mê hoặc bởi thực vật ăn thịt. Năm 1860, ngay sau lần đầu tiên bắt gặp cây ăn thịt – cây gọng vó (Drosera) – ông viết: 'Tôi quan tâm đến Drosera còn hơn nguồn gốc của mọi loài trên thế giới.' Ông đã dành nhiều tháng làm thí nghiệm trên những cây này. Ông thả ruồi và những mẩu thịt nhỏ lên lá chúng và quan sát chúng từ từ gập những xúc tu dính lại quanh con mồi. Ông cho rằng thật khó tin khi chỉ cần chạm một sợi tóc người vào lá cũng đủ gây ra phản ứng. Thế nhưng, ông quan sát thấy cây gọng vó lại bỏ qua những hạt mưa. Ông lý luận rằng phản ứng với báo động giả như vậy rõ ràng là một điều tai hại đối với cây. Đây không phải sự ngẫu nhiên. Đây là sự thích nghi.</p>",
+                    "<p>Darwin mở rộng nghiên cứu từ cây gọng vó sang các loài khác trong cuốn sách Thực vật ăn sâu bọ. Ông kinh ngạc trước sự nhanh nhạy và sức mạnh của cây bẫy kẹp Venus. Ông chỉ ra rằng khi một chiếc lá của nó đóng sập lại, nó tự tạo thành một 'dạ dày' tạm thời, tiết ra các enzyme có thể hòa tan con mồi. Ông lưu ý rằng một chiếc lá mất hơn một tuần để mở lại sau khi đóng, và lý luận rằng các gai đan xen dọc theo mép lá cho phép côn trùng nhỏ thoát ra ngoài, giúp cây tiết kiệm năng lượng tiêu hóa một bữa ăn không đủ dinh dưỡng.</p>",
+                    "<p>Ngày nay, các nhà sinh học sử dụng công cụ thế kỷ 21 để nghiên cứu tế bào và DNA đang bắt đầu hiểu cách những thực vật này săn mồi, ăn và tiêu hóa – và những sự thích nghi kỳ lạ này hình thành như thế nào. Alexander Volkov, nhà sinh lý thực vật tại Đại học Oakwood ở Alabama, tin rằng ông đã tìm ra bí mật của cây bẫy kẹp Venus. 'Đây,' Volkov tuyên bố, 'là một loài thực vật điện.'</p>",
+                    "<p>Khi côn trùng chạm vào một sợi lông trên lá của cây bẫy kẹp Venus, chuyển động đó tạo ra một điện tích. Điện tích tích tụ bên trong mô lá nhưng không đủ để kích thích sự đóng sập, điều này giúp cây bẫy kẹp không phản ứng với các báo động giả, chẳng hạn như hạt mưa. Tuy nhiên, côn trùng có khả năng sẽ chạm vào sợi lông thứ hai, tạo thêm đủ điện tích để lá đóng lại.</p>",
+                    "<p>Các thí nghiệm của Volkov cho thấy điện tích truyền xuống các đường hầm chứa đầy chất lỏng trong lá, làm mở các lỗ màng tế bào. Nước dồn từ các tế bào bên trong lá ra các tế bào bên ngoài, khiến lá nhanh chóng chuyển hình dạng từ lồi sang lõm, giống như một chiếc kính áp tròng mềm. Khi các lá đảo chiều, chúng đóng sập lại, giam côn trùng bên trong.</p>",
+                    "<p>Cây bèo đất (bladderwort) có cách đặt bẫy dưới nước tinh vi không kém. Nó bơm nước ra khỏi các túi khí nhỏ hoặc bong bóng, làm giảm áp suất bên trong. Khi một con bọ nước hay sinh vật nhỏ khác bơi qua, nó làm cong các sợi lông trên bong bóng, khiến một cái nắp bật mở. Áp suất thấp hút nước vào, cuốn theo sinh vật đó. Trong một phần năm trăm giây, cái nắp lại đóng sập. Các tế bào trong bong bóng sau đó bắt đầu bơm nước ra ngoài một lần nữa, tạo ra một chân không mới. Nhiều loài thực vật ăn thịt khác hoạt động như giấy ruồi sống, bắt động vật trên các xúc tu dính. Cây nắp ấm (pitcher plants) sử dụng một chiến lược khác, phát triển những chiếc lá hình ống dài để côn trùng rơi vào. Một số cây lớn nhất có ấm sâu tới 30cm và có thể tiêu thụ toàn bộ những con ếch không may rơi vào chúng. Hóa học tinh vi giúp biến ấm cây thành một cái bẫy chết chóc.</p>",
+                    "<p>Nicholas Gotelli, thuộc Đại học Vermont, đang cố gắng tìm hiểu những áp lực tiến hóa nào đã đẩy các loài thực vật này về phía thịt. Thực vật ăn thịt rõ ràng được lợi từ việc ăn động vật; khi các nhà khoa học cho cây nắp ấm ăn thêm bọ, cây trở nên lớn hơn. Nhưng lợi ích của việc ăn thịt không phải là những gì bạn có thể mong đợi. Động vật ăn thịt, giống như chúng ta, sử dụng carbon trong protein và chất béo trong thịt để xây dựng cơ bắp và dự trữ năng lượng. Tuy nhiên, thực vật ăn thịt lại lấy nitơ và phốt pho từ xác thịt để xây dựng các enzyme thu hoạch ánh sáng. Nói cách khác, việc ăn động vật cho phép thực vật ăn thịt làm điều mà mọi loài thực vật đều làm: phát triển bằng cách lấy năng lượng trực tiếp từ mặt trời.</p>",
+                    "<p>Thật không may, chúng làm việc đó khá tệ. Đó là vì chúng phải tiêu tốn nhiều năng lượng để tạo ra các 'trang thiết bị' cần thiết để bắt động vật – các enzyme, máy bơm, xúc tu dính, v.v. Một cây nắp ấm hay bẫy kẹp không giỏi quang hợp lắm vì, không giống như thực vật có lá thông thường, chúng không có tấm pin mặt trời phẳng để hấp thụ nhiều ánh sáng mặt trời. Gotelli nghi ngờ rằng chỉ trong những điều kiện đặc biệt, lợi ích của việc ăn thịt mới lớn hơn chi phí. Đất nghèo dinh dưỡng của các đầm lầy, nơi nhiều cây ăn thịt sinh trưởng, cung cấp ít nitơ và phốt pho, do đó thực vật ăn thịt có lợi thế ở đó so với thực vật 'thông thường'. Ngoài ra, các đầm lầy thường ngập tràn ánh nắng, vì vậy ngay cả một cây ăn thịt kém hiệu quả cũng có thể thực hiện đủ quang hợp để tồn tại. 'Chúng bị mắc kẹt, và chúng đang tận dụng tốt nhất hoàn cảnh đó,' Aaron Ellison của Đại học Harvard nói.</p>",
+                    "<p>Thật không may, những sự thích nghi giúp thực vật ăn thịt tồn tại trong môi trường sống khắc nghiệt cũng khiến chúng cực kỳ nhạy cảm với những thay đổi môi trường. Phân bón hóa học dùng trong nông nghiệp và ô nhiễm từ các nhà máy điện đang thêm nitơ dư thừa vào nhiều đầm lầy ở Bắc Mỹ. Thực vật ăn thịt thích nghi quá tinh tế với mức nitơ thấp đến nỗi lượng phân bón dư thừa này đang làm quá tải hệ thống của chúng. Con người cũng đe dọa thực vật ăn thịt theo những cách khác. Thị trường chợ đen buôn bán thực vật ăn thịt ngoại lai rất mạnh, nhưng ngay cả khi điều này có thể được ngăn chặn, thực vật ăn thịt sẽ tiếp tục chịu tổn thất từ những mối nguy hiểm khác. Môi trường sống của chúng đang biến mất, nhường chỗ cho các trung tâm mua sắm và nhà ở. Việc các cơ quan chính phủ ngăn chặn cháy rừng cho phép các cây khác phát triển nhanh và cạnh tranh vượt trội so với cây bẫy kẹp Venus. Tin tốt, có lẽ, cho lũ ruồi. Nhưng là một mất mát cho tất cả những ai thích thú trước sự sáng tạo của tiến hóa.</p>"
+                ]
+            },
+            2: {
+                en: [
+                    "<h1>Drawing Lessons from History</h1>",
+                    "<p>Numerous ancient civilisations collapsed or disappeared, leaving behind grand ruins reminiscent of what poet Shelley described in his sonnet <em>Ozymandias</em>. The term ‘collapse’ refers to a significant reduction in population and/or political, economic, and social complexity of a society across a wide area for an extended period.</p>",
+                    "<p>The awe-inspiring ruins left behind by these past societies captivate us all. As children, we marvel at them when we first discover them through pictures — vast stone structures, intricate carvings, or towering temples that defy imagination. As we grow older, many of us plan vacations to witness these remarkable sites firsthand, standing in silent reverence before the remnants of a world that once thrived. We are drawn to their magnificent and haunting beauty, as well as the enigmas they present. The grandeur of these ruins attests to the previous wealth and power of their builders, yet their sudden disappearance challenges our understanding of human resilience. These builders vanished, abandoning the remarkable structures they had painstakingly constructed. How did a once-mighty society end up collapsing, leaving behind only echoes of its former glory?</p>",
+                    "<p>For a long time, it has been suspected that the mysterious disappearance of many such societies was, to some extent, triggered by ecological issues and unintentional destruction of the environmental resources on which their societies relied. This suspicion of unintended ecological suicide, or ecocide, has been substantiated by discoveries made in recent decades by archaeologists, climatologists, historians, palaeontologists, and palynologists (pollen scientists). The processes through which past societies have undermined themselves by damaging their environments can be categorised into eight areas, which vary in significance from one case to another: deforestation and habitat loss, soil degradation, water management challenges, overhunting, overfishing, the impacts of invasive species on native ones, human population growth, and increased human activity.</p>",
+                    "<p>Historical collapses generally followed similar patterns resembling variations on a theme. These patterns often include resource depletion, environmental degradation, internal strife, or external pressures, yet the specific combination and intensity of these factors varied across civilisations. Writers are often tempted to draw analogies between the trajectory of human society and that of an individual’s life, speaking of a society’s birth, growth, peak, old age, and eventual demise. However, this metaphor proves inaccurate for many past societies: they experienced rapid declines after reaching their peak in terms of population and power, and these rapid declines must have come as a surprise and shock to their inhabitants. It is evident that not all past societies followed this trajectory uniformly to its conclusion: different societies collapsed to varying degrees and in somewhat distinct ways while many societies did not collapse at all. The diversity in collapse mechanisms suggests that while certain systemic vulnerabilities may be universal, their expression is deeply contingent on local conditions, cultural responses, and the interplay of multiple stressors over time.</p>",
+                    "<p>Currently, many individuals believe that environmental problems eclipse other global threats. These environmental problems encompass the same eight factors that contributed to past societies’ downfalls, plus four new ones: human-induced climate change, the accumulation of toxic chemicals, energy shortages, and the complete utilisation of the Earth’s photosynthetic capacity. However, the seriousness of these modern environmental dilemmas is vigorously debated among the scientific community. Are the perceived risks overstated or undervalued? Will contemporary technology resolve our issues, or is it producing new challenges faster than it can remedy old ones? When one resource (such as wood, oil, or ocean fish) is depleted, can we trust that new alternatives (like plastics, wind and solar energy, or farmed fish) will emerge? Isn’t the rate of human population growth slowing down, suggesting we might soon reach a manageable global population?</p>",
+                    "<p>Questions like these highlight why the well-known collapses of past civilisations carry more significance than merely being romantic mysteries. There may be practical lessons to be learnt from these historical failures. However, there are also differences between the modern world and its problems, and those ancient societies and their problems. It would be naive to assume that studying the past will yield straightforward answers directly applicable to today’s world. We have certain advantages over past societies that reduce our risks, including our powerful technology (i.e. its beneficial effects), globalisation, modern medicine, and enhanced awareness of both past and distant modern societies. At the same time, there are also factors that heighten our risks in comparison to earlier civilisations: again, our potent technology (i.e. its unintended destructive effects), globalisation (where a problem in one area can affect the entire world), the reliance of millions on modern health care for survival, and our vastly larger human population. Perhaps we can still learn from the past, but only if we carefully contemplate its lessons.</p>",
+                    "<p>The grandeur of these ruins attests to the previous wealth and power of their builders, yet their sudden disappearance challenges our understanding of human resilience.</p>"
+                ],
+                vi: [
+                    "<h1>Bài học từ lịch sử</h1>",
+                    "<p>Nhiều nền văn minh cổ đại đã sụp đổ hoặc biến mất, để lại những tàn tích đồ sộ gợi nhớ về những gì nhà thơ Shelley đã mô tả trong bài sonnet <em>Ozymandias</em>. Thuật ngữ 'sụp đổ' đề cập đến sự suy giảm đáng kể về dân số và/hoặc mức độ phức tạp về chính trị, kinh tế và xã hội của một xã hội trên một khu vực rộng lớn trong một thời gian dài.</p>",
+                    "<p>Những tàn tích đầy cảm hứng do các xã hội quá khứ để lại làm say mê tất cả chúng ta. Khi còn nhỏ, chúng ta kinh ngạc khi lần đầu tiên khám phá chúng qua những bức ảnh — những cấu trúc đá khổng lồ, những chạm khắc phức tạp, hay những ngôi đền cao chót vót vượt qua trí tưởng tượng. Khi lớn lên, nhiều người trong chúng ta lên kế hoạch cho các kỳ nghỉ để tận mắt chứng kiến những địa điểm đáng chú ý này, đứng trong im lặng thành kính trước tàn tích của một thế giới đã từng phát triển thịnh vượng. Chúng ta bị thu hút bởi vẻ đẹp hùng vĩ và ám ảnh của chúng, cũng như những bí ẩn mà chúng đưa ra. Sự vĩ đại của những tàn tích này minh chứng cho sự giàu có và quyền lực trước đây của những người xây dựng chúng, nhưng sự biến mất đột ngột của họ lại thách thức sự hiểu biết của chúng ta về khả năng phục hồi của con người. Những người xây dựng này đã biến mất, bỏ lại những công trình kiến trúc đáng chú ý mà họ đã tốn công xây dựng. Làm thế nào một xã hội từng hùng mạnh lại kết thúc trong sụp đổ, chỉ để lại những tiếng vọng của vinh quang xưa?</p>",
+                    "<p>Trong một thời gian dài, người ta đã nghi ngờ rằng sự biến mất bí ẩn của nhiều xã hội như vậy, ở một mức độ nào đó, được kích hoạt bởi các vấn đề sinh thái và sự phá hủy không chủ ý các nguồn tài nguyên môi trường mà xã hội của họ phụ thuộc vào. Sự nghi ngờ về việc 'tự sát sinh thái' không chủ ý này đã được chứng thực bởi những khám phá trong những thập kỷ gần đây của các nhà khảo cổ học, khí hậu học, sử học, cổ sinh vật học và nhà nghiên cứu phấn hoa. Các quá trình mà qua đó các xã hội quá khứ tự làm suy yếu chính mình bằng cách phá hủy môi trường của họ có thể được phân loại thành tám lĩnh vực, tầm quan trọng thay đổi tùy theo từng trường hợp: phá rừng và mất môi trường sống, suy thoái đất, thách thức quản lý nước, săn bắn quá mức, đánh bắt cá quá mức, tác động của các loài xâm lấn lên các loài bản địa, sự gia tăng dân số con người, và hoạt động của con người gia tăng.</p>",
+                    "<p>Các sự sụp đổ lịch sử nhìn chung tuân theo các mô hình tương tự, giống như những biến thể trên một chủ đề. Những mô hình này thường bao gồm cạn kiệt tài nguyên, suy thoái môi trường, xung đột nội bộ, hoặc áp lực bên ngoài, nhưng sự kết hợp cụ thể và cường độ của các yếu tố này khác nhau giữa các nền văn minh. Các nhà văn thường bị cám dỗ để vẽ ra những sự tương đồng giữa quỹ đạo của xã hội loài người và cuộc đời của một cá nhân, nói về sự ra đời, tăng trưởng, đỉnh cao, tuổi già và sự suy tàn cuối cùng của một xã hội. Tuy nhiên, phép ẩn dụ này tỏ ra không chính xác đối với nhiều xã hội quá khứ: họ đã trải qua sự suy giảm nhanh chóng sau khi đạt đến đỉnh cao về dân số và quyền lực, và những sự suy giảm nhanh chóng này hẳn phải là một điều bất ngờ và gây sốc cho cư dân của họ. Rõ ràng là không phải tất cả các xã hội quá khứ đều đi theo quỹ đạo này một cách đồng nhất đến kết thúc của nó: các xã hội khác nhau sụp đổ ở các mức độ khác nhau và theo những cách hơi khác biệt trong khi nhiều xã hội không hề sụp đổ. Sự đa dạng trong các cơ chế sụp đổ cho thấy rằng trong khi một số lỗ hổng hệ thống nhất định có thể mang tính phổ quát, biểu hiện của chúng lại phụ thuộc sâu sắc vào các điều kiện địa phương, phản ứng văn hóa và sự tương tác của nhiều tác nhân gây căng thẳng theo thời gian.</p>",
+                    "<p>Hiện nay, nhiều cá nhân tin rằng các vấn đề môi trường làm lu mờ các mối đe dọa toàn cầu khác. Những vấn đề môi trường này bao gồm tám yếu tố tương tự đã góp phần vào sự sụp đổ của các xã hội quá khứ, cộng thêm bốn yếu tố mới: biến đổi khí hậu do con người gây ra, sự tích tụ các hóa chất độc hại, tình trạng thiếu năng lượng, và việc sử dụng hoàn toàn khả năng quang hợp của Trái đất. Tuy nhiên, mức độ nghiêm trọng của những tình huống khó xử về môi trường hiện đại này đang được tranh luận sôi nổi trong cộng đồng khoa học. Liệu các rủi ro được nhận thức đang bị phóng đại hay bị đánh giá thấp? Liệu công nghệ hiện đại có giải quyết được các vấn đề của chúng ta, hay nó đang tạo ra những thách thức mới nhanh hơn khả năng khắc phục những vấn đề cũ? Khi một nguồn tài nguyên (như gỗ, dầu mỏ hoặc cá đại dương) cạn kiệt, chúng ta có thể tin tưởng rằng các lựa chọn thay thế mới (như nhựa, năng lượng gió và mặt trời, hoặc cá nuôi) sẽ xuất hiện? Chẳng phải tốc độ gia tăng dân số loài người đang chậm lại, cho thấy chúng ta có thể sớm đạt đến một dân số toàn cầu có thể quản lý được?</p>",
+                    "<p>Những câu hỏi như thế này làm nổi bật lý do tại sao sự sụp đổ nổi tiếng của các nền văn minh quá khứ lại mang ý nghĩa lớn hơn nhiều so với việc chỉ là những bí ẩn lãng mạn. Có thể có những bài học thực tế rút ra từ những thất bại lịch sử này. Tuy nhiên, cũng có những khác biệt giữa thế giới hiện đại với các vấn đề của nó, và các xã hội cổ đại với các vấn đề của họ. Sẽ là ngây thơ khi cho rằng nghiên cứu quá khứ sẽ mang lại những câu trả lời trực tiếp áp dụng được vào thế giới ngày nay. Chúng ta có những lợi thế nhất định so với các xã hội quá khứ giúp giảm rủi ro, bao gồm công nghệ mạnh mẽ (tức là những tác động có lợi của nó), toàn cầu hóa, y học hiện đại và nhận thức nâng cao về cả xã hội quá khứ và xã hội hiện đại xa xôi. Đồng thời, cũng có những yếu tố làm gia tăng rủi ro của chúng ta so với các nền văn minh sơ khai: một lần nữa, công nghệ mạnh mẽ của chúng ta (tức là những tác động phá hoại không chủ ý của nó), toàn cầu hóa (nơi một vấn đề ở một khu vực có thể ảnh hưởng đến toàn thế giới), sự phụ thuộc của hàng triệu người vào chăm sóc sức khỏe hiện đại để tồn tại, và dân số loài người lớn hơn nhiều của chúng ta. Có lẽ chúng ta vẫn có thể học hỏi từ quá khứ, nhưng chỉ khi chúng ta suy ngẫm cẩn thận những bài học của nó.</p>",
+                    "<p>Sự vĩ đại của những tàn tích này minh chứng cho sự giàu có và quyền lực trước đây của những người xây dựng chúng, nhưng sự biến mất đột ngột của họ lại thách thức sự hiểu biết của chúng ta về khả năng phục hồi của con người.</p>"
+                ]
+            },
+            3: {
+                en: [
+                    "<h1>Neanderthal Technology</h1>",
+                    "<p><strong>A</strong><br>We think of our prehistoric ancestors as people of the ice and snow, living in caves, and for many of the west European Neanderthalers that is a just picture of their life. But where there were no caves, further to the east on the Russian steppe, for example, open-air sites with some sort of constructed shelter were the only option. We now know much more about the cave sites than the open-air ones because, historically, it was the cave sites of Western Europe that were first explored by archaeologists and also because open-air sites are harder to find - many of them have disappeared under deep mud deposits or under the rising postglacial seas. Caves, moreover, aid the survival of archaeological material and can preserve the records of remote millennia.</p>",
+                    "<p><strong>B</strong><br>In south-west France, the limestone caves of the Périgord region made ideal homes for the Neanderthal people. There were good supplies of flint to hand for axes and the like, and the caves were often sited in small river valleys that offered protection against the worst of the weather. The Neanderthalers liked south-facing caves, for obvious reasons of sunshine and wind avoidance, and caves at some height above the valley floor offered refuge from floods and good game-watching vantage points. The Périgord region during the last ice age was, in fact, an exceptionally benign habitat for humans. It enjoyed a rather maritime climate with cooler summers that permitted the extension of tundra and steppe over its higher plateaux, and its year-round high levels of sunshine favoured the growth of the ground plants needed by reindeer, bison and horse. Winters were mild for the ice age, animals never needed to migrate far from summer to winter, and men never needed to travel far from home to find abundant supplies of meat.</p>",
+                    "<p><strong>C</strong><br>In Central and Eastern Europe, where caves were unavailable, such open-air sites as have been discovered were mostly located near water - both because this was a good area to be for people and animals, and also because the sedimentation potential of lakes and stream courses has aided archaeological preservation - whereas erosion has presumably blown away sites which were out in the open. Some of the open-air sites in Germany, Central Europe and Russia have provided valuable information about Neanderthal man and his way of life. From Moldova, for example, comes evidence that has been interpreted as the remains of wind-break structures, or even a large tent: a ring up to about 8 x 5m in size, of mainly mammoth bones enclosing a dense concentration of stone tools, animal bones and ash.</p>",
+                    "<p><strong>D</strong><br>From the west European caves more evidence of built structures is available, and some of it goes back a long way in time. In the Grotte du Lazaret, near Nice, at a date during the last ice age but one, claims for some sort of skin tent within the cave have been advanced, on the basis of arrangements of large stones out from the cave wall that might have supported timber struts for a covering of skins up to the rock face above. At Lazaret, what might be openings in the hypothesised tents seem to point away from the cave mouth, and finds of wolf and fox foot bones, without the rest of the skeletons, inside these 'tents' have been thought to indicate the use of animal pelts as bed coverings. The two patches of ash at Lazaret that mark ancient fires, with stone tools around them evidently made and used on the spot, are edged with small marine mollusc shells, prompting the excavator to suggest that seaweed had been used as bedding around the fires. The cave of Baume-Bonne in the Basses-Alpes region of France, another early site, contains ten square metres of cobbles brought up from the local river and laid down, as though to take care of a puddle area in the cave, with the smoothest and roundest surfaces of the stones uppermost, and there are other similar cases.</p>",
+                    "<p><strong>E</strong><br>The ash encountered in concentrations at some sites testifies to the Neanderthal people's use of fire: not surprising, since use of fire was, by Neanderthal times, an already ancient accomplishment of evolving humanity, and survival in the sub-arctic conditions faced by the Neanderthalers is inconceivable without control of fire. Fire gave warmth, light, heat for cooking and defence against predatory animals. A charred piece of birch from Krapina in Croatia, is thought to be the remains of a fire-making twirl stick. But Neanderthal hearths, in the sense of specially constructed places for fire, are fewer and harder to identify with certainty than the mere ash piles that are a regular feature of their sites. They seem often to have just lit a small fire (40-50cm across) on the existing ground surface of the cave, without preparation. Judging from the shallow penetration of heat effects under the ash, this fire was only of a short duration. Sometimes the fires were larger in size, up to one metre across, and quite irregular in shape. It is not always easy to decide how much additional structure some fires possessed: claims of stone circles to contain the fire run up against the fact that stones tend to litter the cave floors everywhere and those around a fire can quite accidentally look as though they were arranged in a circle.</p>"
+                ],
+                vi: [
+                    "<h1>Công nghệ người Neanderthal</h1>",
+                    "<p><strong>A</strong><br>Chúng ta nghĩ về tổ tiên thời tiền sử của mình như những con người của băng tuyết, sống trong các hang động, và đối với nhiều người Neanderthal Tây Âu, đó là một bức tranh chính xác về cuộc sống của họ. Nhưng ở nơi không có hang động, xa hơn về phía đông trên thảo nguyên Nga chẳng hạn, các địa điểm ngoài trời với một số loại nơi trú ẩn được xây dựng là lựa chọn duy nhất. Ngày nay chúng ta biết nhiều hơn về các địa điểm hang động so với các địa điểm ngoài trời bởi vì, về mặt lịch sử, chính các địa điểm hang động ở Tây Âu là nơi đầu tiên được các nhà khảo cổ khám phá và cũng bởi vì các địa điểm ngoài trời khó tìm hơn - nhiều địa điểm trong số đó đã biến mất dưới các lớp trầm tích bùn sâu hoặc dưới các vùng biển hậu băng hà đang dâng cao. Hơn nữa, các hang động hỗ trợ sự tồn tại của vật liệu khảo cổ và có thể lưu giữ hồ sơ của hàng thiên niên kỷ xa xôi.</p>",
+                    "<p><strong>B</strong><br>Ở phía tây nam nước Pháp, các hang động đá vôi của vùng Périgord đã trở thành những ngôi nhà lý tưởng cho người Neanderthal. Có nguồn cung cấp đá lửa dồi dào để làm rìu và các công cụ tương tự, và các hang động thường nằm trong các thung lũng sông nhỏ, nơi bảo vệ khỏi thời tiết khắc nghiệt nhất. Người Neanderthal thích những hang động quay mặt về hướng nam, vì những lý do hiển nhiên về ánh nắng mặt trời và tránh gió, và những hang động ở độ cao nhất định so với đáy thung lũng cung cấp nơi trú ẩn khỏi lũ lụt và các điểm thuận lợi để quan sát thú săn. Trên thực tế, vùng Périgord trong kỷ băng hà cuối cùng là một môi trường sống đặc biệt ôn hòa đối với con người. Nó có khí hậu khá hàng hải với mùa hè mát mẻ hơn cho phép mở rộng lãnh nguyên và thảo nguyên trên các cao nguyên cao hơn của nó, và lượng ánh nắng mặt trời cao quanh năm ủng hộ sự phát triển của các loài thực vật mặt đất mà tuần lộc, bò rừng bizon và ngựa cần. Mùa đông ôn hòa đối với kỷ băng hà, động vật không bao giờ cần di cư xa từ mùa hè sang mùa đông, và con người không bao giờ cần đi xa nhà để tìm nguồn thịt dồi dào.</p>",
+                    "<p><strong>C</strong><br>Ở Trung và Đông Âu, nơi không có hang động, các địa điểm ngoài trời được phát hiện hầu hết nằm gần nước - vừa vì đây là khu vực tốt cho cả người và động vật, vừa vì tiềm năng trầm tích của hồ và dòng suối đã hỗ trợ bảo tồn khảo cổ - trong khi xói mòn có lẽ đã thổi bay các địa điểm nằm ngoài trời. Một số địa điểm ngoài trời ở Đức, Trung Âu và Nga đã cung cấp thông tin quý giá về người Neanderthal và cách sống của họ. Ví dụ, từ Moldova, có bằng chứng được giải thích là tàn tích của các cấu trúc chắn gió, hoặc thậm chí là một cái lều lớn: một vòng tròn có kích thước lên tới khoảng 8 x 5m, chủ yếu bằng xương voi ma mút bao quanh một tập trung dày đặc các công cụ bằng đá, xương động vật và tro.</p>",
+                    "<p><strong>D</strong><br>Từ các hang động Tây Âu, có nhiều bằng chứng hơn về các cấu trúc xây dựng, và một số trong đó có niên đại rất xa xưa. Trong hang Grotte du Lazaret, gần Nice, vào thời kỳ trước kỷ băng hà cuối cùng, đã có những tuyên bố về một loại lều bằng da bên trong hang động, dựa trên sự sắp xếp của những tảng đá lớn cách xa vách hang có thể đã hỗ trợ các thanh chống bằng gỗ cho một lớp phủ bằng da lên đến mặt đá phía trên. Tại Lazaret, những gì có thể là lỗ mở trong những chiếc lều giả định dường như hướng ra xa khỏi miệng hang, và việc tìm thấy xương bàn chân của sói và cáo, không có phần còn lại của bộ xương, bên trong những 'chiếc lều' này được cho là dấu hiệu của việc sử dụng da thú làm khăn trải giường. Hai đám tro tại Lazaret đánh dấu những đống lửa cổ xưa, với các công cụ bằng đá xung quanh rõ ràng được chế tạo và sử dụng tại chỗ, được viền bởi những vỏ nhuyễn thể biển nhỏ, khiến người khai quật cho rằng rong biển đã được dùng làm lớp lót xung quanh lửa. Hang Baume-Bonne ở vùng Basses-Alpes của Pháp, một địa điểm sơ khai khác, chứa mười mét vuông đá cuội được mang lên từ sông địa phương và trải xuống, dường như để xử lý một khu vực có vũng nước trong hang, với các bề mặt nhẵn và tròn nhất của đá ở trên cùng, và có những trường hợp tương tự khác.</p>",
+                    "<p><strong>E</strong><br>Tro được tìm thấy với mật độ dày đặc tại một số địa điểm chứng tỏ việc người Neanderthal sử dụng lửa: không có gì đáng ngạc nhiên, vì việc sử dụng lửa, vào thời kỳ Neanderthal, đã là một thành tựu cổ xưa của nhân loại đang tiến hóa, và sự sống sót trong điều kiện cận Bắc Cực mà người Neanderthal phải đối mặt là không thể tưởng tượng được nếu không kiểm soát được lửa. Lửa mang lại hơi ấm, ánh sáng, nhiệt để nấu ăn và phòng thủ chống lại động vật ăn thịt. Một mảnh gỗ bạch dương cháy từ Krapina ở Croatia, được cho là tàn tích của một que xoay tạo lửa. Nhưng các lò sưởi của người Neanderthal, theo nghĩa là những nơi được xây dựng đặc biệt cho lửa, ít hơn và khó xác định một cách chắc chắn hơn so với những đống tro đơn thuần vốn là đặc điểm thường thấy của các địa điểm của họ. Họ dường như thường chỉ đốt một đống lửa nhỏ (đường kính 40-50cm) trên bề mặt đất hiện có của hang động, mà không có sự chuẩn bị trước. Đánh giá từ sự thẩm thấu nông của các hiệu ứng nhiệt dưới tro, đống lửa này chỉ tồn tại trong thời gian ngắn. Đôi khi, các đống lửa lớn hơn, đường kính lên tới một mét, và hình dạng khá bất thường. Không phải lúc nào cũng dễ dàng xác định các đống lửa có thêm cấu trúc nào không: những tuyên bố về vòng tròn đá để chứa lửa vấp phải thực tế là đá có xu hướng nằm rải rác khắp các sàn hang và những viên đá xung quanh đống lửa có thể khá tình cờ trông như thể chúng được sắp xếp thành một vòng tròn.</p>"
+                ]
+            }
+        };
+
+        // Variables
+        let currentPassage = 1;
+        let readingMode = false;
+        
+        // DOM elements
+        const enDiv = document.getElementById('enContent');
+        const viDiv = document.getElementById('viContent');
+        const appContainer = document.getElementById('appContainer');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        const readingModeToggle = document.getElementById('readingModeToggle');
+
+        // Load passage
+        function loadPassage(id) {
+            const p = passages[id];
+            if (!p) return;
+            
+            let enHtml = '';
+            p.en.forEach(para => {
+                enHtml += para;
+            });
+            enDiv.innerHTML = enHtml;
+
+            let viHtml = '';
+            p.vi.forEach(para => {
+                viHtml += para;
+            });
+            viDiv.innerHTML = viHtml;
+        }
+
+        loadPassage(1);
+
+        // Passage selector
+        document.querySelectorAll('.passage-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const id = parseInt(btn.getAttribute('data-passage'), 10);
+                currentPassage = id;
+                loadPassage(id);
+            });
+        });
+
+        // Reading mode toggle
+        readingModeToggle.addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                appContainer.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                appContainer.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // Font size controls
+        document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+            
+            const contents = document.querySelectorAll('.col-content');
+            contents.forEach(el => {
+                el.classList.remove('font-small', 'font-medium', 'font-large');
+                el.classList.add(`font-${size}`);
+            });
+        }
+
+        // Resize columns
+        const resizer = document.getElementById('resizer');
+        const enColumn = document.getElementById('enColumn');
+        const viColumn = document.getElementById('viColumn');
+        const mainArea = document.getElementById('mainArea');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', () => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const rect = mainArea.getBoundingClientRect();
+            let leftWidth = e.clientX - rect.left - 4;
+            if (leftWidth < 200) leftWidth = 200;
+            if (leftWidth > rect.width - 200) leftWidth = rect.width - 200;
+            enColumn.style.width = leftWidth + 'px';
+            viColumn.style.width = (rect.width - leftWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // Timer
+        let timeLeft = 3600;
+        const timerEl = document.getElementById('timerDisplay');
+        setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        // Right-click highlight
+        const contextMenu = document.getElementById('contextMenu');
+        let selectedRange = null;
+
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target;
+            if (target.closest('.col-content')) {
+                e.preventDefault();
+                const selection = window.getSelection();
+                if (selection.toString().trim()) {
+                    selectedRange = selection.getRangeAt(0);
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = e.pageX + 'px';
+                    contextMenu.style.top = e.pageY + 'px';
+                }
+            }
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            try {
+                const range = selectedRange.cloneRange();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) {
+                alert('Không thể highlight vùng này.');
+            }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // Reset all highlights
+        document.getElementById('resetHighlightBtn').addEventListener('click', () => {
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                const parent = h.parentNode;
+                while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                parent.removeChild(h);
+            });
+        });
+        // Đồng bộ cuộn có bật/tắt
+        const enContent = document.getElementById('enContent');
+        const viContent = document.getElementById('viContent');
+        const syncBtn = document.getElementById('syncScrollBtn');
+
+        let syncEnabled = true;
+        let isSyncing = false;
+
+        syncBtn.addEventListener('click', () => {
+            syncEnabled = !syncEnabled;
+            if (syncEnabled) {
+                syncBtn.style.background = '#e6b422';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: BẬT';
+            } else {
+                syncBtn.style.background = 'transparent';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: TẮT';
+            }
+        });
+
+        function syncScroll(source, target) {
+            if (!syncEnabled || isSyncing) return;
+            isSyncing = true;
+            
+            const sourceScrollRatio = source.scrollTop / (source.scrollHeight - source.clientHeight);
+            target.scrollTop = sourceScrollRatio * (target.scrollHeight - target.clientHeight);
+            
+            isSyncing = false;
+        }
+
+        enContent.addEventListener('scroll', () => syncScroll(enContent, viContent));
+        viContent.addEventListener('scroll', () => syncScroll(viContent, enContent));
+    })();
+</script>
+</body>
+</html>

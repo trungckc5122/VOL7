@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOL 7- Reading Test 1 - Passage 1 - Carnivorous Plants</title>
+    <title>VOL 7 - Reading Test 3 - Passage 1 - The development of plastics</title>
     <style>
+        /* Giữ nguyên toàn bộ CSS từ file trước */
         * {
             margin: 0;
             padding: 0;
@@ -32,7 +33,6 @@
             height: 100vh;
         }
 
-        /* Reading mode */
         .test-wrapper.reading-mode {
             background: #f8f5e6;
         }
@@ -66,149 +66,142 @@
             background: #d6cdb8;
         }
 
-        /* Header */
-/* Header */
-.ielts-header {
-    background: #1e3a5f;
-    color: white;
-    padding: 5px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid #e6b422;
-}
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 5px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
-.ielts-logo {
-    background: #e6b422;
-    color: #1e3a5f;
-    font-weight: 800;
-    font-size: 20px;
-    padding: 4px 12px;
-    border-radius: 40px;
-    letter-spacing: 1px;
-}
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 20px;
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
 
-.candidate {
-    background: #2d4b77;
-    padding: 4px 10px;
-    border-radius: 30px;
-    font-size: 12px;
-}
+        .candidate {
+            background: #2d4b77;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
 
-.question-types {
-    background: #0f2a44;
-    padding: 4px 10px;
-    border-radius: 30px;
-    font-size: 11px;
-    border: 1px solid #e6b422;
-}
+        .question-types {
+            background: #0f2a44;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            border: 1px solid #e6b422;
+        }
 
-.timer {
-    background: #0f2a44;
-    padding: 4px 15px;
-    border-radius: 40px;
-    font-size: 18px;
-    font-weight: 700;
-    font-family: monospace;
-    border: 1px solid #e6b422;
-}
+        .timer {
+            background: #0f2a44;
+            padding: 4px 15px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: monospace;
+            border: 1px solid #e6b422;
+        }
 
-/* Reading mode toggle */
-.reading-mode-toggle {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #2d4b77;
-    padding: 3px 8px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px 8px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-.reading-mode-toggle:hover {
-    background: #3e5f8a;
-}
+        .reading-mode-toggle:hover {
+            background: #3e5f8a;
+        }
 
-.toggle-switch {
-    width: 40px;
-    height: 20px;
-    background: #0f2a44;
-    border-radius: 20px;
-    position: relative;
-    transition: all 0.3s;
-    border: 1px solid #e6b422;
-}
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid #e6b422;
+        }
 
-.toggle-switch.active {
-    background: #e6b422;
-}
+        .toggle-switch.active {
+            background: #e6b422;
+        }
 
-.toggle-switch::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background: white;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    transition: all 0.3s;
-}
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
 
-.toggle-switch.active::after {
-    left: 22px;
-}
+        .toggle-switch.active::after {
+            left: 22px;
+        }
 
-.toggle-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: white;
-}
+        .toggle-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: white;
+        }
 
-/* Font Size Controls */
-.font-controls {
-    display: flex;
-    gap: 2px;
-    background: #2d4b77;
-    padding: 2px;
-    border-radius: 30px;
-}
+        .font-controls {
+            display: flex;
+            gap: 2px;
+            background: #2d4b77;
+            padding: 2px;
+            border-radius: 30px;
+        }
 
-.font-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    font-size: 12px;
-}
+        .font-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
 
-.font-btn:hover {
-    background: #3e5f8a;
-}
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
 
-.font-btn.active {
-    background: #e6b422;
-    color: #1e3a5f;
-}
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
 
-
-
-        /* Question Navigator */
         .question-nav {
             background: #d2cbbc;
             padding: 6px 20px;
@@ -274,7 +267,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* Main area with resize */
         .main-area {
             display: flex;
             flex: 1;
@@ -309,7 +301,6 @@
             background: #e6b422;
         }
 
-        /* Panel headers */
         .panel-header {
             background: #d2cbbc;
             padding: 8px 15px;
@@ -339,32 +330,18 @@
             font-size: 15px;
         }
 
-        /* Font size classes */
-        .reading-text.font-small, .questions-list.font-small {
-            font-size: 13px;
-        }
+        .reading-text.font-small, .questions-list.font-small { font-size: 13px; }
         .reading-text.font-small p, .questions-list.font-small p,
-        .reading-text.font-small li, .questions-list.font-small li {
-            font-size: 13px;
-        }
+        .reading-text.font-small li, .questions-list.font-small li { font-size: 13px; }
 
-        .reading-text.font-medium, .questions-list.font-medium {
-            font-size: 15px;
-        }
+        .reading-text.font-medium, .questions-list.font-medium { font-size: 15px; }
         .reading-text.font-medium p, .questions-list.font-medium p,
-        .reading-text.font-medium li, .questions-list.font-medium li {
-            font-size: 15px;
-        }
+        .reading-text.font-medium li, .questions-list.font-medium li { font-size: 15px; }
 
-        .reading-text.font-large, .questions-list.font-large {
-            font-size: 17px;
-        }
+        .reading-text.font-large, .questions-list.font-large { font-size: 17px; }
         .reading-text.font-large p, .questions-list.font-large p,
-        .reading-text.font-large li, .questions-list.font-large li {
-            font-size: 17px;
-        }
+        .reading-text.font-large li, .questions-list.font-large li { font-size: 17px; }
 
-        /* Reading content styles */
         .reading-text h1 {
             font-size: 24px;
             color: #1e3a5f;
@@ -389,7 +366,6 @@
             font-style: italic;
         }
 
-        /* Right-click highlight menu */
         .context-menu {
             position: fixed;
             background: white;
@@ -414,7 +390,6 @@
             color: white;
         }
 
-        /* Màu highlight - chỉ tô màu, không gạch chân */
         .highlight-yellow {
             background-color: #f9e79f;
             border-radius: 3px;
@@ -433,7 +408,6 @@
             padding: 0 2px;
         }
 
-        /* Dynamic highlight - style giống code mẫu */
         .dynamic-highlight {
             background-color: #f9e79f;
             display: inline;
@@ -448,7 +422,6 @@
             background-color: #fff3cd;
         }
 
-        /* Question highlight */
         .question-highlight {
             background-color: #fef9e7;
             border-left: 4px solid #f1c40f;
@@ -456,7 +429,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Questions styles */
         .questions-list h3 {
             font-size: 22px;
             color: #1e3a5f;
@@ -484,6 +456,36 @@
             margin: 15px 0 10px;
             font-weight: 600;
             font-style: italic;
+        }
+
+        .questions-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+            border: 1px solid #b0aa9a;
+        }
+
+        .questions-list th {
+            background: #d2cbbc;
+            color: #1e3a5f;
+            font-weight: 600;
+            padding: 8px 5px;
+            border: 1px solid #9a8c7a;
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        .questions-list td {
+            padding: 8px 5px;
+            border: 1px solid #b0aa9a;
+            vertical-align: middle;
+            background-color: #fffcf5;
+        }
+
+        .questions-list td .fill-input {
+            width: 120px;
+            margin: 0;
         }
 
         .questions-list ul, .questions-list ol {
@@ -570,7 +572,6 @@
             font-weight: bold;
         }
 
-        /* Answer tracking */
         .answer-badge {
             background: #1e3a5f;
             color: white;
@@ -579,7 +580,6 @@
             font-size: 13px;
         }
 
-        /* Eye icon for answers */
         .eye-icon {
             display: none;
             margin-left: 10px;
@@ -617,7 +617,6 @@
             flex: 1;
         }
 
-        /* Bottom bar */
         .bottom-bar {
             background: #d2cbbc;
             padding: 10px 20px;
@@ -694,7 +693,6 @@
             font-size: 13px;
         }
 
-        /* Explanation panel */
         .explanation-panel {
             background: #fffef9;
             border-left: 4px solid #e6b422;
@@ -770,8 +768,8 @@
         <div class="ielts-header">
             <div class="brand">
                 <div class="ielts-logo">IELTS</div>
-                <div class="candidate">Vol 7 - Test 1</div>
-                <div class="question-types">Notes Completion • True/False/Not Given</div>
+                <div class="candidate">Vol 7 - Test 3</div>
+                <div class="question-types">Notes Completion • Table Completion • True/False/Not Given</div>
                 
                 <!-- Reading Mode Toggle -->
                 <div class="reading-mode-toggle" id="readingModeToggle">
@@ -792,9 +790,7 @@
         <!-- Question Navigator -->
         <div class="question-nav">
             <span style="font-weight: 600; color: #1e3a5f; font-size: 14px;">Câu:</span>
-            <div class="nav-buttons" id="navButtons">
-                <!-- Sẽ được tạo bằng JavaScript -->
-            </div>
+            <div class="nav-buttons" id="navButtons"></div>
         </div>
 
         <!-- Main Content with Resizable Columns -->
@@ -806,26 +802,24 @@
                     <span class="warning-text">* Không highlight các câu khác đoạn cùng lúc!</span>
                 </div>
                 <div class="reading-text font-medium" id="readingContent">
-                    <h1>CARNIVOROUS PLANT</h1>
-                    <p><em>They attract insects and then eat their flesh. Is that any way for a plant to behave?</em></p>
+                    <h1>The development of plastics</h1>
+                    <p>The first plastics were developed as a substitute for natural rubber. Chemically, rubber is a polymer - a compound containing large molecules that are formed by the bonding of many smaller, simpler units, repeated over and over again. The same bonding principle - polymerization - is the basis of the creation of a huge range of plastics by the chemical industry.</p>
                     
-                    <p>The naturalist and author of Origin of Species, Charles Darwin, was fascinated by carnivorous plants. In 1860, soon after he came across his first carnivorous plant - the sundew, Drosera - he wrote, 'I care more about Drosera than the origin of all the species in the world.' He spent months running experiments on the plants. He dropped flies and bits of meat on their leaves and watched them slowly fold their sticky tentacles over their prey. He thought it incredible that brushing a leaf with a single strand of human hair was enough to bring about a response. Yet sundews, he observed, ignored raindrops. To react to such a false alarm, he reasoned, would obviously be a great evil to the plant. This was no accident. This was adaptation.</p>
+                    <p>The first plastic was developed as a result of a competition in the USA. In the 1860s, $10,000 was offered to anybody who could replace ivory - supplies of which were declining - with something equally good as a material for making billiard balls. The prize was won by John Wesley Hyatt, with a material called celluloid. Celluloid was made by dissolving cellulose, a carbohydrate obtained from plants, in a solution of camphor dissolved in ethanol. This new material rapidly found other applications in the manufacture of everyday products such as knife handles and detachable collars and cuffs. But perhaps the best-known celluloid product was photographic film, without which the film industry could never have taken off at the end of the 19th century.</p>
                     
-                    <p>Darwin expanded his studies from sundews to other species in his book Insectivorous Plants. He was amazed at the quickness and power of the Venus flytrap. He showed that when one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes that could dissolve the prey. He noted that a leaf took more than a week to reopen after closing, and reasoned that the interlocking spines along the margin of the leaf allowed tiny insects to escape, saving the plant the expense of digesting an insufficient meal.</p>
+                    <p>Celluloid can be repeatedly softened and reshaped by heat, and is known as a thermoplastic. In 1907, Leo Baekeland (1863-1944), a Belgian chemist working in the USA, invented a different kind of plastic, by causing phenol and formaldehyde to react together. Baekeland called it Bakelite, and it was the first of the thermosets-plastic that can be cast and moulded while hot, but cannot be softened by heat and reshaped once they have set. Bakelite was a good insulator, and was resistant to water and acid. With these properties it was soon being used in the manufacture of electrical switches as well as a variety of domestic items.</p>
                     
-                    <p>Today, biologists using 21st-century tools to study cells and DNA are beginning to understand how these plants hunt, eat, and digest - and how these strange adaptations came about in the first place. Alexander Volkov, a plant physiologist at Oakwood University in Alabama, believes he has figured out the Venus flytrap's secret. 'This,' Volkov declares, 'is an electrical plant.'</p>
+                    <p>As the century went on, the range of newly developed plastic increased. Chemists began looking for other small molecules that could be strung together to make polymers. In the 1930s, chemists in Britain discovered that the gas ethylene would polymerize under heat and pressure to form a thermoplastic they called polythene. Polypropylene followed in the 1950s. Both are used to make bottles, pipes and plastic bags. A small change in the starting material - replacing a hydrogen atom in ethylene with a chlorine atom - produced rigid PVC (polyvinyl chloride), a fireproof plastic suitable for drains and gutters. By adding certain chemicals, a soft form of PVC can be produced, suitable as a substitute for rubber in items such as waterproof clothing. A closely related plastic is Teflon or PTFE (polytetrafluoroethylene). It produces very little friction, making it ideal for products such as non-stick frying pans.</p>
                     
-                    <p>When an insect brushes against a hair on the leaf of a Venus flytrap, the movement sets off an electric charge. The charge builds up inside the tissue of the leaf but is not enough to stimulate the snap, which keeps the Venus flytrap from reacting to false alarms, such as raindrops. An insect, however, is likely to brush a second hair, adding enough electric charge for the leaf to close.</p>
+                    <p>Polystyrene, a hard, clear material like glass, was developed during the 1930s in Germany, and its applications included food containers and toys. Expanded polystyrene is rigid and is widely used in packaging and insulation. Polyurethane, developed in the same country, was commonly produced as a foam which was very useful in the production of insulating materials.</p>
                     
-                    <p>Volkov's experiments reveal that the electric charge travels down fluid-filled tunnels in a leaf, which opens up pores in cell membranes. Water rushes from the cells on the inside of the leaf to those on the outside, causing the leaf to rapidly flip in shape from convex to concave, like a soft contact lens. As the leaves flip, they snap together, trapping an insect inside.</p>
+                    <p>In the 1930s, the first of the man-made fibres was created-nylon. Its inventor was a chemist called Wallace Carothers (1896-1937), who worked for the Du Pont company in the USA. He found that under the right conditions two particular chemicals would form a polymer that could be pumped out through holes and then stretched to form long glossy threads that could be woven like silk. Its first use was to make parachutes for the US armed forces in World War II. In the postwar years, it completely replaced silk in the manufacture of stockings.</p>
                     
-                    <p>The bladderwort plant has an equally sophisticated way of setting its underwater trap. It pumps water out of tiny air sacs or bladders, lowering the pressure inside. When a water flea or some other small creature swims past, it bends hairs on the bladder, causing a flap to spring apart. The low pressure sucks water in, carrying the creature along with it. In one five-hundredth of a second, the flap swings shut again. The cells in the bladder then begin to pump water out again, creating a new vacuum. Many other species of carnivorous plants act like living flypaper, catching animals on sticky tentacles. Pitcher plants use yet another strategy, growing long tube-shaped leaves into which insects fall. Some of the largest have pitchers up to 30cm deep and can consume whole frogs unlucky enough to fall into them. Sophisticated chemistry helps make the pitcher a death trap.</p>
+                    <p>Many other synthetic fibres joined nylon, including Orion, Acrilan, and Terylene. Today most garments are made of a blend of natural fibres, such as cotton and wool, and man-made fibres that make fabrics easier to look after.</p>
                     
-                    <p>Nicholas Gotelli, of the University of Vermont, is trying to figure out what evolutionary forces pushed these plants towards meat. Carnivorous plants clearly benefit from eating animals; when scientists feed pitcher plants extra bugs, the plants get bigger. But the benefits of eating flesh are not the ones you might expect. Carnivorous animals, like ourselves, use the carbon in protein and the fat in meat to build muscles and store energy. Carnivorous plants, however, take nitrogen and phosphorus from the flesh in order to build light-harvesting enzymes. Eating animals, in other words, lets carnivorous plants do what all plants do: grow by taking energy directly from the sun.</p>
+                    <p>Despite its enormous usefulness, plastic has its drawbacks. In fact one its great strengths - its indestructibility - is its greatest disadvantage. Beaches all over the world, even on the remotest island, are littered with plastic bottles that nothing can destroy. Nor is it very easy to recycle plastics, as different types of plastic are often found in the same items and call for different treatments.</p>
                     
-                    <p>Unfortunately, they do a really bad job of it. That's because they have to use a lot of energy to make the equipment they need to catch animals - the enzymes, the pumps, the sticky tentacles, and so on. A pitcher or a flytrap is not very good at photosynthesis because, unlike plants with ordinary leaves, they do not have flat solar panels that can absorb lots of sunlight. Gotelli suspects that only under special conditions are the benefits of being carnivorous greater than the costs. The poor soil of bogs and swamps, where many carnivorous plants grow, offers little nitrogen and phosphorus, so carnivorous plants enjoy an advantage there over 'conventional' plants. Also, bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis to survive. 'They're stuck, and they're making the best of it,' says Aaron Ellison of Harvard University.</p>
-                    
-                    <p>Unfortunately, the adaptations that enable carnivorous plants to survive in harsh habitats also make them extremely sensitive to environmental changes. Chemical fertilizers used in agriculture and pollution from power plants are adding extra nitrogen to many bogs in North America. Carnivorous plants are so finely adapted to low levels of nitrogen that this extra fertilizer is overloading their systems. Humans also threaten carnivorous plants in other ways. The black market trade in exotic carnivorous plants is strong, but even if this can be prevented, carnivorous plants will continue to suffer from other dangers. Their habitat is disappearing, to be replaced by shopping centers and houses. The suppression of wildfires by government agencies allows other plants to grow quickly and outcompete the Venus flytraps. Good news, perhaps, for flies. But a loss for all who delight in the inventiveness of evolution.</p>
+                    <p>Plastics can be made biodegradable by incorporating into their structure a material such as starch, which is attacked by bacteria and causes the plastic to fall apart. Other materials can be incorporated that gradually decay in sunlight - although bottles made of such materials have to be stored in the dark, to ensure they do not disintegrate before they have been used.</p>
                 </div>
             </div>
 
@@ -839,84 +833,86 @@
                     <span class="answer-badge" id="answeredCount">0/13 answered</span>
                 </div>
                 <div class="questions-list font-medium" id="questionsContent">
-                    <!-- Questions 1-5 -->
-                    <h3>Questions 1-5</h3>
-                    <p><em>Complete the notes below.</em></p>
-                    <p><em>Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                    <!-- Questions 1-7 -->
+                    <h3>Questions 1-7</h3>
+                    <p><em>Complete the table below.</em></p>
+                    <p><em>Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
                     
-                    <h4>Carnivorous Plants</h4>
-                    
-                    <h5>Darwin's experiments</h5>
-                    
-                    <h6>Drosera</h6>
-                    <ul>
-                        <li>He put insects and small amounts of meat onto leaves and observed what happened.</li>
-                        <li>He was amazed that one human hair triggered a response.</li>
-                        <li>
-                            <div class="question-wrapper">
-                                <span>He understood why the plant did not respond to <span class="bold-text" data-question="1">1</span></span>
-                                <input class="fill-input" id="q1" data-answer="raindrops" placeholder="answer">
-                                <span class="eye-icon" data-question="1">👁️</span>
-                            </div>
-                        </li>
-                    </ul>
-                    
-                    <h6>Venus Flytrap</h6>
-                    <ul>
-                        <li>
-                            <div class="question-wrapper">
-                                <span>He demonstrated how leaves close and then, for a short period, act like a <span class="bold-text" data-question="2">2</span></span>
-                                <input class="fill-input" id="q2" data-answer="stomach" placeholder="answer">
-                                <span class="eye-icon" data-question="2">👁️</span>
-                            </div>
-                        </li>
-                        <li>He noted the structure of leaves ensures small insects are released.</li>
-                    </ul>
-                    
-                    <h5>Biology today</h5>
-                    
-                    <h6>Venus Flytrap</h6>
-                    <ul>
-                        <li>If insects come into contact with leaf hairs, their movement produces an electric charge.</li>
-                        <li>
-                            <div class="question-wrapper">
-                                <span>The charge enters fluid-filled tunnels, causing <span class="bold-text" data-question="3">3</span></span>
-                                <input class="fill-input" id="q3" data-answer="pores" placeholder="answer"> in the cell walls to open.
-                                <span class="eye-icon" data-question="3">👁️</span>
-                            </div>
-                        </li>
-                        <li>Water moves between cells and then the leaf changes from convex to concave, trapping the insect inside.</li>
-                    </ul>
-                    
-                    <h6>Bladderwort</h6>
-                    <ul>
-                        <li>Hairs bend when insects swim past, resulting in opening of a flap.</li>
-                        <li>Water is sucked in.</li>
-                        <li>
-                            <div class="question-wrapper">
-                                <span>When water is pumped out of bladder cells, a <span class="bold-text" data-question="4">4</span></span>
-                                <input class="fill-input" id="q4" data-answer="vacuum" placeholder="answer"> builds up inside.
-                                <span class="eye-icon" data-question="4">👁️</span>
-                            </div>
-                        </li>
-                    </ul>
-                    
-                    <h6>Pitcher Plants</h6>
-                    <ul>
-                        <li>The plants have tube-shaped leaves that insects fall into.</li>
-                        <li>
-                            <div class="question-wrapper">
-                                <span>Some plants are big enough to capture and eat <span class="bold-text" data-question="5">5</span></span>
-                                <input class="fill-input" id="q5" data-answer="frogs" placeholder="answer">
-                                <span class="eye-icon" data-question="5">👁️</span>
-                            </div>
-                        </li>
-                    </ul>
+                    <h4>Early types of plastic</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Country of origin</th>
+                                <th>Properties</th>
+                                <th>Common uses</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Celluloid</td>
+                                <td>1860s</td>
+                                <td>USA</td>
+                                <td>Can be softened and reshaped by heat</td>
+                                <td>billiard balls (original use); cutlery; clothing; <span class="bold-text" data-question="1">1</span> <input class="fill-input" id="q1" data-answer="photographic film"><span class="eye-icon" data-question="1">👁️</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="bold-text" data-question="2">2</span> <input class="fill-input" id="q2" data-answer="Bakelite"><span class="eye-icon" data-question="2">👁️</span></td>
+                                <td>1907</td>
+                                <td>USA</td>
+                                <td>Can't be softened after setting; good insulator; resistant to water and acid</td>
+                                <td><span class="bold-text" data-question="3">3</span> <input class="fill-input" id="q3" data-answer="electrical switches"><span class="eye-icon" data-question="3">👁️</span>; household object</td>
+                            </tr>
+                            <tr>
+                                <td>Polythene</td>
+                                <td>1930s</td>
+                                <td><span class="bold-text" data-question="4">4</span> <input class="fill-input" id="q4" data-answer="Britain"><span class="eye-icon" data-question="4">👁️</span></td>
+                                <td>Can be softened and reshaped by heat</td>
+                                <td>bottles; pipes; plastic bags</td>
+                            </tr>
+                            <tr>
+                                <td>Polypropylene</td>
+                                <td>1950s</td>
+                                <td></td>
+                                <td></td>
+                                <td>bottles; pipes; plastic bags</td>
+                            </tr>
+                            <tr>
+                                <td>Rigid PVC</td>
+                                <td></td>
+                                <td></td>
+                                <td>Is <span class="bold-text" data-question="5">5</span> <input class="fill-input" id="q5" data-answer="fireproof"><span class="eye-icon" data-question="5">👁️</span></td>
+                                <td>external piping</td>
+                            </tr>
+                            <tr>
+                                <td>Soft PVC</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>outdoor clothing</td>
+                            </tr>
+                            <tr>
+                                <td>Polystyrene</td>
+                                <td>1930s</td>
+                                <td>Germany</td>
+                                <td>Resembles <span class="bold-text" data-question="6">6</span> <input class="fill-input" id="q6" data-answer="glass"><span class="eye-icon" data-question="6">👁️</span></td>
+                                <td>food containers; toys</td>
+                            </tr>
+                            <tr>
+                                <td>Polyurethane</td>
+                                <td></td>
+                                <td>Germany</td>
+                                <td>Usually manufactured as <span class="bold-text" data-question="7">7</span> <input class="fill-input" id="q7" data-answer="foam"><span class="eye-icon" data-question="7">👁️</span></td>
+                                <td>insulation</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <!-- Questions 6-13 -->
-                    <h3 style="margin-top: 30px;">Questions 6-13</h3>
+                    <!-- Questions 8-13 -->
+                    <h3 style="margin-top: 30px;">Questions 8-13</h3>
                     <p><em>Do the following statements agree with the information given in Reading Passage 1?</em></p>
-                    <p>In boxes 6-13 on your answer sheet, write</p>
+                    <p>In boxes 8-13 on your answer sheet, write</p>
                     
                     <div class="note-box">
                         <p><strong>TRUE</strong> if the statement agrees with the information</p>
@@ -925,34 +921,10 @@
                     </div>
 
                     <ol style="list-style-type: none; padding-left: 0;">
-                        <li style="margin-bottom: 20px;" class="question-item" id="q6-item">
-                            <div class="question-wrapper">
-                                <span class="question-number">6.</span>
-                                <span class="tf-statement">Pitcher plants increase in size after they have digested a lot of insects.</span>
-                                <span class="eye-icon" data-question="6">👁️</span>
-                            </div>
-                            <div class="tf-group" id="q6-group">
-                                <label class="tf-option"><input type="radio" name="q6" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
-                                <label class="tf-option"><input type="radio" name="q6" value="FALSE"> <span class="tf-text">FALSE</span></label>
-                                <label class="tf-option"><input type="radio" name="q6" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
-                            </div>
-                        </li>
-                        <li style="margin-bottom: 20px;" class="question-item" id="q7-item">
-                            <div class="question-wrapper">
-                                <span class="question-number">7.</span>
-                                <span class="tf-statement">Carnivorous plants produce light-harvesting enzymes with the nutrients they extract from animals.</span>
-                                <span class="eye-icon" data-question="7">👁️</span>
-                            </div>
-                            <div class="tf-group" id="q7-group">
-                                <label class="tf-option"><input type="radio" name="q7" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
-                                <label class="tf-option"><input type="radio" name="q7" value="FALSE"> <span class="tf-text">FALSE</span></label>
-                                <label class="tf-option"><input type="radio" name="q7" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
-                            </div>
-                        </li>
                         <li style="margin-bottom: 20px;" class="question-item" id="q8-item">
                             <div class="question-wrapper">
                                 <span class="question-number">8.</span>
-                                <span class="tf-statement">Pitcher plants and Venus flytraps are more efficient at photosynthesis than plants with ordinary leaves.</span>
+                                <span class="tf-statement">The chemical structure of rubber is very different to that of plastics.</span>
                                 <span class="eye-icon" data-question="8">👁️</span>
                             </div>
                             <div class="tf-group" id="q8-group">
@@ -964,7 +936,7 @@
                         <li style="margin-bottom: 20px;" class="question-item" id="q9-item">
                             <div class="question-wrapper">
                                 <span class="question-number">9.</span>
-                                <span class="tf-statement">Venus flytraps are better adapted to the soil of swamps and bogs than other carnivorous plants.</span>
+                                <span class="tf-statement">John Wesley Hyatt was an industrial chemist.</span>
                                 <span class="eye-icon" data-question="9">👁️</span>
                             </div>
                             <div class="tf-group" id="q9-group">
@@ -976,7 +948,7 @@
                         <li style="margin-bottom: 20px;" class="question-item" id="q10-item">
                             <div class="question-wrapper">
                                 <span class="question-number">10.</span>
-                                <span class="tf-statement">Carnivorous plants frequently find it difficult to photosynthesise in bogs due to a lack of sunlight.</span>
+                                <span class="tf-statement">Celluloid and Bakelite react in the same way to heat.</span>
                                 <span class="eye-icon" data-question="10">👁️</span>
                             </div>
                             <div class="tf-group" id="q10-group">
@@ -988,36 +960,36 @@
                         <li style="margin-bottom: 20px;" class="question-item" id="q11-item">
                             <div class="question-wrapper">
                                 <span class="question-number">11.</span>
-                                <span class="tf-statement">Scientists have campaigned to reduce the amount of nitrogen that is released into the soil by agricultural practices.</span>
+                                <span class="tf-statement">If an object is made of several plastics, these prove hard to break down and reuse.</span>
                                 <span class="eye-icon" data-question="11">👁️</span>
                             </div>
                             <div class="tf-group" id="q11-group">
-                                <label class="tf-option"><input type="radio" name="q11" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q11" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
                                 <label class="tf-option"><input type="radio" name="q11" value="FALSE"> <span class="tf-text">FALSE</span></label>
-                                <label class="tf-option"><input type="radio" name="q11" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                                <label class="tf-option"><input type="radio" name="q11" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
                             </div>
                         </li>
                         <li style="margin-bottom: 20px;" class="question-item" id="q12-item">
                             <div class="question-wrapper">
                                 <span class="question-number">12.</span>
-                                <span class="tf-statement">A lot of exotic carnivorous plants are sold illegally.</span>
+                                <span class="tf-statement">Adding starch to plastic makes it more durable.</span>
                                 <span class="eye-icon" data-question="12">👁️</span>
                             </div>
                             <div class="tf-group" id="q12-group">
-                                <label class="tf-option"><input type="radio" name="q12" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
-                                <label class="tf-option"><input type="radio" name="q12" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q12" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q12" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
                                 <label class="tf-option"><input type="radio" name="q12" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
                             </div>
                         </li>
                         <li style="margin-bottom: 20px;" class="question-item" id="q13-item">
                             <div class="question-wrapper">
                                 <span class="question-number">13.</span>
-                                <span class="tf-statement">Preventing wildfires is beneficial to the Venus flytrap.</span>
+                                <span class="tf-statement">Containers which are designed to decompose need particular storage conditions.</span>
                                 <span class="eye-icon" data-question="13">👁️</span>
                             </div>
                             <div class="tf-group" id="q13-group">
-                                <label class="tf-option"><input type="radio" name="q13" value="TRUE"> <span class="tf-text">TRUE</span></label>
-                                <label class="tf-option"><input type="radio" name="q13" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q13" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q13" value="FALSE"> <span class="tf-text">FALSE</span></label>
                                 <label class="tf-option"><input type="radio" name="q13" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
                             </div>
                         </li>
@@ -1065,59 +1037,65 @@
         let startTime = Date.now();
         let endTime = null;
         let readingMode = false;
+        let timerInterval; // Biến để lưu interval
         
-        // Answer key from explanation file
+        // Answer key from provided answers
         const answerKey = {
-            q1: 'raindrops', q2: 'stomach', q3: 'pores', q4: 'vacuum', q5: 'frogs',
-            q6: 'TRUE', q7: 'TRUE', q8: 'FALSE', q9: 'NOT GIVEN', q10: 'FALSE',
-            q11: 'NOT GIVEN', q12: 'TRUE', q13: 'FALSE'
+            q1: 'photographic film', q2: 'Bakelite', q3: 'electrical switches', q4: 'Britain', q5: 'fireproof', q6: 'glass', q7: 'foam',
+            q8: 'FALSE', q9: 'NOT GIVEN', q10: 'FALSE', q11: 'TRUE', q12: 'FALSE', q13: 'TRUE'
         };
 
-        // Mapping câu hỏi với câu văn chứa đáp án (dùng để highlight cả câu)
+        // Mapping câu hỏi với câu văn chứa đáp án
         const answerLocations = {
-            q1: { text: "Yet sundews, he observed, ignored raindrops.", keywords: ["raindrops"] },
-            q2: { text: "He showed that when one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes that could dissolve the prey.", keywords: ["stomach"] },
-            q3: { text: "Volkov's experiments reveal that the electric charge travels down fluid-filled tunnels in a leaf, which opens up pores in cell membranes.", keywords: ["pores"] },
-            q4: { text: "The cells in the bladder then begin to pump water out again, creating a new vacuum.", keywords: ["vacuum"] },
-            q5: { text: "Some of the largest have pitchers up to 30cm deep and can consume whole frogs unlucky enough to fall into them.", keywords: ["frogs"] },
-            q6: { text: "when scientists feed pitcher plants extra bugs, the plants get bigger.", keywords: ["bigger"] },
-            q7: { text: "Carnivorous plants, however, take nitrogen and phosphorus from the flesh in order to build light-harvesting enzymes.", keywords: ["light-harvesting enzymes"] },
-            q8: { text: "A pitcher or a flytrap is not very good at photosynthesis because, unlike plants with ordinary leaves, they do not have flat solar panels that can absorb lots of sunlight.", keywords: ["not very good at photosynthesis"] },
-            q9: { text: "The poor soil of bogs and swamps, where many carnivorous plants grow, offers little nitrogen and phosphorus, so carnivorous plants enjoy an advantage there over 'conventional' plants.", keywords: ["carnivorous plants enjoy an advantage"] },
-            q10: { text: "Also, bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis to survive.", keywords: ["flooded with sunshine", "enough photosynthesis"] },
-            q11: { text: "Chemical fertilizers used in agriculture and pollution from power plants are adding extra nitrogen to many bogs in North America.", keywords: ["adding extra nitrogen"] },
-            q12: { text: "The black market trade in exotic carnivorous plants is strong, but even if this can be prevented, carnivorous plants will continue to suffer from other dangers.", keywords: ["black market trade"] },
-            q13: { text: "The suppression of wildfires by government agencies allows other plants to grow quickly and outcompete the Venus flytraps.", keywords: ["outcompete"] }
+            q1: { text: "This new material rapidly found other applications in the manufacture of everyday products such as knife handles and detachable collars and cuffs. But perhaps the best-known celluloid product was photographic film, without which the film industry could never have taken off at the end of the 19th century", keywords: ["knife handles","detachable collars and cuffs", "photographic film"] },
+            q2: { text: "In 1907, Leo Baekeland (1863-1944), a Belgian chemist working in the USA, invented a different kind of plastic, by causing phenol and formaldehyde to react together. Baekeland called it Bakelite", keywords: ["Bakelite"] },
+            q3: { text: "Bakelite was a good insulator, and was resistant to water and acid. With these properties it was soon being used in the manufacture of electrical switches as well as a variety of domestic items", keywords: ["electrical switches", "domestic items"] },
+            q4: { text: "In the 1930s, chemists in Britain discovered that the gas ethylene would polymerize under heat and pressure to form a thermoplastic they called polythene.", keywords: ["Britain"] },
+            q5: { text: "A small change in the starting material - replacing a hydrogen atom in ethylene with a chlorine atom - produced rigid PVC (polyvinyl chloride), a fireproof plastic suitable for drains and gutters.", keywords: ["fireproof"] },
+            q6: { text: "Polystyrene, a hard, clear material like glass, was developed during the 1930s in Germany", keywords: ["glass"] },
+            q7: { text: "Polyurethane, developed in the same country, was commonly produced as a foam which was very useful in the production of insulating materials.", keywords: ["foam"] },
+            q8: { text: "Chemically, rubber is a polymer - a compound containing large molecules that are formed by the bonding of many smaller, simpler units, repeated over and over again. The same bonding principle - polymerization - is the basis of the creation of a huge range of plastics by the chemical industry.", keywords: ["same bonding principle"] },
+            q9: { text: "The prize was won by John Wesley Hyatt, with a material called celluloid.", keywords: ["John Wesley Hyatt"] },
+            q10: { text: "Celluloid can be repeatedly softened and reshaped by heat, and is known as a thermoplastic. In 1907, Leo Baekeland (1863-1944), a Belgian chemist working in the USA, invented a different kind of plastic, by causing phenol and formaldehyde to react together. Baekeland called it Bakelite, and it was the first of the thermosets-plastic that can be cast and moulded while hot, but cannot be softened by heat and reshaped once they have set", keywords: ["thermoplastic", "thermosets", "cannot be softened"] },
+            q11: { text: "Nor is it very easy to recycle plastics, as different types of plastic are often found in the same items and call for different treatments.", keywords: ["not very easy to recycle", "different treatments"] },
+            q12: { text: "Plastics can be made biodegradable by incorporating into their structure a material such as starch, which is attacked by bacteria and causes the plastic to fall apart.", keywords: ["fall apart"] },
+            q13: { text: "Other materials can be incorporated that gradually decay in sunlight - although bottles made of such materials have to be stored in the dark, to ensure they do not disintegrate before they have been used.", keywords: ["stored in the dark"] }
         };
 
-        // Explanations from the provided docx
+        // Explanations
         const explanations = {
-            q1: "<strong>Đáp án: raindrops</strong><br><br><strong>Giải thích:</strong> 'Yet sundews, he observed, ignored raindrops. To react to such a false alarm ... would be a great evil to the plant.' Darwin realized they did NOT respond to raindrops → correct.",
-            q2: "<strong>Đáp án: stomach</strong><br><br><strong>Giải thích:</strong> 'When one of its leaves snapped shut, it formed itself into a temporary 'stomach', secreting enzymes ...' So the leaf temporarily acted like a stomach → correct.",
-            q3: "<strong>Đáp án: pores</strong><br><br><strong>Giải thích:</strong> 'The electric charge ... opens up pores in cell membranes.' That's exactly what opens when the charge travels down tunnels → correct.",
-            q4: "<strong>Đáp án: vacuum</strong><br><br><strong>Giải thích:</strong> 'The cells ... pump water out again, creating a new vacuum.' So inside the bladder, a vacuum builds up → correct.",
-            q5: "<strong>Đáp án: frogs</strong><br><br><strong>Giải thích:</strong> 'Some of the largest have pitchers up to 30cm deep and can consume whole frogs ...' The large pitcher plants can eat frogs → correct.",
-            q6: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'When scientists feed pitcher plants extra bugs, the plants get bigger.' That means they increase in size after eating many insects → TRUE.",
-            q7: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'Carnivorous plants ... take nitrogen and phosphorus ... in order to build light-harvesting enzymes.' Exactly matches the statement → TRUE.",
-            q8: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'A pitcher or flytrap is not very good at photosynthesis ... unlike plants with ordinary leaves.' They are less efficient, not more efficient → FALSE.",
-            q9: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> It says carnivorous plants in general do better in bogs and swamps, but it never compares Venus flytraps vs other carnivorous plants → NOT GIVEN.",
-            q10: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'Bogs are often flooded with sunshine, so even an inefficient carnivorous plant can carry out enough photosynthesis.' Not 'difficult to photosynthesise due to lack of sunlight' → FALSE.",
-            q11: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> It says nitrogen pollution from agriculture harms them, but does not mention scientists campaigning to reduce it → NOT GIVEN.",
-            q12: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'The black market trade in exotic carnivorous plants is strong ...' That means many are sold illegally → TRUE.",
-            q13: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'The suppression of wildfires ... allows other plants to grow quickly and outcompete the Venus flytraps.' So preventing fires is bad for Venus flytraps → FALSE."
+            q1: "<strong>Đáp án: photographic film</strong><br><br><strong>Giải thích:</strong> 'But perhaps the best-known celluloid product was photographic film …'",
+            q2: "<strong>Đáp án: Bakelite</strong><br><br><strong>Giải thích:</strong> 'In 1907, Leo Baekeland … invented a different kind of plastic … Baekeland called it Bakelite …'",
+            q3: "<strong>Đáp án: electrical switches</strong><br><br><strong>Giải thích:</strong> 'Bakelite was a good insulator … soon being used in the manufacture of electrical switches …'",
+            q4: "<strong>Đáp án: Britain</strong><br><br><strong>Giải thích:</strong> 'In the 1930s, chemists in Britain discovered that the gas ethylene would polymerize … to form … polythene.'",
+            q5: "<strong>Đáp án: fireproof</strong><br><br><strong>Giải thích:</strong> 'Rigid PVC … a fireproof plastic suitable for drains and gutters.'",
+            q6: "<strong>Đáp án: glass</strong><br><br><strong>Giải thích:</strong> 'Polystyrene, a hard, clear material like glass …'",
+            q7: "<strong>Đáp án: foam</strong><br><br><strong>Giải thích:</strong> 'Polyurethane … was commonly produced as a foam … useful in insulation materials.'",
+            q8: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Text: 'Chemically, rubber is a polymer … The same bonding principle … is the basis of … plastics.' They share the same principle (polymerization). Not 'very different.'",
+            q9: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Text only says he won the prize with celluloid. Nothing about his profession.",
+            q10: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Celluloid = thermoplastic (softens repeatedly). Bakelite = thermoset (cannot be softened). Opposite.",
+            q11: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'Nor is it very easy to recycle plastics, as different types … in the same items … call for different treatments.'",
+            q12: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'Plastics can be made biodegradable by incorporating … starch … which … causes the plastic to fall apart.' Opposite of durable.",
+            q13: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'Bottles made of such materials have to be stored in the dark, to ensure they do not disintegrate before they have been used.'"
         };
 
         // ==================== TIMER ====================
-        let timeLeft = 3600;
-        const timerEl = document.getElementById('timerDisplay');
-        const timerInterval = setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft--;
-                const mins = Math.floor(timeLeft / 60);
-                const secs = timeLeft % 60;
-                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
-        }, 1000);
+        function startTimer() {
+            let timeLeft = 3600; // 60 phút
+            const timerEl = document.getElementById('timerDisplay');
+            
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0 && !examSubmitted) { // Chỉ chạy nếu chưa nộp bài
+                    timeLeft--;
+                    const mins = Math.floor(timeLeft / 60);
+                    const secs = timeLeft % 60;
+                    timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                } else if (examSubmitted) {
+                    // Nếu đã nộp bài, dừng timer
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+        }
 
         // ==================== READING MODE TOGGLE ====================
         const testWrapper = document.getElementById('testWrapper');
@@ -1135,29 +1113,20 @@
         });
 
         // ==================== FONT SIZE CONTROLS ====================
-        document.getElementById('fontSmall').addEventListener('click', function() {
-            setFontSize('small');
-        });
-        document.getElementById('fontMedium').addEventListener('click', function() {
-            setFontSize('medium');
-        });
-        document.getElementById('fontLarge').addEventListener('click', function() {
-            setFontSize('large');
-        });
+        document.getElementById('fontSmall').addEventListener('click', function() { setFontSize('small'); });
+        document.getElementById('fontMedium').addEventListener('click', function() { setFontSize('medium'); });
+        document.getElementById('fontLarge').addEventListener('click', function() { setFontSize('large'); });
 
         function setFontSize(size) {
-            // Update buttons
             document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
             if (size === 'small') document.getElementById('fontSmall').classList.add('active');
             if (size === 'medium') document.getElementById('fontMedium').classList.add('active');
             if (size === 'large') document.getElementById('fontLarge').classList.add('active');
             
-            // Update reading panel
             const readingContent = document.getElementById('readingContent');
             readingContent.classList.remove('font-small', 'font-medium', 'font-large');
             readingContent.classList.add(`font-${size}`);
             
-            // Update questions panel
             const questionsContent = document.getElementById('questionsContent');
             questionsContent.classList.remove('font-small', 'font-medium', 'font-large');
             questionsContent.classList.add(`font-${size}`);
@@ -1208,7 +1177,6 @@
                     const qNum = this.getAttribute('data-question');
                     scrollToQuestion(qNum);
                     
-                    // Cập nhật active state
                     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                 });
@@ -1220,22 +1188,19 @@
         function scrollToQuestion(questionNum) {
             let element = null;
             
-            if (questionNum <= 5) {
-                // Câu 1-5: tìm input tương ứng
+            if (questionNum <= 7) {
                 element = document.getElementById(`q${questionNum}`);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     element.focus();
                 }
             } else {
-                // Câu 6-13: tìm question-item
                 element = document.getElementById(`q${questionNum}-item`);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
             
-            // Cập nhật active state trên nav
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-question') === questionNum.toString()) {
@@ -1251,7 +1216,7 @@
                 
                 let isAnswered = false;
                 
-                if (i <= 5) {
+                if (i <= 7) {
                     const input = document.getElementById(`q${i}`);
                     if (input && input.value.trim() !== '') {
                         isAnswered = true;
@@ -1271,14 +1236,12 @@
         function updateAnswerCount() {
             let answered = 0;
             
-            // Count fill inputs 1-5
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 7; i++) {
                 const input = document.getElementById(`q${i}`);
                 if (input && input.value.trim() !== '') answered++;
             }
             
-            // Count radio groups 6-13
-            for (let i = 6; i <= 13; i++) {
+            for (let i = 8; i <= 13; i++) {
                 if (document.querySelector(`input[name="q${i}"]:checked`)) {
                     answered++;
                 }
@@ -1287,30 +1250,22 @@
             document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
             document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
             
-            // Update nav buttons
             updateNavButtons();
         }
 
-        // Auto update on input change
         document.querySelectorAll('.fill-input').forEach(el => {
-            el.addEventListener('input', function() {
-                updateAnswerCount();
-            });
+            el.addEventListener('input', function() { updateAnswerCount(); });
         });
         
         document.querySelectorAll('input[type="radio"]').forEach(el => {
-            el.addEventListener('change', function() {
-                updateAnswerCount();
-            });
+            el.addEventListener('change', function() { updateAnswerCount(); });
         });
 
         // ==================== RIGHT-CLICK HIGHLIGHT ====================
         const contextMenu = document.getElementById('contextMenu');
         
-        // Right click trên reading panel
         document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
             e.preventDefault();
-            
             const selection = window.getSelection();
             if (selection.toString().trim() === '') return;
             
@@ -1322,10 +1277,8 @@
             contextMenu.style.top = e.pageY + 'px';
         });
 
-        // Right click trên questions panel
         document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
             e.preventDefault();
-            
             const selection = window.getSelection();
             if (selection.toString().trim() === '') return;
             
@@ -1341,7 +1294,6 @@
             contextMenu.style.display = 'none';
         });
 
-        // Hàm highlight - chỉ tô màu, không gạch chân
         window.applyHighlight = (color) => {
             if (!selectedRange) return;
             
@@ -1349,13 +1301,9 @@
                 const span = document.createElement('span');
                 span.className = `highlight-${color}`;
                 
-                // Lấy range hiện tại
                 const range = selectedRange.cloneRange();
-                
-                // Xóa selection cũ
                 window.getSelection().removeAllRanges();
                 
-                // Thử extract và insert
                 try {
                     const contents = range.extractContents();
                     span.appendChild(contents);
@@ -1363,31 +1311,26 @@
                 } catch (e) {
                     console.log('Lỗi extract range:', e);
                     
-                    // Cách 2: Xử lý thủ công cho range phức tạp
                     const startContainer = range.startContainer;
                     const endContainer = range.endContainer;
                     const startOffset = range.startOffset;
                     const endOffset = range.endOffset;
                     
-                    // Nếu cùng một node
                     if (startContainer === endContainer) {
                         const text = startContainer.textContent;
                         const parent = startContainer.parentNode;
                         
-                        // Tạo các node mới
                         const beforeText = document.createTextNode(text.substring(0, startOffset));
                         const highlightText = document.createElement('span');
                         highlightText.className = `highlight-${color}`;
                         highlightText.textContent = text.substring(startOffset, endOffset);
                         const afterText = document.createTextNode(text.substring(endOffset));
                         
-                        // Thay thế node cũ
                         parent.replaceChild(afterText, startContainer);
                         parent.insertBefore(highlightText, afterText);
                         parent.insertBefore(beforeText, highlightText);
                     } else {
-                        // Với range phức tạp, dùng cách đơn giản hơn
-                        alert('Không thể highlight đoạn văn bản phức tạp này. Vui lòng chọn đoạn ngắn hơn.');
+                        alert('Không thể highlight đoạn văn bản phức tạp này.');
                     }
                 }
             } catch (e) {
@@ -1399,17 +1342,14 @@
             selectedRange = null;
         };
 
-        // Hàm xóa highlight
         window.removeHighlight = () => {
             if (!selectedRange) return;
             
             try {
-                // Tìm tất cả các highlight trong vùng chọn
                 const range = selectedRange.cloneRange();
                 const highlights = document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink');
                 
                 highlights.forEach(highlight => {
-                    // Kiểm tra xem highlight có nằm trong vùng chọn không
                     if (range.intersectsNode(highlight)) {
                         const parent = highlight.parentNode;
                         while (highlight.firstChild) {
@@ -1422,7 +1362,6 @@
                 console.log('Lỗi khi xóa highlight:', e);
             }
             
-            // Xóa selection
             window.getSelection().removeAllRanges();
             contextMenu.style.display = 'none';
             selectedRange = null;
@@ -1430,7 +1369,6 @@
 
         // ==================== CLEAR HIGHLIGHTS ====================
         function clearAllHighlights() {
-            // Xóa tất cả dynamic-highlight
             document.querySelectorAll('.dynamic-highlight').forEach(el => {
                 const parent = el.parentNode;
                 if (parent) {
@@ -1441,7 +1379,6 @@
                 }
             });
             
-            // Xóa highlight trong câu hỏi
             document.querySelectorAll('.question-highlight').forEach(el => {
                 el.classList.remove('question-highlight');
             });
@@ -1455,23 +1392,21 @@
 
         // ==================== HIGHLIGHT QUESTION ====================
         function highlightQuestion(questionNum) {
-            // Xóa highlight cũ
             document.querySelectorAll('.question-highlight').forEach(el => {
                 el.classList.remove('question-highlight');
             });
             
-            // Highlight câu hỏi tương ứng
-            if (questionNum <= 5) {
-                // Câu 1-5: tìm dòng chứa input
+            if (questionNum <= 7) {
                 const input = document.getElementById(`q${questionNum}`);
                 if (input) {
-                    const listItem = input.closest('li');
-                    if (listItem) {
-                        listItem.classList.add('question-highlight');
+                    const td = input.closest('td');
+                    if (td) td.classList.add('question-highlight');
+                    else {
+                        const tr = input.closest('tr');
+                        if (tr) tr.classList.add('question-highlight');
                     }
                 }
             } else {
-                // Câu 6-13: tìm question-item
                 const questionItem = document.getElementById(`q${questionNum}-item`);
                 if (questionItem) {
                     questionItem.classList.add('question-highlight');
@@ -1481,7 +1416,6 @@
 
         // ==================== HIGHLIGHT ANSWER LOCATION ====================
         function highlightAnswerLocation(questionNum) {
-            // Xóa highlight trước đó
             clearAllHighlights();
             
             const readingContent = document.getElementById('readingContent');
@@ -1489,111 +1423,140 @@
             
             if (!location) return false;
             
-            // Highlight question
             highlightQuestion(questionNum);
             
-            // Tìm và highlight câu văn chứa đáp án
             const fullText = location.text;
             const keywords = location.keywords || [];
             
-            // Tìm tất cả các đoạn văn
             const paragraphs = readingContent.getElementsByTagName('p');
+            let found = false;
             
             for (let p of paragraphs) {
                 if (p.textContent.includes(fullText)) {
+                    found = true;
                     try {
-                        // Tìm vị trí của text trong đoạn văn
-                        const text = p.textContent;
-                        const startIndex = text.indexOf(fullText);
+                        const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
+                        const textNodes = [];
+                        while (walker.nextNode()) textNodes.push(walker.currentNode);
                         
-                        if (startIndex !== -1) {
-                            // Tạo range để highlight
-                            const range = document.createRange();
-                            
-                            // Tìm node chứa text
-                            let currentNode = p.firstChild;
-                            let currentIndex = 0;
-                            
-                            // Hàm đệ quy để tìm node và offset
-                            function findNodeAndOffset(node, targetIndex) {
-                                if (node.nodeType === Node.TEXT_NODE) {
-                                    const length = node.textContent.length;
-                                    if (currentIndex + length > targetIndex) {
-                                        return { node, offset: targetIndex - currentIndex };
-                                    }
-                                    currentIndex += length;
-                                } else {
-                                    for (let child of node.childNodes) {
-                                        const result = findNodeAndOffset(child, targetIndex);
-                                        if (result) return result;
-                                    }
-                                }
-                                return null;
-                            }
-                            
-                            // Tìm node bắt đầu
-                            currentIndex = 0;
-                            const startNodeInfo = findNodeAndOffset(p, startIndex);
-                            
-                            // Tìm node kết thúc
-                            currentIndex = 0;
-                            const endNodeInfo = findNodeAndOffset(p, startIndex + fullText.length);
-                            
-                            if (startNodeInfo && endNodeInfo) {
-                                range.setStart(startNodeInfo.node, startNodeInfo.offset);
-                                range.setEnd(endNodeInfo.node, endNodeInfo.offset);
-                                
-                                // Highlight phần text
-                                const span = document.createElement('span');
-                                span.className = 'dynamic-highlight';
-                                
-                                try {
-                                    const contents = range.extractContents();
-                                    span.appendChild(contents);
-                                    range.insertNode(span);
-                                } catch (e) {
-                                    console.log('Lỗi extract range:', e);
-                                    return false;
-                                }
-                                
-                                // Gạch chân keywords trong phần đã highlight
-                                keywords.forEach(keyword => {
-                                    const keywordRegex = new RegExp(`(${keyword})`, 'gi');
-                                    const highlightSpan = document.querySelector('.dynamic-highlight');
-                                    if (highlightSpan) {
-                                        const html = highlightSpan.innerHTML;
-                                        highlightSpan.innerHTML = html.replace(
-                                            keywordRegex,
-                                            '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                                        );
-                                    }
-                                });
-                                
-                                // Scroll vào view
-                                const highlighted = document.querySelector('.dynamic-highlight');
-                                if (highlighted) {
-                                    highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }
-                                
-                                // Đánh dấu eye icon active
-                                document.querySelectorAll('.eye-icon').forEach(icon => {
-                                    icon.classList.remove('active');
-                                });
-                                const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
-                                if (eyeIcon) eyeIcon.classList.add('active');
-                                
-                                currentHighlightedQuestion = questionNum;
-                                
-                                return true;
-                            }
+                        let combinedText = '';
+                        const nodeRanges = [];
+                        for (let node of textNodes) {
+                            const start = combinedText.length;
+                            combinedText += node.textContent;
+                            nodeRanges.push({ node, start, end: combinedText.length });
                         }
+                        
+                        const searchStart = combinedText.indexOf(fullText);
+                        if (searchStart === -1) continue;
+                        
+                        const searchEnd = searchStart + fullText.length;
+                        
+                        const startNodeInfo = nodeRanges.find(r => r.start <= searchStart && r.end > searchStart);
+                        const endNodeInfo = nodeRanges.find(r => r.start < searchEnd && r.end >= searchEnd);
+                        
+                        if (!startNodeInfo || !endNodeInfo) continue;
+                        
+                        const startOffset = searchStart - startNodeInfo.start;
+                        const endOffset = searchEnd - endNodeInfo.start;
+                        
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startOffset);
+                        range.setEnd(endNodeInfo.node, endOffset);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        keywords.forEach(keyword => {
+                            const keywordRegex = new RegExp(`(${keyword})`, 'gi');
+                            const highlightSpan = document.querySelector('.dynamic-highlight');
+                            if (highlightSpan) {
+                                const html = highlightSpan.innerHTML;
+                                highlightSpan.innerHTML = html.replace(
+                                    keywordRegex,
+                                    '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
+                                );
+                            }
+                        });
+                        
+                        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        document.querySelectorAll('.eye-icon').forEach(icon => icon.classList.remove('active'));
+                        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                        if (eyeIcon) eyeIcon.classList.add('active');
+                        
+                        currentHighlightedQuestion = questionNum;
                     } catch (e) {
-                        console.log('Không thể highlight đoạn này:', e);
+                        console.log('Lỗi khi highlight với fallback:', e);
                     }
                     break;
                 }
             }
-            return false;
+            
+            if (!found) {
+                for (let p of paragraphs) {
+                    for (let keyword of keywords) {
+                        if (p.textContent.includes(keyword)) {
+                            try {
+                                const regex = new RegExp(`(${keyword})`, 'i');
+                                const match = p.textContent.match(regex);
+                                if (!match) continue;
+                                
+                                const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
+                                const textNodes = [];
+                                while (walker.nextNode()) textNodes.push(walker.currentNode);
+                                
+                                let combinedText = '';
+                                const nodeRanges = [];
+                                for (let node of textNodes) {
+                                    const start = combinedText.length;
+                                    combinedText += node.textContent;
+                                    nodeRanges.push({ node, start, end: combinedText.length });
+                                }
+                                
+                                const searchStart = combinedText.indexOf(keyword);
+                                if (searchStart === -1) continue;
+                                const searchEnd = searchStart + keyword.length;
+                                
+                                const startNodeInfo = nodeRanges.find(r => r.start <= searchStart && r.end > searchStart);
+                                const endNodeInfo = nodeRanges.find(r => r.start < searchEnd && r.end >= searchEnd);
+                                
+                                if (!startNodeInfo || !endNodeInfo) continue;
+                                
+                                const startOffset = searchStart - startNodeInfo.start;
+                                const endOffset = searchEnd - endNodeInfo.start;
+                                
+                                const range = document.createRange();
+                                range.setStart(startNodeInfo.node, startOffset);
+                                range.setEnd(endNodeInfo.node, endOffset);
+                                
+                                const span = document.createElement('span');
+                                span.className = 'dynamic-highlight';
+                                
+                                const contents = range.extractContents();
+                                span.appendChild(contents);
+                                range.insertNode(span);
+                                
+                                span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                                document.querySelectorAll('.eye-icon').forEach(icon => icon.classList.remove('active'));
+                                const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                                if (eyeIcon) eyeIcon.classList.add('active');
+                                
+                                currentHighlightedQuestion = questionNum;
+                            } catch (e) {
+                                console.log('Lỗi khi highlight keyword:', e);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         // ==================== SHOW EXPLANATION ====================
@@ -1608,7 +1571,6 @@
                 
                 let explanationHtml = explanations[expKey];
                 
-                // Thêm feedback về câu trả lời
                 if (examSubmitted) {
                     const userAnswer = getUserAnswer(questionNum);
                     const correctAnswer = answerKey[`q${questionNum}`];
@@ -1623,19 +1585,30 @@
                 
                 document.getElementById('explanationText').innerHTML = explanationHtml;
                 
-                // Xóa highlight cũ trước khi highlight mới
                 clearAllHighlights();
-                
-                // Highlight vị trí đáp án mới
                 setTimeout(() => {
                     highlightAnswerLocation(questionNum);
                 }, 100);
+                
+                // Khi click vào mắt, hiển thị badge đáp án đúng cho câu đó
+                if (examSubmitted && questionNum <= 7) {
+                    const input = document.getElementById(`q${questionNum}`);
+                    if (input && input.classList.contains('incorrect')) {
+                        // Kiểm tra xem đã có badge chưa, nếu chưa thì thêm
+                        if (!input.parentNode.querySelector('.correct-answer-badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'correct-answer-badge';
+                            badge.textContent = answerKey[`q${questionNum}`];
+                            input.parentNode.appendChild(badge);
+                        }
+                    }
+                }
             }
         }
 
         // ==================== GET USER ANSWER ====================
         function getUserAnswer(questionNum) {
-            if (questionNum <= 5) {
+            if (questionNum <= 7) {
                 const input = document.getElementById(`q${questionNum}`);
                 return input ? input.value.trim() : null;
             } else {
@@ -1646,45 +1619,29 @@
 
         // ==================== MARK ANSWERS ====================
         function markAnswers() {
-            // Mark fill-in answers 1-5
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 7; i++) {
                 const input = document.getElementById(`q${i}`);
                 if (input) {
                     const userAnswer = input.value.trim().toLowerCase();
-                    const correctAnswer = answerKey[`q${i}`];
+                    const correctAnswer = answerKey[`q${i}`].toLowerCase();
                     
-                    // Xóa classes cũ
                     input.classList.remove('correct', 'incorrect');
                     
-                    // Xóa badge cũ
-                    const oldBadge = input.parentNode.querySelector('.correct-answer-badge');
-                    if (oldBadge) oldBadge.remove();
-                    
+                    // KHÔNG hiện badge ngay khi nộp bài
+                    // Chỉ tô màu xanh/đỏ
                     if (userAnswer) {
                         if (userAnswer === correctAnswer) {
                             input.classList.add('correct');
                         } else {
                             input.classList.add('incorrect');
-                            
-                            // Thêm badge đáp án đúng
-                            const badge = document.createElement('span');
-                            badge.className = 'correct-answer-badge';
-                            badge.textContent = correctAnswer;
-                            input.parentNode.appendChild(badge);
                         }
                     } else {
-                        // Chưa điền -> coi như sai và hiển thị badge
                         input.classList.add('incorrect');
-                        const badge = document.createElement('span');
-                        badge.className = 'correct-answer-badge';
-                        badge.textContent = correctAnswer;
-                        input.parentNode.appendChild(badge);
                     }
                 }
             }
             
-            // Mark True/False answers 6-13
-            for (let i = 6; i <= 13; i++) {
+            for (let i = 8; i <= 13; i++) {
                 const group = document.getElementById(`q${i}-group`);
                 if (!group) continue;
                 
@@ -1705,7 +1662,6 @@
                     }
                 });
                 
-                // Nếu không chọn gì, vẫn đánh dấu đáp án đúng (màu xanh)
                 if (!selected) {
                     options.forEach(option => {
                         const radio = option.querySelector('input[type="radio"]');
@@ -1722,15 +1678,15 @@
             let correct = 0;
             let total = 13;
             
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 7; i++) {
                 const input = document.getElementById(`q${i}`);
                 if (input) {
                     const userAnswer = input.value.trim().toLowerCase();
-                    if (userAnswer === answerKey[`q${i}`]) correct++;
+                    if (userAnswer === answerKey[`q${i}`].toLowerCase()) correct++;
                 }
             }
             
-            for (let i = 6; i <= 13; i++) {
+            for (let i = 8; i <= 13; i++) {
                 const selected = document.querySelector(`input[name="q${i}"]:checked`);
                 if (selected && selected.value === answerKey[`q${i}`]) correct++;
             }
@@ -1740,12 +1696,7 @@
             const minutes = Math.floor(timeTaken / 60);
             const seconds = timeTaken % 60;
             
-            return {
-                correct,
-                total,
-                percentage,
-                timeString: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-            };
+            return { correct, total, percentage, timeString: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}` };
         }
 
         // ==================== SETUP EYE ICONS ====================
@@ -1754,9 +1705,6 @@
                 icon.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const questionNum = this.getAttribute('data-question');
-                    
-                    // Luôn xóa highlight cũ và highlight mới
-                    // Không kiểm tra active class để có thể nhấn lại nhiều lần
                     showExplanation(questionNum);
                 });
             });
@@ -1769,15 +1717,14 @@
         });
 
         // ==================== SUBMIT ====================
-        document.getElementById('submitBtn').addEventListener('click', () => {
+        document.getElementById('submitBtn').addEventListener('click', function() {
             if (examSubmitted) return;
             
-            // Kiểm tra câu chưa làm
             let unanswered = [];
             for (let i = 1; i <= 13; i++) {
                 let isAnswered = false;
                 
-                if (i <= 5) {
+                if (i <= 7) {
                     const input = document.getElementById(`q${i}`);
                     if (input && input.value.trim() !== '') isAnswered = true;
                 } else {
@@ -1795,25 +1742,21 @@
             examSubmitted = true;
             endTime = Date.now();
             
-            // Mark answers
+            // Dừng timer
+            clearInterval(timerInterval);
+            
             markAnswers();
             
-            // Calculate results
             const results = calculateResults();
             
-            // Show result stats
             const resultStats = document.getElementById('resultStats');
             resultStats.style.display = 'inline-block';
             resultStats.textContent = `Kết quả: ${results.correct}/${results.total} (${results.percentage}%) - Thời gian: ${results.timeString}`;
             
-            // Enable explain button
             document.getElementById('explainBtn').disabled = false;
-            
-            // Update submit button
             this.disabled = true;
             this.textContent = 'Đã nộp bài';
             
-            // Show result in explanation panel
             document.getElementById('explanationPanel').classList.add('show');
             document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
             document.getElementById('explanationText').innerHTML = `
@@ -1831,45 +1774,40 @@
             
             explanationMode = true;
             
-            // Hiện eye icons cho tất cả câu
             document.querySelectorAll('.eye-icon').forEach(icon => {
                 icon.style.display = 'inline-block';
             });
             
-            // Disable explain button
             this.disabled = true;
             this.textContent = 'Đang xem giải thích';
             
-            // Ẩn kết quả
             document.getElementById('explanationPanel').classList.remove('show');
-            
-            // Xóa highlight cũ
             clearAllHighlights();
         });
 
         // ==================== RESET ====================
         document.getElementById('resetBtn').addEventListener('click', () => {
-            if (confirm('Bạn có chắc muốn reset tất cả? Mọi câu trả lời sẽ bị xóa.')) {
-                // Reset variables
+            if (confirm('Bạn có chắc muốn reset tất cả?')) {
                 examSubmitted = false;
                 explanationMode = false;
                 startTime = Date.now();
                 
-                // Clear all inputs 1-5
-                for (let i = 1; i <= 5; i++) {
+                // Reset timer
+                clearInterval(timerInterval);
+                startTimer();
+                
+                for (let i = 1; i <= 7; i++) {
                     const input = document.getElementById(`q${i}`);
                     if (input) {
                         input.value = '';
                         input.classList.remove('correct', 'incorrect');
                         
-                        // Xóa badge nếu có
                         const badge = input.parentNode.querySelector('.correct-answer-badge');
                         if (badge) badge.remove();
                     }
                 }
                 
-                // Clear all radio buttons 6-13
-                for (let i = 6; i <= 13; i++) {
+                for (let i = 8; i <= 13; i++) {
                     const radios = document.querySelectorAll(`input[name="q${i}"]`);
                     radios.forEach(radio => radio.checked = false);
                     
@@ -1881,27 +1819,20 @@
                     }
                 }
                 
-                // Hide eye icons
                 document.querySelectorAll('.eye-icon').forEach(icon => {
                     icon.style.display = 'none';
                 });
                 
-                // Reset buttons
                 document.getElementById('submitBtn').disabled = false;
                 document.getElementById('submitBtn').textContent = 'Nộp bài';
                 document.getElementById('explainBtn').disabled = true;
                 document.getElementById('explainBtn').textContent = 'Xem giải thích';
                 
-                // Hide result stats
                 document.getElementById('resultStats').style.display = 'none';
-                
-                // Hide explanation panel
                 document.getElementById('explanationPanel').classList.remove('show');
                 
-                // Clear highlights
                 clearAllHighlights();
                 
-                // Also clear any user highlights
                 document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(el => {
                     const parent = el.parentNode;
                     if (parent) {
@@ -1912,25 +1843,23 @@
                     }
                 });
                 
-                // Update answer count
                 updateAnswerCount();
                 
-                // Reset nav active
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     btn.classList.remove('active');
                 });
             }
         });
 
-        // Ẩn eye icons ban đầu
+        // ==================== INITIALIZE ====================
         document.querySelectorAll('.eye-icon').forEach(icon => {
             icon.style.display = 'none';
         });
 
-        // Initialize
         createNavButtons();
         updateAnswerCount();
         setupEyeIcons();
+        startTimer(); // Khởi động timer
     </script>
 </body>
 </html>

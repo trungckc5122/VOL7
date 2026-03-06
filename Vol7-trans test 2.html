@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vol 7 Test 2 - Song ngữ Anh Việt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1600px;
+            background: #ecf0f1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        /* Reading mode */
+        .app-container.reading-mode {
+            background: #f8f5e6;
+        }
+        .app-container.reading-mode .col-content {
+            background: #fffaf0;
+        }
+        .app-container.reading-mode .col-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+        .app-container.reading-mode .status-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f2a44 100%);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+
+        .brand h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #e6b422;
+        }
+
+        .passage-selector {
+            display: flex;
+            gap: 10px;
+            background: #1a2f44;
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #e6b422;
+        }
+
+        .passage-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .passage-btn:hover {
+            background: #2d4b77;
+        }
+
+        .passage-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .timer {
+            background: #1a2f44;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 1.5rem;
+            border: 1px solid #e6b422;
+        }
+
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: 0.3s;
+            border: 1px solid #e6b422;
+        }
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+            margin-left: 15px;
+        }
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Main area with resizable columns */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background: #bdc3c7;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
+        }
+
+        .column.en-column {
+            width: 50%;
+        }
+
+        .column.vi-column {
+            width: 50%;
+        }
+
+        .col-header {
+            background: #d2cbbc;
+            padding: 10px 18px;
+            font-weight: 700;
+            color: #1e3a5f;
+            border-bottom: 2px solid #b0aa9a;
+            font-size: 1rem;
+        }
+
+        .col-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            line-height: 1.8;
+            font-size: 16px;
+            background: #fffcf5;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Font size classes */
+        .col-content.font-small {
+            font-size: 14px;
+        }
+        .col-content.font-medium {
+            font-size: 16px;
+        }
+        .col-content.font-large {
+            font-size: 18px;
+        }
+
+        /* Typography */
+        .col-content h1 {
+            font-size: 1.9rem;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        .col-content h2 {
+            font-size: 1.6rem;
+            color: #1e3a5f;
+            margin: 25px 0 15px;
+        }
+        .col-content h3 {
+            font-size: 1.3rem;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+        }
+        .col-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+        .col-content em {
+            color: #5d3a1a;
+            font-style: italic;
+        }
+        .col-content strong {
+            color: #1e3a5f;
+        }
+
+        /* Right-click menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+            min-width: 160px;
+        }
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Highlight colors */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+        }
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+        }
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            background: #d2cbbc;
+            padding: 8px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            border-top: 1px solid #b0aa9a;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+        }
+
+        .btn {
+            padding: 4px 16px;
+            border: none;
+            border-radius: 30px;
+            background: #1e3a5f;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #2d4b77;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #1e3a5f;
+            color: #1e3a5f;
+        }
+        .btn-outline:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="brand">
+            <h1>IELTS Vol 7 · Test 2</h1>
+        </div>
+        <div class="passage-selector" id="passageSelector">
+            <button class="passage-btn active" data-passage="1">Passage 1</button>
+            <button class="passage-btn" data-passage="2">Passage 2</button>
+            <button class="passage-btn" data-passage="3">Passage 3</button>
+        </div>
+        <div class="header-controls">
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+           
+        </div>
+    </div>
+
+    <!-- Main resizable columns -->
+    <div class="main-area" id="mainArea">
+        <!-- Cột gốc -->
+        <div class="column en-column" id="enColumn">
+            <div class="col-header">Bản gốc</div>
+            <div class="col-content font-medium" id="enContent"></div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+        <!-- Cột dịch -->
+        <div class="column vi-column" id="viColumn">
+            <div class="col-header">Bản dịch</div>
+            <div class="col-content font-medium" id="viContent"></div>
+        </div>
+    </div>
+
+<!-- Status bar -->
+<div class="status-bar">
+    <span>Bôi đen văn bản → nhấp chuột phải để highlight màu</span>
+    <button class="btn btn-outline" id="resetHighlightBtn">Xóa tất cả highlight</button>
+    <button class="btn btn-outline" id="syncScrollBtn" style="background: #e6b422; color: #1e3a5f; border: 1px solid #1e3a5f;">Đồng bộ cuộn: BẬT</button>
+</div>
+
+    <!-- Right-click menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đoạn chọn</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DỮ LIỆU PASSAGE 1,2,3 (Vol 7 Test 2)
+        const passages = {
+            1: {
+                en: [
+                    "<h1>The early history of olive oil</h1>",
+                    "<p><strong>A</strong><br>Olive oil is produced from the fruit of the olive tree, which is a member of the Oleaceae plant family. The trees require some cold weather during the year, but also tolerate hot, dry conditions, and do not like moisture when they are flowering. They actually produce better when subjected to these stressful conditions, and as a result, olive trees have traditionally been grown on land where little else will survive.</p>",
+                    "<p><strong>B</strong><br>Archaeologists today are divided over exactly where the first domestication of the olive occurred: some say it was in the area which is now Iran, Syria, Jordan and Egypt, while others contend it was in mainland Greece or on the island of Crete. The one thing that can be said with certainty is that cultivation began at least 6,000 years ago and spread slowly westward across the lands bordering on the Mediterranean Sea. Olive oil was used for a variety of purposes during these early times, including as a pharmacological ointment and in rituals for anointing royalty.</p>",
+                    "<p><strong>C</strong><br>The ancient Greeks believed the olive tree was a priceless gift from the goddess Athena and used its oil in sacred religious rituals. In fact, the Greek poet Homer called olive oil ‘liquid gold’, and during the 6th and 7th centuries BC Greek law forbade the cutting down of olive trees and made it punishable by death. The ancient Middle Eastern ruler King David valued his groves of olive trees and his olive oil warehouses so much that he posted guards around the clock to protect them.</p>",
+                    "<p><strong>D</strong><br>Over the years, olive oil developed other uses. Its employment in cooking dates at least as far back as the 5th century BC, as described by the Greek philosopher Plato. Its use as an aid to beauty and health later became ingrained in many Mediterranean cultures. The Romans, for example, are said to have used generous amounts on their bodies to moisturise their skin after bathing. With the spread of the Roman Empire, olive oil became a major commodity and its trade promoted commerce throughout the ancient world. It is generally believed that in the 1st-2nd century BC, olive trees were taken to North Africa and then to Spain, which was later to become the world’s largest producer of olive oil. Artefacts found at various Mediterranean archaeological sites include olive oil storage vessels with olive plant residue still in them. Historical evidence still in existence in the form of wall paintings and ancient manuscripts (including the works of the Roman naturalist and philosopher, Pliny the Elder) all record production techniques and the various uses of olive oil.</p>",
+                    "<p><strong>E</strong><br>Making olive oil in those early days was a laborious process accomplished without mechanisation. Processing or milling the fruit involved several distinct stages to extract the liquid. The olives were harvested from the trees by hand or by beating the fruit from the trees with long sticks. The olives were then rinsed and crushed to separate out the large seed found in the centre of each. The remaining seedless flesh was put in woven bags and pressed. Hot water was then poured over the bags to separate the oil from the solid bits of olive. The liquid produced in this process, consisting of oil and water, was drained into stone basins or tanks, where it was allowed to settle and separate. In cold weather a bit of salt was added to speed up the process. As much oil as possible was drawn off the water, but the result was still not pure oil. Therefore, this impure mixture was allowed once more to settle in vats and then separated in order to refine the product.</p>",
+                    "<p><strong>F</strong><br>The waste water from the milling process, which is called amurca, is a bitter-tasting and foul-smelling liquid. In many ancient civilisations it was often simply discarded, causing serious pollution because of its acidity and high salt content. However, in the Roman period it was regarded as a very useful substance. When spread on surfaces, amurca forms a hard finish and therefore it was often applied to the floors of grain storage buildings where it hardened, keeping out water, mud and pests. When boiled down amurca was applied to leather to soften it so that it was easier to shape into articles of clothing and shoes. It could also be eaten by farm animals and was, in fact, fed to livestock suffering from malnutrition. According to ancient texts, amurca was also utilised in moderate amounts by farmers as a fertiliser or as a pesticide helping them to protect their crops from insects and even small rodents.</p>"
+                ],
+                vi: [
+                    "<h1>Lịch sử ban đầu của dầu ô liu</h1>",
+                    "<p><strong>A</strong><br>Dầu ô liu được sản xuất từ quả của cây ô liu, một thành viên của họ thực vật Oleaceae. Cây cần một số thời tiết lạnh trong năm, nhưng cũng chịu được điều kiện nóng, khô, và không thích ẩm ướt khi ra hoa. Chúng thực sự cho năng suất tốt hơn khi phải chịu những điều kiện căng thẳng này, và kết quả là, cây ô liu theo truyền thống được trồng trên đất mà ít thứ khác có thể sống sót.</p>",
+                    "<p><strong>B</strong><br>Các nhà khảo cổ học ngày nay vẫn còn chia rẽ về chính xác nơi diễn ra quá trình thuần hóa ô liu đầu tiên: một số cho rằng đó là khu vực ngày nay là Iran, Syria, Jordan và Ai Cập, trong khi những người khác cho rằng đó là ở đất liền Hy Lạp hoặc trên đảo Crete. Điều duy nhất có thể nói chắc chắn là việc trồng trọt bắt đầu ít nhất 6.000 năm trước và lan rộng từ từ về phía tây qua các vùng đất giáp biển Địa Trung Hải. Dầu ô liu đã được sử dụng cho nhiều mục đích khác nhau trong thời kỳ đầu này, bao gồm như một loại thuốc mỡ dược lý và trong các nghi lễ xức dầu cho hoàng gia.</p>",
+                    "<p><strong>C</strong><br>Người Hy Lạp cổ đại tin rằng cây ô liu là một món quà vô giá từ nữ thần Athena và sử dụng dầu của nó trong các nghi lễ tôn giáo thiêng liêng. Thực tế, nhà thơ Hy Lạp Homer đã gọi dầu ô liu là 'vàng lỏng', và trong suốt thế kỷ 6 và 7 trước Công nguyên, luật pháp Hy Lạp cấm chặt cây ô liu và hình phạt cho hành vi đó là tử hình. Nhà cai trị Trung Đông cổ đại, Vua David, coi trọng những lùm cây ô liu và các kho dầu ô liu của mình đến nỗi ông đã bố trí lính canh suốt ngày đêm để bảo vệ chúng.</p>",
+                    "<p><strong>D</strong><br>Qua nhiều năm, dầu ô liu đã phát triển các công dụng khác. Việc sử dụng nó trong nấu ăn ít nhất đã có từ thế kỷ thứ 5 trước Công nguyên, như được mô tả bởi triết gia Hy Lạp Plato. Việc sử dụng nó như một trợ giúp cho sắc đẹp và sức khỏe sau đó đã ăn sâu vào nhiều nền văn hóa Địa Trung Hải. Ví dụ, người La Mã được cho là đã sử dụng một lượng lớn dầu ô liu lên cơ thể để dưỡng ẩm da sau khi tắm. Với sự mở rộng của Đế chế La Mã, dầu ô liu trở thành một mặt hàng chính và việc buôn bán nó đã thúc đẩy thương mại khắp thế giới cổ đại. Người ta thường tin rằng vào thế kỷ 1-2 trước Công nguyên, cây ô liu đã được đưa đến Bắc Phi và sau đó đến Tây Ban Nha, nơi sau này trở thành nhà sản xuất dầu ô liu lớn nhất thế giới. Các hiện vật được tìm thấy tại nhiều địa điểm khảo cổ Địa Trung Hải bao gồm các bình đựng dầu ô liu vẫn còn cặn thực vật ô liu bên trong. Bằng chứng lịch sử vẫn còn tồn tại dưới dạng tranh treo tường và các bản thảo cổ (bao gồm các tác phẩm của nhà tự nhiên học và triết gia La Mã, Pliny the Elder) đều ghi lại các kỹ thuật sản xuất và các công dụng khác nhau của dầu ô liu.</p>",
+                    "<p><strong>E</strong><br>Làm dầu ô liu trong những ngày đầu là một quá trình tốn nhiều công sức được thực hiện mà không có cơ giới hóa. Chế biến hay xay xát quả bao gồm một số giai đoạn riêng biệt để chiết xuất chất lỏng. Quả ô liu được thu hoạch từ cây bằng tay hoặc bằng cách đập quả từ cây bằng gậy dài. Quả ô liu sau đó được rửa sạch và nghiền nát để tách hạt lớn ở trung tâm mỗi quả. Phần thịt không hạt còn lại được cho vào túi dệt và ép. Nước nóng sau đó được đổ lên các túi để tách dầu khỏi các mảnh ô liu rắn. Chất lỏng tạo ra trong quá trình này, bao gồm dầu và nước, được đổ vào các bể đá hoặc bồn chứa, nơi nó được để lắng và tách. Trong thời tiết lạnh, một ít muối được thêm vào để đẩy nhanh quá trình. Dầu được hớt ra khỏi nước nhiều nhất có thể, nhưng kết quả vẫn chưa phải là dầu nguyên chất. Do đó, hỗn hợp không tinh khiết này lại được để lắng một lần nữa trong các thùng và sau đó được tách ra để tinh chế sản phẩm.</p>",
+                    "<p><strong>F</strong><br>Nước thải từ quá trình xay xát, được gọi là amurca, là một chất lỏng có vị đắng và mùi hôi. Ở nhiều nền văn minh cổ đại, nó thường bị vứt bỏ đơn giản, gây ô nhiễm nghiêm trọng vì tính axit và hàm lượng muối cao. Tuy nhiên, vào thời kỳ La Mã, nó được coi là một chất rất hữu ích. Khi được trải lên bề mặt, amurca tạo thành một lớp phủ cứng và do đó nó thường được áp dụng lên sàn của các tòa nhà lưu trữ ngũ cốc, nơi nó cứng lại, ngăn nước, bùn và sâu bọ. Khi được cô đặc, amurca được bôi lên da để làm mềm da, giúp dễ dàng tạo hình thành quần áo và giày dép. Nó cũng có thể được ăn bởi động vật trang trại và trên thực tế, đã được cho gia súc bị suy dinh dưỡng ăn. Theo các văn bản cổ, amurca cũng được nông dân sử dụng với lượng vừa phải làm phân bón hoặc thuốc trừ sâu, giúp họ bảo vệ mùa màng khỏi côn trùng và thậm chí cả động vật gặm nhấm nhỏ.</p>"
+                ]
+            },
+            2: {
+                en: [
+                    "<h1>Playing with science</h1>",
+                    "<p><em>Is science always a serious matter? No, says Pierre Laszlo, who believes that scientists are often just like children at play</em></p>",
+                    "<h3>A</h3><p>The connection between science and play is not often discussed, perhaps because scientists take it for granted, or because they are a little self-conscious about it and therefore try to hide it. In this context, play might describe a number of different activities. Play might involve the exploration of new uses for everyday objects just for curiosity; it could also include word jokes, or the playing of jokes or tricks upon other scientists. The element of play in science is thus an elusive and difficult topic, but it is fundamental to the experience of scientists.</p>",
+                    "<h3>B</h3><p>One example of this connection is the jigsaw puzzle. Such puzzles present their players with two-dimensional fragments, each with a characteristic shape, from which to reconstruct an overall picture. Guessing the solution of a scientific problem has many similarities to completing a jigsaw puzzle. The scientists inspect each piece of data for a possible fit with its neighbours and, bit by bit, construct a whole argument. People who are good at jigsaw puzzles are able to guess which piece will fit even before trying it. In the same way, the best scientists are those who make the best guesses.</p>",
+                    "<h3>C</h3><p>But scientists do not play only at out-guessing each other, or at putting together pieces to complete a puzzle. They also regard their work as ‘playing with toys’. Joseph Lambert, a professor of chemistry at Northwestern University in the US, shed some light on this tendency. In a letter he wrote the following: ‘When I grew up, every kid put in some serious sandbox time, and it often involved building… complex sand structures around which fantasies were composed… The organic chemistry labs at Yale and chemical transformations took place… The odours were pleasant, and they were fun in the same way. We mixed things up. The physical process of working with our hands, as with sand, was satisfying… by the end of the year, I knew that I wanted to be an organic chemist, as I realised one could play in the sandbox for a living.’ Indeed, many scientists amuse themselves by playing with various ‘toys’ of their trade, perhaps coming up with ingenious devices to get a particular job done, or diverting a piece of commercial equipment for novel scientific purposes. The apparatus put together by Robert Millikan and Harvey Fletcher to measure the charge of the electron, which involved a perfume atomiser bought at a local pharmacy, is a classic example of such inspired tinkering.</p>",
+                    "<h3>D</h3><p>Whereas society often keeps a lid on playfulness, science encourages and nurtures it. Take, for example, the funny names that scientists have given to various chemical substances: tristane, windowpane, penguinone or megaphone. Each class of organ molecules includes a few such humorous names. Similar fun is had in other fields of science.</p>",
+                    "<h3>E</h3><p>Hoaxes are a further aspect of the playfulness of scientists. A relatively recent example concerns the ‘Plate of Brasse’, which stated England’s claim to California and was supposedly left by the English navigator Sir Francis Drake during his visit in 1579. A brass plate thought to be Drake’s was discovered in the 1930s. But in 1977, Helen Michel and Frank Asaro, of the Lawrence Berkeley National Laboratory, showed that the copper and zinc used in the plate were of a higher quality than would have been available in the 1500s. They concluded that Drake’s plate was most likely crafted much closer to the time when it was first brought to light.</p>",
+                    "<h3>F</h3><p>Shortly afterwards, staff at the University of California announced that the artifact was devised as a practical joke by a group of friends of Herbert E Bolton, who directed the Bancroft Library at the University’s Berkeley campus. Bolton, it seems, was intrigued by tales of Drake having installed a plate to record his visit to California, and often urged his students to look for it. Some of Bolton’s friends decided to play a joke on him, but things misfired after Bolton went public and announced that the relic was authentic before he could be told about the joke.</p>",
+                    "<h3>G</h3><p>Sometimes hoaxes serve a useful purpose. Some years ago, Nathan Lewis, a professor of chemistry at California Institute of Technology, and a graduate student were doing experiments in the laboratory of a senior professor, Harry Gray. Another co-worker had the habit of going through their data and rushing to Gray with his interpretation. Lewis decided to set a trap for the co-worker. He recalls: ‘I manufactured an NMR spectrum. We left it out as bait. Our colleague took it and wrote up a paper on how important this result was. He was ready to go right to [the Journal of the American Chemical Society... We didn’t let him mail it but this stopped him temporarily from taking our data and interpreting it before making sure that it was right.’</p>",
+                    "<h3>H</h3><p>But is the playfulness of science usually so helpful? One might argue that to play a practical joke is a waste of time. So why do it? Perhaps play is an inherent part of the human condition. The psychologist’s answer might be that scientists tend to play because science presents them with too much seriousness. Another possibility might be that scientists like to play because they tend to be very young. Some disciplines, mathematics especially, have a reputation for the narrow window of creativity in youth. But it may also be that there is some cognitive value to the playful element in science. Playing with ideas, after all, is what science is all about. A playful, childlike attitude may be extremely fruitful, and scientists should not be too embarrassed to acknowledge that play is often what motivates them.</p>"
+                ],
+                vi: [
+                    "<h1>Chơi đùa với khoa học</h1>",
+                    "<p><em>Khoa học có luôn là một vấn đề nghiêm túc? Không, Pierre Laszlo nói, người tin rằng các nhà khoa học thường giống như trẻ em đang chơi đùa</em></p>",
+                    "<h3>A</h3><p>Mối liên hệ giữa khoa học và trò chơi không thường được thảo luận, có lẽ vì các nhà khoa học coi đó là điều hiển nhiên, hoặc vì họ hơi e ngại về điều đó và do đó cố gắng che giấu nó. Trong bối cảnh này, trò chơi có thể mô tả một số hoạt động khác nhau. Trò chơi có thể liên quan đến việc khám phá các công dụng mới của các vật dụng hàng ngày chỉ vì tò mò; nó cũng có thể bao gồm những trò chơi chữ, hoặc pha trò hay chơi khăm các nhà khoa học khác. Do đó, yếu tố trò chơi trong khoa học là một chủ đề khó nắm bắt và khó khăn, nhưng nó là nền tảng cho trải nghiệm của các nhà khoa học.</p>",
+                    "<h3>B</h3><p>Một ví dụ về mối liên hệ này là trò chơi ghép hình. Những trò chơi như vậy đưa ra cho người chơi những mảnh hai chiều, mỗi mảnh có hình dạng đặc trưng, để từ đó tái tạo lại một bức tranh tổng thể. Đoán giải pháp của một vấn đề khoa học có nhiều điểm tương đồng với việc hoàn thành một trò chơi ghép hình. Các nhà khoa học xem xét từng phần dữ liệu để tìm khả năng khớp với các phần lân cận và từng chút một, xây dựng toàn bộ một lập luận. Những người giỏi trò chơi ghép hình có thể đoán mảnh nào sẽ khớp ngay cả trước khi thử nó. Theo cách tương tự, các nhà khoa học giỏi nhất là những người đưa ra những phỏng đoán tốt nhất.</p>",
+                    "<h3>C</h3><p>Nhưng các nhà khoa học không chỉ chơi ở việc đoán ý nhau, hay ghép các mảnh lại với nhau để hoàn thành một câu đố. Họ cũng coi công việc của mình như là 'chơi với đồ chơi'. Joseph Lambert, giáo sư hóa học tại Đại học Northwestern ở Mỹ, đã làm sáng tỏ xu hướng này. Trong một lá thư, ông đã viết như sau: 'Khi tôi lớn lên, mọi đứa trẻ đều dành thời gian nghiêm túc trong hố cát, và nó thường liên quan đến việc xây dựng… những cấu trúc cát phức tạp xung quanh đó những câu chuyện tưởng tượng được hình thành… Các phòng thí nghiệm hóa hữu cơ tại Yale và các biến đổi hóa học đã diễn ra… Mùi thì dễ chịu, và chúng cũng thú vị theo cùng một cách. Chúng tôi trộn mọi thứ lên. Quá trình vật lý làm việc bằng tay, như với cát, thật thỏa mãn… vào cuối năm, tôi biết rằng mình muốn trở thành một nhà hóa hữu cơ, vì tôi nhận ra người ta có thể chơi trong hố cát để kiếm sống.' Thực vậy, nhiều nhà khoa học tự giải trí bằng cách chơi với nhiều 'đồ chơi' khác nhau trong nghề của họ, có thể là nghĩ ra những thiết bị khéo léo để hoàn thành một công việc cụ thể, hoặc chuyển hướng một thiết bị thương mại cho các mục đích khoa học mới lạ. Bộ máy do Robert Millikan và Harvey Fletcher lắp ráp để đo điện tích của electron, bao gồm một bình xịt nước hoa mua tại hiệu thuốc địa phương, là một ví dụ kinh điển về sự mày mò đầy cảm hứng như vậy.</p>",
+                    "<h3>D</h3><p>Trong khi xã hội thường kìm hãm sự vui tươi, khoa học lại khuyến khích và nuôi dưỡng nó. Ví dụ, hãy xem xét những cái tên hài hước mà các nhà khoa học đã đặt cho nhiều chất hóa học khác nhau: tristane, windowpane, penguinone hay megaphone. Mỗi lớp phân tử hữu cơ bao gồm một vài cái tên hài hước như vậy. Những điều thú vị tương tự cũng có trong các lĩnh vực khoa học khác.</p>",
+                    "<h3>E</h3><p>Những trò lừa bịp (hoaxes) là một khía cạnh khác của tính vui tươi ở các nhà khoa học. Một ví dụ tương đối gần đây liên quan đến 'Tấm bảng Brasse', trong đó tuyên bố chủ quyền của nước Anh đối với California và được cho là do nhà hàng hải người Anh, Ngài Francis Drake, để lại trong chuyến thăm của ông vào năm 1579. Một tấm bảng đồng được cho là của Drake đã được phát hiện vào những năm 1930. Nhưng vào năm 1977, Helen Michel và Frank Asaro, thuộc Phòng thí nghiệm Quốc gia Lawrence Berkeley, đã chỉ ra rằng đồng và kẽm được sử dụng trong tấm bảng có chất lượng cao hơn so với những gì có thể có vào những năm 1500. Họ kết luận rằng tấm bảng của Drake rất có thể được chế tác gần với thời điểm nó được phát hiện lần đầu hơn nhiều.</p>",
+                    "<h3>F</h3><p>Ngay sau đó, các nhân viên tại Đại học California thông báo rằng hiện vật này được tạo ra như một trò đùa thực tế bởi một nhóm bạn của Herbert E Bolton, người chỉ đạo Thư viện Bancroft tại khuôn viên Berkeley của trường. Có vẻ như Bolton đã bị hấp dẫn bởi những câu chuyện về việc Drake đã đặt một tấm bảng để ghi lại chuyến thăm của ông đến California, và thường thúc giục sinh viên của mình tìm kiếm nó. Một số người bạn của Bolton quyết định chơi khăm ông, nhưng mọi việc đã hỏng sau khi Bolton công khai và tuyên bố rằng di tích là xác thực trước khi ông kịp được kể về trò đùa.</p>",
+                    "<h3>G</h3><p>Đôi khi những trò lừa bịp phục vụ một mục đích hữu ích. Vài năm trước, Nathan Lewis, giáo sư hóa học tại Viện Công nghệ California, và một nghiên cứu sinh đang làm thí nghiệm trong phòng thí nghiệm của một giáo sư cấp cao, Harry Gray. Một đồng nghiệp khác có thói quen xem xét dữ liệu của họ và vội vàng đến gặp Gray với sự diễn giải của anh ta. Lewis quyết định đặt một cái bẫy cho người đồng nghiệp đó. Anh nhớ lại: 'Tôi đã tạo ra một phổ NMR giả. Chúng tôi để nó ra ngoài làm mồi nhử. Đồng nghiệp của chúng tôi đã lấy nó và viết một bài báo về kết quả quan trọng này như thế nào. Anh ta đã sẵn sàng gửi nó đến [Tạp chí Hiệp hội Hóa học Hoa Kỳ... Chúng tôi không để anh ta gửi nó, nhưng điều này đã tạm thời ngăn anh ta lấy dữ liệu của chúng tôi và diễn giải nó trước khi đảm bảo rằng nó đúng.'</p>",
+                    "<h3>H</h3><p>Nhưng liệu tính vui tươi của khoa học có thường hữu ích như vậy không? Một người có thể lập luận rằng chơi khăm là một sự lãng phí thời gian. Vậy tại sao lại làm điều đó? Có lẽ trò chơi là một phần cố hữu của thân phận con người. Câu trả lời của nhà tâm lý học có thể là các nhà khoa học có xu hướng chơi đùa vì khoa học mang đến cho họ quá nhiều sự nghiêm túc. Một khả năng khác có thể là các nhà khoa học thích chơi đùa vì họ có xu hướng rất trẻ. Một số ngành, đặc biệt là toán học, nổi tiếng về khung cửa sổ sáng tạo hẹp trong thời trẻ. Nhưng cũng có thể là có một số giá trị nhận thức trong yếu tố vui tươi của khoa học. Suy cho cùng, chơi đùa với ý tưởng chính là bản chất của khoa học. Một thái độ vui tươi, như trẻ thơ có thể cực kỳ hiệu quả, và các nhà khoa học không nên quá xấu hổ khi thừa nhận rằng trò chơi thường là động lực thúc đẩy họ.</p>"
+                ]
+            },
+            3: {
+                en: [
+                    "<h2>Does Class Size Matter?</h2>",
+                    "<p><strong>A</strong><br>Of all the ideas for improving education, few are as simple or attractive as reducing the number of pupils per teacher. Unlike competing proposals for reform, class-size reductions rarely elicit huge outcries or involve structural change. The testing of educators, by contrast, generally arouses the anger of unions. Similarly, establishing special 'charter' schools involves privileging some schools over others, with the credits provided usually coming out of the budgets of struggling local schools. With its uncomplicated appeal, class-size reduction in the U.S. has lately gone from being a subject of primary academic interest to a policy juggernaut with over twenty states aiming at decreasing class sizes.</p>",
+                    "<p><strong>B</strong><br>Do small classes improve school achievement? To answer this, investigators have attempted to analyse existing data, such as records at the U.S. Department of Education. These reveal that there were steep drops in pupil-teacher ratios between 1969 and 1997, but no significant gains in academic performance.<br>But do these findings mean that class size makes no difference? Not necessarily. For instance, schools strive for more than just high test scores; they also usually try to keep their drop-out rates low. And, indeed, the drop-out rate for older students fell considerably over that period. Because drop-outs generally come from the low end of the achievement distribution, a reduction in the drop-out rate could be expected to pull down average test scores.<br>Another reason for discounting those data is the difficulty of ensuring a level playing field. In a perfect world, U.S. students would all come from well-off families, with two highly educated English-speaking parents who are involved in their children's schooling. Teachers would all be creative and have complete mastery of the subject matter. The reality is very different.</p>",
+                    "<p><strong>C</strong><br>Over the past 35 years, some studies of existing data have produced evidence that smaller classes benefit students, but most of these studies were poorly designed. The exception was the Tennessee study called Project STAR (Student Teacher Achievement Ratio). Frederick Mosteller of Harvard University has called it 'one of the greatest experiments in education in United States history'. Students entering kindergarten were randomly assigned to one of three kinds of classes: a small class of 13 to 17 students, a regular-size class of 22 to 26 or a regular-size class with both a teacher and a full-time teacher's aide. The students remained in whatever category they had been assigned to throughout the third grade, after which they joined a regular classroom in the fourth. To ensure that teaching quality did not differ, teachers were randomly assigned to small and regular-size classrooms. Few teachers received any special training for working with small classes, and there were no new curricular materials.</p>",
+                    "<p><strong>D</strong><br>At the end of STAR, researchers analysed the data. Jeremy Finn of New York University and Charles Achilles of Eastern Michigan University found evidence for 'an array of benefits of small classes'. They calculated that students in smaller classes were outperforming their counterparts in regular-sized classes by the first grade and that this advantage persisted even after students returned to larger classes. They also found that the effect was stronger for black and Hispanic minority groups - a significant finding for policy-makers.<br>Eric Hanushek of Stanford, however, criticises some of STAR's key conclusions. He argues that STAR does not prove that gains persist long after students return to regular classes. It was debatable how much later improvement stemmed from other factors, such as a supportive home. Nor does he accept that the benefits accumulate, with participants widening the gap with their peers in larger classes year by year. Hanushek and others have also shown that during the study too many children moved from regular to small classes, probably because school personnel caved in to parent demands. And Hanushek also asserts that STAR failed to ensure good randomisation of teacher and student assignments. However, these points do not undermine STAR's basic findings.</p>",
+                    "<p><strong>E</strong><br>The largest public class size reduction programme so far, California's, stands more as a warning than as worthy of emulation. That state is trying to reduce classes in kindergarten through grade three despite a shortage of teachers that is most acute in low-income areas.<br>This is exacerbating the disparity in resources available to rich and poor schools in California, because more affluent areas can attract the best teachers. Indeed, some of the extra teachers needed are being recruited from the poorer schools. Researchers found a statistically significant achievement advantage in reading, writing and mathematics for students in classes that had been reduced to 20. What is more, the effect did not vary for students of different backgrounds.</p>",
+                    "<p><strong>F</strong><br>Wisconsin's Student Achievement Guarantee in Education (SAGE) was a five-year pilot study to do some of the groundwork for a major project. Class sizes were reduced in only 14 schools, but it was noteworthy for targeting schools at which 30% of the students were below poverty level, compared with California's across-the-board approach. SAGE lowered the average pupil-teacher ratio in kindergarten through third grade to 12-15:1 from 21-25:1. Analysts have studied the results of first-grade students in these schools and similar first-grade students elsewhere and found the results accord with those from STAR.<br>STAR and SAGE have made it hard to argue against reducing class sizes. But the California initiative shows that reductions made with too little forethought can yield minuscule gains. Administrators need solid information before they can make sensible policy decisions.</p>"
+                ],
+                vi: [
+                    "<h2>Quy mô lớp học có quan trọng không?</h2>",
+                    "<p><strong>A</strong><br>Trong tất cả các ý tưởng cải thiện giáo dục, có rất ít ý tưởng đơn giản hay hấp dẫn như việc giảm số lượng học sinh trên mỗi giáo viên. Không giống như các đề xuất cạnh tranh cho cải cách, việc giảm quy mô lớp học hiếm khi gây ra phản đối dữ dội hoặc liên quan đến thay đổi cơ cấu. Ngược lại, việc kiểm tra các nhà giáo dục thường làm dấy lên sự tức giận của các công đoàn. Tương tự, việc thành lập các trường 'bán công' đặc biệt liên quan đến việc ưu ái một số trường hơn các trường khác, với các khoản tín dụng được cung cấp thường lấy từ ngân sách của các trường địa phương đang gặp khó khăn. Với sức hấp dẫn không phức tạp của nó, việc giảm quy mô lớp học ở Mỹ gần đây đã chuyển từ một chủ đề quan tâm học thuật chính thành một chính sách mạnh mẽ với hơn hai mươi bang đang nhắm mục tiêu giảm quy mô lớp học.</p>",
+                    "<p><strong>B</strong><br>Liệu các lớp học nhỏ có cải thiện thành tích học đường? Để trả lời điều này, các nhà nghiên cứu đã cố gắng phân tích dữ liệu hiện có, chẳng hạn như hồ sơ tại Bộ Giáo dục Hoa Kỳ. Những dữ liệu này cho thấy tỷ lệ học sinh trên giáo viên đã giảm mạnh trong giai đoạn 1969-1997, nhưng không có sự cải thiện đáng kể nào về kết quả học tập.<br>Nhưng những phát hiện này có nghĩa là quy mô lớp học không tạo ra sự khác biệt? Không nhất thiết. Ví dụ, các trường học phấn đấu không chỉ vì điểm kiểm tra cao; họ cũng thường cố gắng giữ tỷ lệ bỏ học thấp. Và, thực sự, tỷ lệ bỏ học của học sinh lớn tuổi đã giảm đáng kể trong giai đoạn đó. Bởi vì những học sinh bỏ học thường đến từ nhóm có thành tích thấp, việc giảm tỷ lệ bỏ học có thể được dự đoán sẽ kéo điểm kiểm tra trung bình xuống.<br>Một lý do khác để giảm giá trị của những dữ liệu đó là khó khăn trong việc đảm bảo một sân chơi bình đẳng. Trong một thế giới hoàn hảo, học sinh Mỹ sẽ đều đến từ các gia đình khá giả, với cả cha và mẹ có trình độ học vấn cao, nói tiếng Anh và tham gia vào việc học tập của con cái. Giáo viên sẽ đều sáng tạo và hoàn toàn nắm vững môn học. Thực tế lại rất khác.</p>",
+                    "<p><strong>C</strong><br>Trong 35 năm qua, một số nghiên cứu về dữ liệu hiện có đã đưa ra bằng chứng rằng các lớp học nhỏ hơn có lợi cho học sinh, nhưng hầu hết các nghiên cứu này được thiết kế kém. Ngoại lệ là nghiên cứu ở Tennessee có tên Dự án STAR (Student Teacher Achievement Ratio). Frederick Mosteller của Đại học Harvard đã gọi đây là 'một trong những thí nghiệm vĩ đại nhất trong giáo dục trong lịch sử Hoa Kỳ'. Học sinh vào mẫu giáo được phân ngẫu nhiên vào một trong ba loại lớp: lớp nhỏ từ 13 đến 17 học sinh, lớp bình thường từ 22 đến 26 học sinh, hoặc lớp bình thường có cả giáo viên và trợ giảng toàn thời gian. Học sinh tiếp tục ở lại loại lớp đã được phân công cho đến hết lớp ba, sau đó các em gia nhập lớp học bình thường vào lớp bốn. Để đảm bảo chất lượng giảng dạy không khác biệt, giáo viên được phân ngẫu nhiên vào các lớp nhỏ và lớp bình thường. Rất ít giáo viên nhận được bất kỳ khóa đào tạo đặc biệt nào để làm việc với các lớp nhỏ, và không có tài liệu giảng dạy mới nào.</p>",
+                    "<p><strong>D</strong><br>Kết thúc dự án STAR, các nhà nghiên cứu đã phân tích dữ liệu. Jeremy Finn của Đại học New York và Charles Achilles của Đại học Eastern Michigan đã tìm thấy bằng chứng về 'một loạt lợi ích của các lớp học nhỏ'. Họ tính toán rằng học sinh trong các lớp nhỏ hơn đã vượt trội so với các bạn cùng trang lứa trong các lớp bình thường ngay từ lớp một và lợi thế này vẫn tồn tại ngay cả sau khi học sinh trở lại các lớp lớn hơn. Họ cũng phát hiện ra rằng tác động này mạnh hơn đối với các nhóm thiểu số da đen và gốc Tây Ban Nha - một phát hiện quan trọng cho các nhà hoạch định chính sách.<br>Tuy nhiên, Eric Hanushek của Stanford chỉ trích một số kết luận chính của STAR. Ông lập luận rằng STAR không chứng minh được rằng lợi ích kéo dài lâu sau khi học sinh trở lại lớp học bình thường. Có thể tranh luận rằng sự cải thiện sau này bắt nguồn từ các yếu tố khác, chẳng hạn như một gia đình hỗ trợ, là bao nhiêu. Ông cũng không chấp nhận rằng các lợi ích tích lũy, với những người tham gia ngày càng nới rộng khoảng cách với các bạn cùng trang lứa trong các lớp lớn hơn. Hanushek và những người khác cũng chỉ ra rằng trong quá trình nghiên cứu, quá nhiều trẻ em đã chuyển từ lớp bình thường sang lớp nhỏ, có lẽ vì nhân viên nhà trường đã nhượng bộ yêu cầu của phụ huynh. Và Hanushek cũng khẳng định rằng STAR đã thất bại trong việc đảm bảo sự ngẫu nhiên hóa tốt việc phân công giáo viên và học sinh. Tuy nhiên, những điểm này không làm suy yếu các phát hiện cơ bản của STAR.</p>",
+                    "<p><strong>E</strong><br>Chương trình giảm quy mô lớp học công lập lớn nhất cho đến nay, của California, được xem như một lời cảnh báo hơn là đáng để noi theo. Tiểu bang này đang cố gắng giảm quy mô lớp học từ mẫu giáo đến lớp ba bất chấp tình trạng thiếu giáo viên trầm trọng nhất ở các khu vực thu nhập thấp.<br>Điều này đang làm trầm trọng thêm sự chênh lệch về nguồn lực giữa các trường giàu và nghèo ở California, bởi vì các khu vực giàu có hơn có thể thu hút những giáo viên giỏi nhất. Thực tế, một số giáo viên bổ sung cần thiết đang được tuyển dụng từ các trường nghèo hơn. Các nhà nghiên cứu phát hiện ra lợi thế về thành tích có ý nghĩa thống kê trong đọc, viết và toán học đối với học sinh trong các lớp đã được giảm xuống còn 20 học sinh. Hơn nữa, tác động không thay đổi đối với học sinh có nguồn gốc khác nhau.</p>",
+                    "<p><strong>F</strong><br>Chương trình Đảm bảo Thành tích Học sinh trong Giáo dục (SAGE) của Wisconsin là một nghiên cứu thí điểm kéo dài 5 năm để thực hiện một số công việc chuẩn bị cho một dự án lớn. Quy mô lớp học chỉ được giảm ở 14 trường, nhưng nó đáng chú ý vì nhắm mục tiêu vào các trường có 30% học sinh dưới mức nghèo khổ, so với cách tiếp cận tổng thể của California. SAGE đã giảm tỷ lệ học sinh-giáo viên trung bình từ mẫu giáo đến lớp ba xuống còn 12-15:1 từ mức 21-25:1. Các nhà phân tích đã nghiên cứu kết quả của học sinh lớp một tại các trường này và học sinh lớp một tương tự ở nơi khác và thấy rằng kết quả phù hợp với kết quả từ STAR.<br>STAR và SAGE đã khiến người ta khó có thể lập luận phản đối việc giảm quy mô lớp học. Nhưng sáng kiến của California cho thấy rằng việc giảm quy mô với quá ít suy tính trước có thể mang lại lợi ích rất nhỏ. Các nhà quản lý cần có thông tin vững chắc trước khi có thể đưa ra các quyết định chính sách hợp lý.</p>"
+                ]
+            }
+        };
+
+        // Variables
+        let currentPassage = 1;
+        let readingMode = false;
+        
+        // DOM elements
+        const enDiv = document.getElementById('enContent');
+        const viDiv = document.getElementById('viContent');
+        const appContainer = document.getElementById('appContainer');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        const readingModeToggle = document.getElementById('readingModeToggle');
+
+        // Load passage
+        function loadPassage(id) {
+            const p = passages[id];
+            if (!p) return;
+            
+            let enHtml = '';
+            p.en.forEach(para => {
+                enHtml += para;
+            });
+            enDiv.innerHTML = enHtml;
+
+            let viHtml = '';
+            p.vi.forEach(para => {
+                viHtml += para;
+            });
+            viDiv.innerHTML = viHtml;
+        }
+
+        loadPassage(1);
+
+        // Passage selector
+        document.querySelectorAll('.passage-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const id = parseInt(btn.getAttribute('data-passage'), 10);
+                currentPassage = id;
+                loadPassage(id);
+            });
+        });
+
+        // Reading mode toggle
+        readingModeToggle.addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                appContainer.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                appContainer.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // Font size controls
+        document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+            
+            const contents = document.querySelectorAll('.col-content');
+            contents.forEach(el => {
+                el.classList.remove('font-small', 'font-medium', 'font-large');
+                el.classList.add(`font-${size}`);
+            });
+        }
+
+        // Resize columns
+        const resizer = document.getElementById('resizer');
+        const enColumn = document.getElementById('enColumn');
+        const viColumn = document.getElementById('viColumn');
+        const mainArea = document.getElementById('mainArea');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', () => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const rect = mainArea.getBoundingClientRect();
+            let leftWidth = e.clientX - rect.left - 4;
+            if (leftWidth < 200) leftWidth = 200;
+            if (leftWidth > rect.width - 200) leftWidth = rect.width - 200;
+            enColumn.style.width = leftWidth + 'px';
+            viColumn.style.width = (rect.width - leftWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // Timer
+        let timeLeft = 3600;
+        const timerEl = document.getElementById('timerDisplay');
+        setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        // Right-click highlight
+        const contextMenu = document.getElementById('contextMenu');
+        let selectedRange = null;
+
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target;
+            if (target.closest('.col-content')) {
+                e.preventDefault();
+                const selection = window.getSelection();
+                if (selection.toString().trim()) {
+                    selectedRange = selection.getRangeAt(0);
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = e.pageX + 'px';
+                    contextMenu.style.top = e.pageY + 'px';
+                }
+            }
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            try {
+                const range = selectedRange.cloneRange();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) {
+                alert('Không thể highlight vùng này.');
+            }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // Reset all highlights
+        document.getElementById('resetHighlightBtn').addEventListener('click', () => {
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                const parent = h.parentNode;
+                while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                parent.removeChild(h);
+            });
+        });
+        // Đồng bộ cuộn có bật/tắt
+        const enContent = document.getElementById('enContent');
+        const viContent = document.getElementById('viContent');
+        const syncBtn = document.getElementById('syncScrollBtn');
+
+        let syncEnabled = true;
+        let isSyncing = false;
+
+        syncBtn.addEventListener('click', () => {
+            syncEnabled = !syncEnabled;
+            if (syncEnabled) {
+                syncBtn.style.background = '#e6b422';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: BẬT';
+            } else {
+                syncBtn.style.background = 'transparent';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: TẮT';
+            }
+        });
+
+        function syncScroll(source, target) {
+            if (!syncEnabled || isSyncing) return;
+            isSyncing = true;
+            
+            const sourceScrollRatio = source.scrollTop / (source.scrollHeight - source.clientHeight);
+            target.scrollTop = sourceScrollRatio * (target.scrollHeight - target.clientHeight);
+            
+            isSyncing = false;
+        }
+
+        enContent.addEventListener('scroll', () => syncScroll(enContent, viContent));
+        viContent.addEventListener('scroll', () => syncScroll(viContent, enContent));
+    })();
+</script>
+</body>
+</html>
