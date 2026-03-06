@@ -106,11 +106,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
         }
         .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
         .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
         .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
-        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
         .main-area {
             display: flex; flex: 1; overflow: hidden;
@@ -148,13 +149,27 @@
 
         .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
 
-        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; }
-        .underline-keyword {
+        /* Highlight colors */
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; display: inline; }
+        
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+        
+        .keyword-highlight {
             text-decoration: underline;
             text-decoration-color: #e67e22;
             text-decoration-thickness: 2px;
-            text-underline-offset: 2px;
             font-weight: 600;
+            background-color: #fff3cd;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
         }
         
         .question-highlight { 
@@ -203,7 +218,13 @@
         .tf-option.correct .tf-text { color: #4CAF50; font-weight: bold; }
         .tf-option.incorrect .tf-text { color: #f44336; font-weight: bold; }
 
-        .question-wrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .question-wrapper { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 8px;
+            position: relative;
+        }
         .question-number { font-weight: bold; color: #1e3a5f; margin-right: 5px; min-width: 25px; }
 
         .letter-input {
@@ -232,21 +253,27 @@
             background-color: #fdedec !important;
         }
         
-        .correct-answer-badge {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 8px;
-            font-weight: bold;
-            vertical-align: middle;
-        }
+.correct-answer-badge {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 8px;
+    font-weight: bold;
+    vertical-align: middle;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
 
         .eye-icon {
             display: none;
-            margin-left: 10px;
+            margin-left: 5px;
             cursor: pointer;
             font-size: 18px;
             opacity: 0.7;
@@ -300,8 +327,8 @@
         .close-btn { cursor: pointer; color: #666; }
         .close-btn:hover { color: #1e3a5f; }
 
-        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; }
-        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; }
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
 
         .question-item {
             margin-bottom: 15px;
@@ -434,7 +461,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">27.</span>
                         <span>detailed criticism of the methodology of a project</span>
-                        <input type="text" class="letter-input" id="q27" maxlength="1">
+                        <input type="text" class="letter-input" id="q27" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="27">👁️</span>
                     </div>
                 </div>
@@ -443,7 +470,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">28.</span>
                         <span>a comparison of the data from class-reduction projects</span>
-                        <input type="text" class="letter-input" id="q28" maxlength="1">
+                        <input type="text" class="letter-input" id="q28" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="28">👁️</span>
                     </div>
                 </div>
@@ -452,7 +479,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">29.</span>
                         <span>the level of public interest in the issues of class-size reduction</span>
-                        <input type="text" class="letter-input" id="q29" maxlength="1">
+                        <input type="text" class="letter-input" id="q29" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="29">👁️</span>
                     </div>
                 </div>
@@ -461,7 +488,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">30.</span>
                         <span>details of action taken to protect the validity of a project</span>
-                        <input type="text" class="letter-input" id="q30" maxlength="1">
+                        <input type="text" class="letter-input" id="q30" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="30">👁️</span>
                     </div>
                 </div>
@@ -470,7 +497,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">31.</span>
                         <span>reasons why class composition changed during a project</span>
-                        <input type="text" class="letter-input" id="q31" maxlength="1">
+                        <input type="text" class="letter-input" id="q31" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="31">👁️</span>
                     </div>
                 </div>
@@ -489,7 +516,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">32.</span>
                         <span>The student composition of each class was left to chance.</span>
-                        <input type="text" class="letter-input" id="q32" maxlength="1">
+                        <input type="text" class="letter-input" id="q32" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="32">👁️</span>
                     </div>
                 </div>
@@ -498,7 +525,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">33.</span>
                         <span>A long-term improvement in performance was claimed.</span>
-                        <input type="text" class="letter-input" id="q33" maxlength="1">
+                        <input type="text" class="letter-input" id="q33" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="33">👁️</span>
                     </div>
                 </div>
@@ -507,7 +534,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">34.</span>
                         <span>Similar results were obtained for all social groups.</span>
-                        <input type="text" class="letter-input" id="q34" maxlength="1">
+                        <input type="text" class="letter-input" id="q34" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="34">👁️</span>
                     </div>
                 </div>
@@ -516,7 +543,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">35.</span>
                         <span>The project was a preliminary to a more comprehensive study.</span>
-                        <input type="text" class="letter-input" id="q35" maxlength="1">
+                        <input type="text" class="letter-input" id="q35" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="35">👁️</span>
                     </div>
                 </div>
@@ -525,7 +552,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">36.</span>
                         <span>Several different class types were involved in the project.</span>
-                        <input type="text" class="letter-input" id="q36" maxlength="1">
+                        <input type="text" class="letter-input" id="q36" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="36">👁️</span>
                     </div>
                 </div>
@@ -534,7 +561,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">37.</span>
                         <span>A special group of schools was selected to take part.</span>
-                        <input type="text" class="letter-input" id="q37" maxlength="1">
+                        <input type="text" class="letter-input" id="q37" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="37">👁️</span>
                     </div>
                 </div>
@@ -543,7 +570,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">38.</span>
                         <span>Classroom assistants were used as part of the project.</span>
-                        <input type="text" class="letter-input" id="q38" maxlength="1">
+                        <input type="text" class="letter-input" id="q38" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="38">👁️</span>
                     </div>
                 </div>
@@ -552,7 +579,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">39.</span>
                         <span>The project was responsible for aggravating existing problems.</span>
-                        <input type="text" class="letter-input" id="q39" maxlength="1">
+                        <input type="text" class="letter-input" id="q39" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="39">👁️</span>
                     </div>
                 </div>
@@ -561,7 +588,7 @@
                     <div class="question-wrapper">
                         <span class="question-number">40.</span>
                         <span>Certain groups of pupils within the sample were identified as having benefited.</span>
-                        <input type="text" class="letter-input" id="q40" maxlength="1">
+                        <input type="text" class="letter-input" id="q40" maxlength="1" placeholder="">
                         <span class="eye-icon" data-question="40">👁️</span>
                     </div>
                 </div>
@@ -590,7 +617,9 @@
     <!-- Right-click context menu -->
     <div class="context-menu" id="contextMenu">
         <div onclick="applyHighlight('yellow')">Highlight vàng</div>
-        <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
     </div>
 </div>
 
@@ -602,6 +631,7 @@
     let timerRunning = true;
     let timeLeft = 3600; // 60 minutes in seconds
     let timerInterval;
+    let selectedRange = null;
 
     // ANSWER KEY
     const answerKey = {
@@ -610,22 +640,64 @@
         q37: 'C', q38: 'A', q39: 'B', q40: 'A'
     };
 
-    // Keyword maps for each question
-    const keywordMap = {
-        q27: ['criticises', 'does not prove', 'too many children moved', 'failed to ensure', 'randomisation'],
-        q28: ['accord with', 'results accord'],
-        q29: ['policy juggernaut', 'over twenty states', 'public interest', 'academic interest'],
-        q30: ['randomly assigned', 'to ensure', 'teaching quality did not differ'],
-        q31: ['moved from regular to small', 'parent demands', 'caved in'],
-        q32: ['randomly assigned'],
-        q33: ['advantage persisted', 'after students returned'],
-        q34: ['did not vary', 'students of different backgrounds'],
-        q35: ['pilot study', 'groundwork', 'major project'],
-        q36: ['three kinds', 'small class', 'regular-size', 'teacher\'s aide'],
-        q37: ['targeting schools', '30% below poverty', 'only 14 schools'],
-        q38: ['teacher\'s aide', 'full-time teacher\'s aide'],
-        q39: ['exacerbating', 'disparity', 'recruited from the poorer schools'],
-        q40: ['stronger for black and Hispanic', 'minority groups']
+    // Exact text locations for each question
+    const answerLocations = {
+        q27: {
+            text: "Eric Hanushek of Stanford, however, criticises some of STAR's key conclusions. He argues that STAR does not prove that gains persist long after students return to regular classes.",
+            keywords: ['criticises', 'does not prove', 'failed to ensure', 'randomisation']
+        },
+        q28: {
+            text: "Analysts have studied the results of first-grade students in these schools and similar first-grade students elsewhere and found the results accord with those from STAR.",
+            keywords: ['accord with', 'results accord']
+        },
+        q29: {
+            text: "With its uncomplicated appeal, class-size reduction in the U.S. has lately gone from being a subject of primary academic interest to a policy juggernaut with over twenty states aiming at decreasing class sizes",
+            keywords: ['policy juggernaut', 'over twenty states', 'public interest']
+        },
+        q30: {
+            text: "Students entering kindergarten were randomly assigned to one of three kinds of classes: a small class of 13 to 17 students, a regular-size class of 22 to 26 or a regular-size class with both a teacher and a full-time teacher's aide. The students remained in whatever category they had been assigned to throughout the third grade, after which they joined a regular classroom in the fourth. To ensure that teaching quality did not differ, teachers were randomly assigned to small and regular-size classrooms",
+            keywords: ['randomly assigned', 'to ensure', 'teaching quality did not differ']
+        },
+        q31: {
+            text: "Hanushek and others have also shown that during the study too many children moved from regular to small classes, probably because school personnel caved in to parent demands",
+            keywords: ['moved from regular to small', 'parent demands', 'caved in']
+        },
+        q32: {
+            text: "Students entering kindergarten were randomly assigned to one of three kinds of classes",
+            keywords: ['randomly assigned']
+        },
+        q33: {
+            text: "this advantage persisted even after students returned to larger classes",
+            keywords: ['advantage persisted', 'after students returned']
+        },
+        q34: {
+            text: "What is more, the effect did not vary for students of different backgrounds",
+            keywords: ['did not vary', 'different backgrounds']
+        },
+        q35: {
+            text: "Wisconsin's Student Achievement Guarantee in Education (SAGE) was a five-year pilot study to do some of the groundwork for a major project",
+            keywords: ['pilot study', 'groundwork', 'major project']
+        },
+        q36: {
+            text: "three kinds of classes: a small class of 13 to 17 students, a regular-size class of 22 to 26 or a regular-size class with both a teacher and a full-time teacher's aide",
+            keywords: ['three kinds', 'small class', 'regular-size', 'teacher\'s aide']
+        },
+        q37: {
+            text: "Class sizes were reduced in only 14 schools, but it was noteworthy for targeting schools at which 30% of the students were below poverty level, compared with California's across-the-board approach.",
+            keywords: ['targeting schools', '30% below poverty', 'only 14 schools']
+        },
+        q38: {
+            text: "a regular-size class with both a teacher and a full-time teacher's aide",
+            keywords: ['teacher\'s aide', 'full-time teacher\'s aide']
+        },
+        q39: {
+            text: "This is exacerbating the disparity in resources available to rich and poor schools in California, because more affluent areas can attract the best teachers. Indeed, some of the extra teachers needed are being recruited from the poorer schools",
+            keywords: ['exacerbating', 'disparity', 'recruited from the poorer schools']
+        },
+        q40: {
+            text: "They also found that the effect was stronger for black and Hispanic minority groups - a significant finding for policy-makers",
+            keywords: ['stronger for black and Hispanic', 'minority groups']
+        }
     };
 
     // Explanations chi tiết
@@ -766,342 +838,209 @@
         updateNavButtons();
     }
 
-    // ==================== HÀM XÓA HIGHLIGHT ====================
+    // ==================== CLEAR ALL HIGHLIGHTS ====================
     function clearAllHighlights() {
-        // Xóa tất cả các span dynamic-highlight
-        const readingContent = document.getElementById('readingContent');
-        const paragraphs = readingContent.querySelectorAll('p');
-        
-        paragraphs.forEach(p => {
-            // Xóa tất cả các thẻ span có class dynamic-highlight
-            p.querySelectorAll('.dynamic-highlight').forEach(span => {
-                const parent = span.parentNode;
-                while (span.firstChild) {
-                    parent.insertBefore(span.firstChild, span);
+        // Xóa dynamic-highlight
+        document.querySelectorAll('.dynamic-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
                 }
-                parent.removeChild(span);
-            });
+                parent.removeChild(el);
+            }
         });
         
+        // Xóa keyword-highlight
+        document.querySelectorAll('.keyword-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        
+        // Xóa question highlight
         document.querySelectorAll('.question-highlight').forEach(el => {
             el.classList.remove('question-highlight');
         });
         
+        // Xóa active eye icon
         document.querySelectorAll('.eye-icon.active').forEach(el => {
             el.classList.remove('active');
         });
     }
 
-    // ==================== HÀM ÁP DỤNG HIGHLIGHT VỚI KEYWORD ====================
-    function applyHighlightWithKeywords(element, keywords) {
-        if (!element || !keywords || keywords.length === 0) return;
-        
-        let html = element.innerHTML;
-        keywords.forEach(keyword => {
-            const regex = new RegExp(`(${keyword})`, 'gi');
-            html = html.replace(regex, '<span class="underline-keyword">$1</span>');
-        });
-        element.innerHTML = html;
+    // ==================== FIND NODE AND OFFSET ====================
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) {
+                return { node, offset: targetPos - currentPos.value };
+            }
+            currentPos.value += len;
+        } else {
+            for (let child of node.childNodes) {
+                const result = findNodeAndOffset(child, targetPos, currentPos);
+                if (result) return result;
+            }
+        }
+        return null;
     }
 
-    // ==================== HÀM HIGHLIGHT THEO CÂU HỎI ====================
-    function showHighlightForQuestion(questionNum) {
+    // ==================== HIGHLIGHT ANSWER LOCATION ====================
+    function highlightAnswerLocation(questionNum) {
         clearAllHighlights();
         
-        let target = document.getElementById(`q${questionNum}-item`);
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
+        
+        // Highlight question trong panel câu hỏi
+        const target = document.getElementById(`q${questionNum}-item`);
         if (target) target.classList.add('question-highlight');
         
-        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
-        if (eyeIcon) eyeIcon.classList.add('active');
+        // Active eye icon
+        document.querySelectorAll('.eye-icon.active').forEach(icon => icon.classList.remove('active'));
+        const currentEyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (currentEyeIcon) currentEyeIcon.classList.add('active');
         
-        const paragraphs = document.querySelectorAll('#readingContent p');
-        const keywords = keywordMap[`q${questionNum}`] || [];
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
         
-        // Highlight theo từng câu
-        if (questionNum == 27) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('Hanushek') && p.textContent.includes('criticises')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Eric Hanushek of Stanford, however, criticises some of STAR's key conclusions\. He argues that STAR does not prove that gains persist long after students return to regular classes\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Hanushek and others have also shown that during the study too many children moved from regular to small classes, probably because school personnel caved in to parent demands\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Hanushek also asserts that STAR failed to ensure good randomisation of teacher and student assignments\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
+        // Thử tìm text chính xác trước
+        for (let p of paragraphs) {
+            if (p.textContent.includes(loc.text)) {
+                try {
+                    const text = p.textContent;
+                    const startIdx = text.indexOf(loc.text);
                     
-                    // Apply underline keywords
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 28) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('accord with those from STAR')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Analysts have studied the results of first-grade students in these schools and similar first-grade students elsewhere and found the results accord with those from STAR\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 29) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('policy juggernaut') && p.textContent.includes('over twenty states')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(With its uncomplicated appeal, class-size reduction in the U\.S\. has lately gone from being a subject of primary academic interest to a policy juggernaut with over twenty states aiming at decreasing class sizes\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 30) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('randomly assigned') && p.textContent.includes('To ensure that teaching quality did not differ')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Students entering kindergarten were randomly assigned to one of three kinds of classes: a small class of 13 to 17 students, a regular-size class of 22 to 26 or a regular-size class with both a teacher and a full-time teacher's aide\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(To ensure that teaching quality did not differ, teachers were randomly assigned to small and regular-size classrooms\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 31) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('caved in to parent demands')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Hanushek and others have also shown that during the study too many children moved from regular to small classes, probably because school personnel caved in to parent demands\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 32) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('randomly assigned to one of three kinds')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Students entering kindergarten were randomly assigned to one of three kinds of classes)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 33) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('advantage persisted even after students returned to larger classes')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(this advantage persisted even after students returned to larger classes\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 34) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('did not vary for students of different backgrounds')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(What is more, the effect did not vary for students of different backgrounds\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 35) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('five-year pilot study') && p.textContent.includes('groundwork for a major project')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Wisconsin's Student Achievement Guarantee in Education \(SAGE\) was a five-year pilot study to do some of the groundwork for a major project\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 36) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('three kinds of classes')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(three kinds of classes: a small class of 13 to 17 students, a regular-size class of 22 to 26 or a regular-size class with both a teacher and a full-time teacher's aide\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 37) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('targeting schools at which 30% of the students were below poverty level')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Class sizes were reduced in only 14 schools, but it was noteworthy for targeting schools at which 30% of the students were below poverty level, compared with California's across-the-board approach\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 38) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('full-time teacher\'s aide')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(a regular-size class with both a teacher and a full-time teacher's aide\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 39) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('exacerbating the disparity')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(This is exacerbating the disparity in resources available to rich and poor schools in California, because more affluent areas can attract the best teachers\. Indeed, some of the extra teachers needed are being recruited from the poorer schools\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        else if (questionNum == 40) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('stronger for black and Hispanic minority groups')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(They also found that the effect was stronger for black and Hispanic minority groups - a significant finding for policy-makers\.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    
-                    const highlightSpans = p.querySelectorAll('.dynamic-highlight');
-                    highlightSpans.forEach(span => {
-                        applyHighlightWithKeywords(span, keywords);
-                    });
-                    
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
+                    if (startIdx !== -1) {
+                        let currentPos = {value: 0};
+                        const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                        
+                        currentPos = {value: 0};
+                        const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                        
+                        if (startNodeInfo && endNodeInfo) {
+                            const range = document.createRange();
+                            range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                            range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                            
+                            const span = document.createElement('span');
+                            span.className = 'dynamic-highlight';
+                            
+                            const contents = range.extractContents();
+                            span.appendChild(contents);
+                            range.insertNode(span);
+                            
+                            // Highlight keywords bên trong
+// Highlight keywords bên trong
+setTimeout(() => {
+    const highlightSpan = document.querySelector('.dynamic-highlight');
+    if (highlightSpan) {
+        let html = highlightSpan.innerHTML;
+        loc.keywords.forEach(keyword => {
+            try {
+                const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+                html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
+            } catch (e) {}
+        });
+        highlightSpan.innerHTML = html;
     }
-
-    function showExplanation(questionNum) {
-        if (!explanationMode) return;
-        
-        showHighlightForQuestion(questionNum);
-        
-        if (explanations[`q${questionNum}`]) {
-            document.getElementById('explanationPanel').classList.add('show');
-            document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
-            
-            let explanationHtml = explanations[`q${questionNum}`];
-            
-            if (examSubmitted) {
-                const userAnswer = getUserAnswer(questionNum);
-                const correctAnswer = answerKey[`q${questionNum}`];
-                
-                const isCorrect = userAnswer ? 
-                    userAnswer.toString().toUpperCase().trim() === correctAnswer.toString().toUpperCase().trim() : 
-                    false;
-                
-                explanationHtml += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
-                explanationHtml += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
-                if (!isCorrect) {
-                    explanationHtml += `<strong>Đáp án đúng:</strong> ${correctAnswer}`;
-                }
-                explanationHtml += `</div>`;
+}, 50);
+                            
+                            setTimeout(() => {
+                                const highlighted = document.querySelector('.dynamic-highlight');
+                                if (highlighted) {
+                                    highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                            }, 100);
+                            
+                            return true;
+                        }
+                    }
+                } catch (e) {}
+                break;
             }
-            
-            document.getElementById('explanationText').innerHTML = explanationHtml;
         }
+        
+                // Fallback: tìm bằng keyword nếu không tìm thấy text chính xác
+        for (let p of paragraphs) {
+            for (let keyword of loc.keywords) {
+                if (p.textContent.includes(keyword)) {
+                    try {
+                        clearAllHighlights();
+                        
+                        const range = document.createRange();
+                        range.selectNodeContents(p);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        setTimeout(() => {
+                            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                        
+                        return true;
+                    } catch (e) {}
+                }
+            }
+        }
+        
+        return false;
     }
 
+    // ==================== SHOW EXPLANATION ====================
+    function showExplanation(questionNum) {
+    if (!explanationMode && !examSubmitted) return;
+    
+    highlightAnswerLocation(questionNum);
+    
+    document.getElementById('explanationPanel').classList.add('show');
+    document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+    
+    let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+    
+    if (examSubmitted) {
+        const userAnswer = getUserAnswer(questionNum);
+        const correct = answerKey[`q${questionNum}`];
+        const isCorrect = userAnswer && userAnswer === correct;
+        
+        html += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
+        html += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+        if (!isCorrect && correct) {
+            html += `<strong>Đáp án đúng:</strong> ${correct}`;
+        } else if (isCorrect) {
+            html += `<strong>✅ Đúng!</strong>`;
+        }
+        html += `</div>`;
+    }
+    
+    document.getElementById('explanationText').innerHTML = html;
+    
+    // THÊM: Hiển thị badge cho câu hỏi hiện tại
+    if (explanationMode && examSubmitted) {
+        // Xóa badge cũ
+        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+        
+        // Thêm badge mới cho câu hiện tại
+        const currentInput = document.getElementById(`q${questionNum}`);
+        if (currentInput) {
+            const correctAnswer = answerKey[`q${questionNum}`];
+            const badge = document.createElement('span');
+            badge.className = 'correct-answer-badge';
+            badge.textContent = correctAnswer;
+            currentInput.parentNode.appendChild(badge);
+        }
+    }
+}
     // ==================== SETUP EYE ICONS ====================
     function setupEyeIcons() {
         document.querySelectorAll('.eye-icon').forEach(icon => {
@@ -1110,10 +1049,7 @@
                 e.preventDefault();
                 
                 const questionNum = this.getAttribute('data-question');
-                
-                if (explanationMode) {
-                    showExplanation(questionNum);
-                }
+                showExplanation(questionNum);
             });
         });
     }
@@ -1127,15 +1063,39 @@
     function markAnswers() {
         for (let i = 27; i <= 40; i++) {
             let input = document.getElementById(`q${i}`);
-            if (input) {
-                let userAnswer = input.value.trim().toUpperCase();
-                let correct = answerKey[`q${i}`];
-                input.classList.remove('correct', 'incorrect-marked');
-                if (userAnswer) {
-                    if (userAnswer === correct) {
-                        input.classList.add('correct');
-                    } else {
-                        input.classList.add('incorrect-marked');
+            if (!input) continue;
+            
+            let userAnswer = input.value.trim().toUpperCase();
+            let correct = answerKey[`q${i}`];
+            
+            input.classList.remove('correct', 'incorrect-marked');
+            
+            // Xóa badge cũ nếu có
+            const wrapper = input.closest('.question-wrapper');
+            if (wrapper) {
+                const oldBadge = wrapper.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+            }
+            
+            if (userAnswer) {
+                if (userAnswer === correct) {
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('incorrect-marked');
+                    
+                    // Thêm badge xanh lá kế bên con mắt
+                    if (wrapper) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correct;
+                        
+                        // Thêm badge sau eye icon
+                        const eyeIcon = wrapper.querySelector('.eye-icon');
+                        if (eyeIcon) {
+                            eyeIcon.insertAdjacentElement('afterend', badge);
+                        } else {
+                            wrapper.appendChild(badge);
+                        }
                     }
                 }
             }
@@ -1192,85 +1152,97 @@
             <h4>Kết quả bài làm:</h4>
             <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
             <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
-            <p>Nhấn "Xem giải thích" để xem chi tiết từng câu.</p>
+            <p>Nhấn "Xem giải thích" và click vào 👁️ để xem chi tiết từng câu.</p>
         `;
     });
 
     // ==================== EXPLAIN ====================
-    document.getElementById('explainBtn').addEventListener('click', function() {
-        if (!examSubmitted) return;
-        
-        explanationMode = true;
-        
-        document.querySelectorAll('.eye-icon').forEach(icon => {
-            icon.style.display = 'inline-block';
-        });
-        
-        this.disabled = true;
-        this.textContent = 'Đang xem giải thích';
-        
-        document.getElementById('explanationPanel').classList.remove('show');
-        clearAllHighlights();
+document.getElementById('explainBtn').addEventListener('click', function() {
+    if (!examSubmitted) return;
+    
+    explanationMode = true;
+    
+    // Xóa tất cả badges cũ
+    document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+    
+    // Hiện tất cả eye icons
+    document.querySelectorAll('.eye-icon').forEach(icon => {
+        icon.style.display = 'inline-block';
     });
+    
+    this.disabled = true;
+    this.textContent = 'Đang xem giải thích';
+    
+    document.getElementById('explanationPanel').classList.remove('show');
+    clearAllHighlights();
+});
 
     // ==================== RESET ====================
-    document.getElementById('resetBtn').addEventListener('click', () => {
-        if (confirm('Bạn có chắc muốn reset tất cả?')) {
-            examSubmitted = false;
-            explanationMode = false;
-            timerRunning = true;
-            timeLeft = 3600;
-            document.getElementById('timerDisplay').textContent = '60:00';
-            
-            for (let i = 27; i <= 40; i++) {
-                let input = document.getElementById(`q${i}`);
-                if (input) {
-                    input.value = '';
-                    input.classList.remove('correct', 'incorrect-marked');
-                }
+document.getElementById('resetBtn').addEventListener('click', () => {
+    if (confirm('Bạn có chắc muốn reset tất cả?')) {
+        examSubmitted = false;
+        explanationMode = false;
+        timerRunning = true;
+        timeLeft = 3600;
+        document.getElementById('timerDisplay').textContent = '60:00';
+        
+        for (let i = 27; i <= 40; i++) {
+            let input = document.getElementById(`q${i}`);
+            if (input) {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect-marked');
             }
-            
-            document.querySelectorAll('.eye-icon').forEach(icon => {
-                icon.style.display = 'none';
-            });
-            
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('submitBtn').textContent = 'Nộp bài';
-            
-            document.getElementById('explainBtn').disabled = true;
-            document.getElementById('explainBtn').textContent = 'Xem giải thích';
-            
-            document.getElementById('resultStats').style.display = 'none';
-            document.getElementById('explanationPanel').classList.remove('show');
-            
-            clearAllHighlights();
-            updateAnswerCount();
         }
-    });
+        
+        // Xóa tất cả badge
+        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+        
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.style.display = 'none';
+        });
+        
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').textContent = 'Nộp bài';
+        
+        document.getElementById('explainBtn').disabled = true;
+        document.getElementById('explainBtn').textContent = 'Xem giải thích';
+        
+        document.getElementById('resultStats').style.display = 'none';
+        document.getElementById('explanationPanel').classList.remove('show');
+        
+        clearAllHighlights();
+        updateAnswerCount();
+    }
+});
 
     // ==================== RIGHT-CLICK HIGHLIGHT ====================
     const contextMenu = document.getElementById('contextMenu');
     
-    document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+    // Cho phép highlight ở cả reading panel và questions panel
+    document.getElementById('readingContent').addEventListener('contextmenu', showContextMenu);
+    document.getElementById('questionsContent').addEventListener('contextmenu', showContextMenu);
+
+    function showContextMenu(e) {
         e.preventDefault();
         const selection = window.getSelection();
         if (selection.toString().trim() === '') return;
-        window.selectedRange = selection.getRangeAt(0);
+        selectedRange = selection.getRangeAt(0);
         contextMenu.style.display = 'block';
         contextMenu.style.left = e.pageX + 'px';
         contextMenu.style.top = e.pageY + 'px';
-    });
+    }
 
     document.addEventListener('click', () => {
         contextMenu.style.display = 'none';
     });
 
     window.applyHighlight = (color) => {
-        if (!window.selectedRange) return;
+        if (!selectedRange) return;
         try {
             const span = document.createElement('span');
             span.className = `highlight-${color}`;
-            const range = window.selectedRange.cloneRange();
+            const range = selectedRange.cloneRange();
+            window.getSelection().removeAllRanges();
             const contents = range.extractContents();
             span.appendChild(contents);
             range.insertNode(span);
@@ -1278,24 +1250,27 @@
             alert('Không thể highlight đoạn này');
         }
         contextMenu.style.display = 'none';
-        window.selectedRange = null;
+        selectedRange = null;
     };
 
     window.removeHighlight = () => {
-        if (!window.selectedRange) return;
-        const range = window.selectedRange.cloneRange();
-        document.querySelectorAll('.highlight-yellow').forEach(h => {
-            if (range.intersectsNode(h)) {
-                const parent = h.parentNode;
-                while (h.firstChild) {
-                    parent.insertBefore(h.firstChild, h);
+        if (!selectedRange) return;
+        try {
+            const range = selectedRange.cloneRange();
+            const highlights = document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink');
+            highlights.forEach(highlight => {
+                if (range.intersectsNode(highlight)) {
+                    const parent = highlight.parentNode;
+                    while (highlight.firstChild) {
+                        parent.insertBefore(highlight.firstChild, highlight);
+                    }
+                    parent.removeChild(highlight);
                 }
-                parent.removeChild(h);
-            }
-        });
+            });
+        } catch (e) {}
         window.getSelection().removeAllRanges();
         contextMenu.style.display = 'none';
-        window.selectedRange = null;
+        selectedRange = null;
     };
 
     // ==================== INIT ====================
