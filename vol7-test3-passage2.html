@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOL 7 - Reading Test 3 - Passage 3 - Lean Production</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+        }
+        .candidate { background: #2d4b77; padding: 4px 16px; border-radius: 30px; font-size: 14px; }
+        .question-types { background: #0f2a44; padding: 4px 16px; border-radius: 30px; font-size: 13px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 6px 20px; border-radius: 40px; font-size: 22px; font-family: monospace; border: 1px solid #e6b422; }
+
+        .reading-mode-toggle {
+            display: flex; align-items: center; gap: 8px; background: #2d4b77; padding: 4px 12px; border-radius: 30px; cursor: pointer;
+        }
+        .toggle-switch {
+            width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422;
+        }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s;
+        }
+        .toggle-switch.active::after { left: 22px; }
+
+        .font-controls {
+            display: flex; gap: 5px; background: #2d4b77; padding: 3px; border-radius: 30px;
+        }
+        .font-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn {
+            width: 32px; height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); }
+
+        .main-area {
+            display: flex; flex: 1; overflow: hidden;
+        }
+        .reading-panel {
+            width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .questions-panel {
+            width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .resizer {
+            width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s;
+        }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+        }
+        .reading-text {
+            flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px;
+        }
+        .reading-text p {
+            margin-bottom: 15px;
+        }
+        .questions-list {
+            flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px;
+        }
+
+        .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
+
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; }
+        .highlight-green { background-color: #a9d6b0; }
+        .highlight-pink { background-color: #fbb9c0; }
+        
+        .question-highlight { 
+            background-color: #fef9e7; 
+            border-left: 4px solid #f1c40f; 
+            padding-left: 10px; 
+        }
+
+        .context-menu {
+            position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px;
+        }
+        .context-menu div { padding: 8px 20px; cursor: pointer; transition: 0.2s; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+
+        .note-box {
+            background: #f0ebe0; border-left: 4px solid #e6b422; padding: 12px 15px; margin: 15px 0; font-style: italic;
+        }
+        
+        .questions-list p, .questions-list h3, .questions-list h4, .questions-list h5, .questions-list h6, 
+        .questions-list ul, .questions-list ol, .questions-list li {
+            margin-bottom: 12px;
+        }
+        
+        .questions-list h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+        
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+        }
+        
+        .questions-list li {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .mcq-options { margin: 10px 0 20px 30px; list-style: none; }
+        .mcq-option { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .tf-group { margin: 5px 0 15px 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .tf-option { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .tf-option.correct .tf-text { color: #4CAF50; font-weight: bold; }
+        .tf-option.incorrect .tf-text { color: #f44336; font-weight: bold; }
+
+        .question-wrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .question-number { font-weight: bold; color: #1e3a5f; margin-right: 5px; min-width: 25px; }
+
+        .letter-input {
+            width: 80px; /* Initial width, will be adjusted by JS */
+            min-width: 60px;
+            max-width: 250px;
+            text-align: center;
+            text-transform: lowercase;
+            font-weight: bold;
+            border: none;
+            border-bottom: 2px solid #bdc3c7;
+            background: #fafafa;
+            padding: 2px 5px;
+            font-size: 1em;
+            transition: 0.2s;
+            outline: none;
+            border-radius: 4px 4px 0 0;
+            margin: 0 5px;
+            font-family: 'Times New Roman', serif;
+        }
+        .letter-input.correct {
+            border-bottom-color: #27ae60 !important;
+            background-color: #e8f8f5 !important;
+            color: #1e8449 !important;
+        }
+        .letter-input.incorrect-marked {
+            border-bottom-color: #e74c3c !important;
+            background-color: #fdedec !important;
+        }
+        
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .eye-icon {
+            display: none;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #1e3a5f; color: white; }
+        .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; opacity: 0.6; }
+        
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { 
+            background: #a5d6a7; 
+            cursor: not-allowed; 
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .btn-danger { background: #f44336; color: white; }
+        .btn-danger:hover { background: #d32f2f; }
+        
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; }
+
+        .explanation-panel {
+            background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; color: #666; }
+        .close-btn:hover { color: #1e3a5f; }
+
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+        .question-item.highlight-question {
+            border-left: 3px solid #f1c40f;
+            background-color: #fef9e7;
+        }
+
+        .heading-section {
+            margin-bottom: 30px;
+        }
+        
+        .heading-bank {
+            background: #e6d9c8;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid #b0aa9a;
+        }
+        .heading-item {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: grab;
+            user-select: none;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .heading-item.dragging { opacity: 0.5; }
+        .heading-item.hidden { display: none; }
+        
+        .drop-area {
+            margin: 15px 0;
+        }
+        .drop-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: #f0ebe0;
+            border-radius: 8px;
+            border: 1px solid #b0aa9a;
+        }
+        .drop-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            width: 140px;
+        }
+        .drop-slot {
+            flex: 1;
+            min-height: 45px;
+            background: white;
+            border: 2px dashed #9a8c7a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .slot-content {
+            flex: 1;
+        }
+        .remove-chip {
+            color: #f44336;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 0 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .match-question {
+            font-weight: 700;
+            width: 40px;
+            color: #1e3a5f;
+        }
+        .match-select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 2px solid #9a8c7a;
+            min-width: 200px;
+        }
+        .match-select.correct {
+            border: 2px solid #4CAF50;
+            background: #e8f5e8;
+        }
+        .match-select.incorrect {
+            border: 2px solid #f44336;
+            background: #ffebee;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, #e6b422, #b0aa9a, #e6b422);
+            margin: 30px 0 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 3</div>
+            <div class="question-types">Headings • Sentence Completion</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- Question Navigator -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 14-26:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main Resizable Area -->
+    <div class="main-area" id="mainArea">
+        <!-- Reading Panel -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header">
+                <span>READING PASSAGE 3: Lean Production - innovation in manufacturing systems</span>
+            </div>
+            <div class="reading-text font-medium" id="readingContent">
+                <h1>Lean Production - innovation in manufacturing systems</h1>
+                
+                <p><strong>A</strong><br>
+                After the First World War, car makers Henry Ford and Arthur Sloan of General Motors moved world manufacturing from centuries of craft production into the age of mass production. Largely as a result of this, the United States soon dominated the world economy. After the Second World War, and approximately a hundred years after Japan opened up to the modern world, Eiji Toyoda and Taiichi Ohno pioneered the concept of lean production at the Toyota car company. And now, although superimposing the method on existing mass production systems causes pain and upheaval, manufacturers around the world are trying to embrace this innovative system.</p>
+                
+                <p><strong>B</strong><br>
+                Perhaps the best way to describe lean production is to compare it with the two other major manufacturing systems: craft production and mass production. The craft producer uses highly skilled workers and simple but flexible tools to make exactly what the customer asks for - one item at a time. A present day example of this method is the customised production of a few exotic sports cars. The concept of craft production remains very popular, but the problem with it is obvious. Goods produced by the craft method - as cars once exclusively were - cost too much for most of us to afford. So at the beginning of the twentieth century, mass production was developed. Mass producers design products which are then made by unskilled or semi-skilled workers, using expensive, single-purpose machines. These churn out standardised products in very high volumes. Because the machinery costs so much, and is so intolerant of disruption, the mass producer keeps standard designs in production for as long as possible. The result is that the customer gets lower costs, but at the expense of variety, and by means of work methods which most employees find boring and dispiriting. By contrast, the lean production system combines the advantages of craft and mass production, while avoiding the high cost of the former and the rigidity of the latter. Towards this end, companies appoint teams of multi-skilled workers to all levels of the organisation, and use highly flexible and increasingly automated machines to produce goods in enormous volume and variety.</p>
+                
+                <p><strong>C</strong><br>
+                Lean production is so called because, compared with mass production, it uses less of everything - half the human effort in the factory, half the manufacturing space, half the investment in tools, and half the engineering hours to develop the new product. It also results in far fewer defects.</p>
+                
+                <p><strong>D</strong><br>
+                Perhaps the most striking contrast between mass and lean production systems lies in their production standards. Mass producers set a limited goal for themselves: ‘good enough’, which translates into an acceptable number of defects, a maximum acceptable number of inventories, and a narrow range of standardised products. Lean producers, on the other hand, are unwilling to compromise standards in any of these areas.</p>
+                
+                <p><strong>E</strong><br>
+                Although cost reduction is the primary objective of the lean production system, it must meet three other intermediate objectives in order to achieve this: quantity control, quality assurance and respect for humanity. Firstly, the system must be able to adapt to daily and monthly fluctuations in demand. Secondly, each separate process must supply only good units to the subsequent process. Thirdly, in as far as the system uses human resources to attain its cost objectives, respect for human needs must be cultivated. It should be emphasised that none of these three objectives can be achieved separately.</p>
+                
+                <p><strong>F</strong><br>
+                The continuous flow of lean manufacturing production relies on two practical mechanisms: just-in-time and automation. Just-in-time means, for example, that in the process of assembling the parts to build a car, components from the preceding process should arrive at the next part of the line at exactly the right time and in the correct quantities. If just-in-time is fully realised throughout the company, then superfluous inventories are completely eliminated from the factory, making stores or warehouses unnecessary. However, relying solely on a central planning approach to control schedules for all stages of the production process simultaneously is very difficult in the case of cars, which consist of thousands of parts. So the lean system looks at the production flow in reverse; in other words, employees go to the preceding process to withdraw the necessary quantity of units at the appropriate time. The preceding process must produce only sufficient quantities of units to replace those that have been withdrawn, and in turn withdraws the requisite number of components from the process that precedes it.</p>
+                
+                <p><strong>G</strong><br>
+                Autonomation is the automatic checking for abnormalities in the production process. In order to realise just-in-time perfectly, only units which are in perfect condition must be allowed to flow to the next process, and this flow must be regular and uninterrupted. In other words, quality control must coexist with just-in-time procedures throughout the system. Autonomation involves building in a mechanism to prevent the multiplication of defects in machines or product lines. For example, in Toyota factories almost all the machines have been fitted with stopping devices, and the concept of autonomation has been extended to manual production lines. If something abnormal happens there, the worker pushes a button to stop the whole line, and lights, which are hung so high in the factory that they are visible to everyone, indicate the position of the problem.</p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions Panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header">
+                <span>QUESTIONS 14-26</span>
+                <span class="answer-badge" id="answeredCount">0/13 answered</span>
+            </div>
+            <div class="questions-list font-medium" id="questionsContent">
+                <!-- Headings 14-20 -->
+                <div class="heading-section">
+                    <h3>Questions 14-20</h3>
+                    <p><em>Reading Passage 3 has seven paragraphs. Choose the correct heading for each paragraph from the list of headings below. Choose the correct number, i-x, in boxes 14-20.</em></p>
+                    
+                    <!-- Heading Bank -->
+                    <div class="heading-bank" id="headingBank">
+                        <div class="heading-item" draggable="true" data-value="i">i Global resistance to lean manufacturing</div>
+                        <div class="heading-item" draggable="true" data-value="ii">ii The historical context</div>
+                        <div class="heading-item" draggable="true" data-value="iii">iii Procedures for controlling quality</div>
+                        <div class="heading-item" draggable="true" data-value="iv">iv The pros and cons of different production systems</div>
+                        <div class="heading-item" draggable="true" data-value="v">v The impact on profits</div>
+                        <div class="heading-item" draggable="true" data-value="vi">vi Procedures for controlling supply</div>
+                        <div class="heading-item" draggable="true" data-value="vii">vii The origin of the term</div>
+                        <div class="heading-item" draggable="true" data-value="viii">viii A crucial difference in levels of quality</div>
+                        <div class="heading-item" draggable="true" data-value="ix">ix Working conditions</div>
+                        <div class="heading-item" draggable="true" data-value="x">x Interdependent strategies for controlling expenditure</div>
+                    </div>
+
+                    <!-- Drop Zones -->
+                    <div class="drop-area">
+                        <div class="drop-row" data-paragraph="14">
+                            <span class="drop-label">14 Paragraph A</span>
+                            <div class="drop-slot" id="drop14">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="14">👁️</span>
+                        </div>
+                        <div class="drop-row" data-paragraph="15">
+                            <span class="drop-label">15 Paragraph B</span>
+                            <div class="drop-slot" id="drop15">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="15">👁️</span>
+                        </div>
+                        <div class="drop-row" data-paragraph="16">
+                            <span class="drop-label">16 Paragraph C</span>
+                            <div class="drop-slot" id="drop16">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="16">👁️</span>
+                        </div>
+                        <div class="drop-row" data-paragraph="17">
+                            <span class="drop-label">17 Paragraph D</span>
+                            <div class="drop-slot" id="drop17">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="17">👁️</span>
+                        </div>
+                        <div class="drop-row" data-paragraph="18">
+                            <span class="drop-label">18 Paragraph E</span>
+                            <div class="drop-slot" id="drop18">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="18">👁️</span>
+                        </div>
+                        <div class="drop-row" data-paragraph="19">
+                            <span class="drop-label">19 Paragraph F</span>
+                            <div class="drop-slot" id="drop19">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="19">👁️</span>
+                        </div>
+                        <div class="drop-row" data-paragraph="20">
+                            <span class="drop-label">20 Paragraph G</span>
+                            <div class="drop-slot" id="drop20">
+                                <span class="slot-content"></span>
+                                <span class="remove-chip" style="display: none;">✕</span>
+                            </div>
+                            <span class="eye-icon" data-question="20">👁️</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <!-- Sentence Completion 21-26 -->
+                <h3>Questions 21-26</h3>
+                <p><em>Complete the sentences below. Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</em></p>
+                
+                <div style="background: #f9f7f0; padding: 20px; border-radius: 8px; margin: 15px 0;">
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        21. A small number of unusual cars are still produced by the 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q21" data-answer="craft production" placeholder=" " style="width:120px;">
+                            <span class="eye-icon" data-question="21" style="display:none;">👁️</span>
+                        </span> method.
+                    </p>
+                    
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        22. Lean production requires staff who are 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q22" data-answer="multi-skilled" placeholder=" " style="width:100px;">
+                            <span class="eye-icon" data-question="22" style="display:none;">👁️</span>
+                        </span>.
+                    </p>
+                    
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        23. Lean production employs fewer people, and uses less 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q23" data-answer="manufacturing space" placeholder=" " style="width:150px;">
+                            <span class="eye-icon" data-question="23" style="display:none;">👁️</span>
+                        </span>, equipment and time.
+                    </p>
+                    
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        24. Storage facilities are not needed if a procedure known as 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q24" data-answer="just-in-time" placeholder=" " style="width:120px;">
+                            <span class="eye-icon" data-question="24" style="display:none;">👁️</span>
+                        </span> is implemented in the lean production method.
+                    </p>
+                    
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        25. Autonomation is a procedure for spotting any 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q25" data-answer="abnormalities" placeholder=" " style="width:120px;">
+                            <span class="eye-icon" data-question="25" style="display:none;">👁️</span>
+                        </span> in the products on a production line.
+                    </p>
+                    
+                    <p style="margin-bottom: 5px; line-height: 2;">
+                        26. At Toyota factories, 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q26" data-answer="lights" placeholder=" " style="width:70px;">
+                            <span class="eye-icon" data-question="26" style="display:none;">👁️</span>
+                        </span> are suspended above manual production lines in order to show where production has to be halted.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- Explanation Panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header">
+            <span id="explanationTitle">Giải thích</span>
+            <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+        </div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+    </div>
+</div>
+
+<script>
+    // ==================== GLOBAL VARIABLES ====================
+    let examSubmitted = false;
+    let explanationMode = false;
+    let startTime = Date.now();
+    let readingMode = false;
+    let timerStopped = false; // Flag to stop timer
+    let timeLeft = 3600; // 60 minutes
+    const timerEl = document.getElementById('timerDisplay');
+
+    // ANSWER KEY
+    const answerKey = {
+        q14: 'ii', q15: 'iv', q16: 'vii', q17: 'viii', q18: 'x', q19: 'vi', q20: 'iii',
+        q21: 'craft production', q22: 'multi-skilled', q23: 'manufacturing space', q24: 'just-in-time', q25: 'abnormalities', q26: 'lights'
+    };
+
+    // Explanations with keywords
+    const explanations = {
+        q14: "<strong>Đáp án: ii (The historical context)</strong><br><br><strong>Giải thích:</strong> Đoạn A cung cấp bối cảnh lịch sử: Ford/Sloan (sản xuất hàng loạt) sau Thế chiến I, và Toyoda/Ohno (sản xuất tinh gọn) sau Thế chiến II.<br><br><strong>Keywords trong bài:</strong> 'After the First World War... After the Second World War...'",
+        q15: "<strong>Đáp án: iv (The pros and cons of different production systems)</strong><br><br><strong>Giải thích:</strong> Đoạn B so sánh ưu nhược điểm của sản xuất thủ công (craft), hàng loạt (mass) và tinh gọn (lean).<br><br><strong>Keywords trong bài:</strong> 'compare it with the two other major manufacturing systems... The craft producer... The problem with it... mass production was developed... The result is... By contrast...'",
+        q16: "<strong>Đáp án: vii (The origin of the term)</strong><br><br><strong>Giải thích:</strong> Đoạn C giải thích nguồn gốc tên gọi 'lean production'.<br><br><strong>Keywords trong bài:</strong> 'Lean production is so called because, compared with mass production, it uses less of everything...'",
+        q17: "<strong>Đáp án: viii (A crucial difference in levels of quality)</strong><br><br><strong>Giải thích:</strong> Đoạn D chỉ ra sự khác biệt chính về tiêu chuẩn chất lượng: mass chấp nhận 'good enough', lean 'unwilling to compromise'.<br><br><strong>Keywords trong bài:</strong> 'contrast... lies in their production standards. Mass producers set a limited goal: ‘good enough’... Lean producers, on the other hand, are unwilling to compromise standards.'",
+        q18: "<strong>Đáp án: x (Interdependent strategies for controlling expenditure)</strong><br><br><strong>Giải thích:</strong> Đoạn E nói về các mục tiêu trung gian (kiểm soát số lượng, đảm bảo chất lượng, tôn trọng con người) phụ thuộc lẫn nhau để đạt mục tiêu chi phí.<br><br><strong>Keywords trong bài:</strong> 'cost reduction is the primary objective... it must meet three other intermediate objectives... none of these three objectives can be achieved separately.'",
+        q19: "<strong>Đáp án: vi (Procedures for controlling supply)</strong><br><br><strong>Giải thích:</strong> Đoạn F giải thích cơ chế 'just-in-time' để kiểm soát cung ứng.<br><br><strong>Keywords trong bài:</strong> 'two practical mechanisms: just-in-time... If just-in-time is fully realised... superfluous inventories are completely eliminated...'",
+        q20: "<strong>Đáp án: iii (Procedures for controlling quality)</strong><br><br><strong>Giải thích:</strong> Đoạn G giải thích cơ chế 'autonomation' để kiểm soát chất lượng, ngăn ngừa lỗi.<br><br><strong>Keywords trong bài:</strong> 'Autonomation is the automatic checking for abnormalities... quality control must coexist... mechanism to prevent the multiplication of defects...'",
+        q21: "<strong>Đáp án: craft production</strong><br><br><strong>Giải thích:</strong> Xe thể thao độc đáo là ví dụ về sản xuất thủ công.<br><br><strong>Keywords trong bài:</strong> 'A present day example of this method is the customised production of a few exotic sports cars.'",
+        q22: "<strong>Đáp án: multi-skilled</strong><br><br><strong>Giải thích:</strong> Lean production yêu cầu công nhân đa kỹ năng.<br><br><strong>Keywords trong bài:</strong> 'companies appoint teams of multi-skilled workers...'",
+        q23: "<strong>Đáp án: manufacturing space</strong><br><br><strong>Giải thích:</strong> Lean sử dụng ít không gian sản xuất hơn.<br><br><strong>Keywords trong bài:</strong> 'it uses less of everything - half the human effort... half the manufacturing space...'",
+        q24: "<strong>Đáp án: just-in-time</strong><br><br><strong>Giải thích:</strong> Just-in-time loại bỏ hàng tồn kho, không cần kho chứa.<br><br><strong>Keywords trong bài:</strong> 'If just-in-time is fully realised... superfluous inventories are completely eliminated from the factory, making stores or warehouses unnecessary.'",
+        q25: "<strong>Đáp án: abnormalities</strong><br><br><strong>Giải thích:</strong> Autonomation là kiểm tra tự động các bất thường.<br><br><strong>Keywords trong bài:</strong> 'Autonomation is the automatic checking for abnormalities in the production process.'",
+        q26: "<strong>Đáp án: lights</strong><br><br><strong>Giải thích:</strong> Đèn được treo trên dây chuyền sản xuất thủ công để báo hiệu vị trí có vấn đề.<br><br><strong>Keywords trong bài:</strong> 'lights, which are hung so high in the factory that they are visible to everyone, indicate the position of the problem.'"
+    };
+
+    // ==================== TIMER ====================
+    const timerInterval = setInterval(() => {
+        if (examSubmitted || timerStopped) return; // Stop timer if exam submitted
+        if (timeLeft > 0) {
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+    }, 1000);
+
+    // ==================== READING MODE TOGGLE ====================
+    const testWrapper = document.getElementById('testWrapper');
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    
+    document.getElementById('readingModeToggle').addEventListener('click', () => {
+        readingMode = !readingMode;
+        if (readingMode) {
+            testWrapper.classList.add('reading-mode');
+            toggleSwitch.classList.add('active');
+        } else {
+            testWrapper.classList.remove('reading-mode');
+            toggleSwitch.classList.remove('active');
+        }
+    });
+
+    // ==================== FONT SIZE CONTROLS ====================
+    document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+    document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+    document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+    function setFontSize(size) {
+        document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+        document.getElementById('readingContent').className = `reading-text font-${size}`;
+        document.getElementById('questionsContent').className = `questions-list font-${size}`;
+    }
+
+    // ==================== RESIZE COLUMNS ====================
+    const readingPanel = document.getElementById('readingPanel');
+    const questionsPanel = document.getElementById('questionsPanel');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', () => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('mainArea');
+        const rect = mainArea.getBoundingClientRect();
+        let readingWidth = e.clientX - rect.left - 4;
+        if (readingWidth < 250) readingWidth = 250;
+        if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+        readingPanel.style.width = readingWidth + 'px';
+        questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+    });
+
+    // ==================== NAVIGATION BUTTONS ====================
+    function createNavButtons() {
+        const navContainer = document.getElementById('navButtons');
+        navContainer.innerHTML = '';
+        for (let i = 14; i <= 26; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn unanswered';
+            btn.textContent = i;
+            btn.setAttribute('data-question', i);
+            btn.addEventListener('click', function() {
+                const qNum = this.getAttribute('data-question');
+                scrollToQuestion(qNum);
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+            navContainer.appendChild(btn);
+        }
+    }
+
+    function scrollToQuestion(questionNum) {
+        if (questionNum <= 20) {
+            const dropRow = document.querySelector(`.drop-row[data-paragraph="${questionNum}"]`);
+            if (dropRow) dropRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            const input = document.getElementById(`q${questionNum}`);
+            if (input) input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function updateNavButtons() {
+        for (let i = 14; i <= 26; i++) {
+            const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+            if (!btn) continue;
+            let isAnswered = !!getUserAnswer(i);
+            btn.classList.remove('answered', 'unanswered');
+            btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+        }
+    }
+
+    // ==================== GET USER ANSWER ====================
+    function getUserAnswer(q) {
+        if (q <= 20) {
+            const slot = document.getElementById(`drop${q}`);
+            if (slot) {
+                return slot.getAttribute('data-selected') || null;
+            }
+        } else {
+            let input = document.getElementById(`q${q}`);
+            return input ? input.value.trim().toLowerCase() || null : null;
+        }
+        return null;
+    }
+
+    // ==================== UPDATE ANSWER COUNT ====================
+    function updateAnswerCount() {
+        let answered = 0;
+        for (let i = 14; i <= 26; i++) {
+            if (getUserAnswer(i)) answered++;
+        }
+        document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+        document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+        updateNavButtons();
+    }
+
+    // ==================== DRAG AND DROP HEADINGS ====================
+    const headings = document.querySelectorAll('.heading-item');
+    const dropSlots = document.querySelectorAll('.drop-slot');
+    let draggedItem = null;
+
+    headings.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedItem = item;
+            item.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', item.getAttribute('data-value'));
+        });
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            draggedItem = null;
+        });
+    });
+
+    dropSlots.forEach(slot => {
+        slot.addEventListener('dragover', (e) => e.preventDefault());
+        slot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (!draggedItem) return;
+            
+            const value = draggedItem.getAttribute('data-value');
+            const text = draggedItem.textContent;
+            const slotContent = slot.querySelector('.slot-content');
+            const removeBtn = slot.querySelector('.remove-chip');
+            
+            if (slotContent.textContent.trim() !== '') {
+                const oldText = slotContent.textContent;
+                headings.forEach(h => {
+                    if (h.textContent === oldText) {
+                        h.classList.remove('hidden');
+                    }
+                });
+            }
+            
+            slotContent.textContent = text;
+            slot.setAttribute('data-selected', value);
+            removeBtn.style.display = 'inline';
+            draggedItem.classList.add('hidden');
+            updateAnswerCount();
+        });
+    });
+
+    document.querySelectorAll('.remove-chip').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const slot = this.closest('.drop-slot');
+            const slotContent = slot.querySelector('.slot-content');
+            const removedText = slotContent.textContent;
+            slotContent.textContent = '';
+            slot.removeAttribute('data-selected');
+            this.style.display = 'none';
+            
+            headings.forEach(h => {
+                if (h.textContent === removedText) {
+                    h.classList.remove('hidden');
+                }
+            });
+            updateAnswerCount();
+        });
+    });
+
+    // ==================== AUTO UPDATE ====================
+    document.querySelectorAll('.letter-input').forEach(el => {
+        el.addEventListener('input', updateAnswerCount);
+    });
+
+    // ==================== HÀM XÓA HIGHLIGHT ====================
+    function clearAllHighlights() {
+        document.querySelectorAll('.dynamic-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        
+        document.querySelectorAll('.question-highlight').forEach(el => {
+            el.classList.remove('question-highlight');
+        });
+        
+        document.querySelectorAll('.eye-icon.active').forEach(el => {
+            el.classList.remove('active');
+        });
+    }
+
+    // ==================== HÀM HIGHLIGHT THỦ CÔNG ====================
+    function showHighlightForQuestion(questionNum) {
+        clearAllHighlights();
+        
+        // Highlight câu hỏi
+        if (questionNum <= 20) {
+            const dropRow = document.querySelector(`.drop-row[data-paragraph="${questionNum}"]`);
+            if (dropRow) dropRow.classList.add('question-highlight');
+        } else {
+            const input = document.getElementById(`q${questionNum}`);
+            if (input) {
+                const wrapper = input.closest('.question-wrapper');
+                if (wrapper) wrapper.classList.add('question-highlight');
+            }
+        }
+        
+        // Eye icon active
+        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (eyeIcon) eyeIcon.classList.add('active');
+        
+        // Badge cho câu 21-26
+        if (questionNum >= 21 && questionNum <= 26) {
+            const input = document.getElementById(`q${questionNum}`);
+            if (input) {
+                const oldBadge = input.parentNode.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                const correctAnswer = answerKey[`q${questionNum}`];
+                const badge = document.createElement('span');
+                badge.className = 'correct-answer-badge';
+                badge.textContent = correctAnswer;
+                input.parentNode.appendChild(badge);
+            }
+        }
+        
+        // Highlight trong bài đọc
+        const paragraphs = document.querySelectorAll('#readingContent p');
+        const keywordMap = {
+            14: ['After the First World War', 'After the Second World War'],
+            15: ['compare it with the two other major manufacturing systems', 'craft producer', 'mass production', 'By contrast'],
+            16: ['is so called because', 'uses less of everything'],
+            17: ['contrast', 'production standards', 'good enough', 'unwilling to compromise'],
+            18: ['cost reduction', 'three other intermediate objectives', 'cannot be achieved separately'],
+            19: ['just-in-time', 'superfluous inventories are completely eliminated'],
+            20: ['Autonomation', 'checking for abnormalities', 'prevent the multiplication of defects'],
+            21: ['customised production of a few exotic sports cars'],
+            22: ['multi-skilled workers'],
+            23: ['manufacturing space'],
+            24: ['just-in-time', 'making stores or warehouses unnecessary'],
+            25: ['checking for abnormalities'],
+            26: ['lights', 'indicate the position of the problem']
+        };
+        
+        const keywords = keywordMap[questionNum] || [];
+        if (keywords.length > 0) {
+            paragraphs.forEach(p => {
+                let modified = false;
+                keywords.forEach(keyword => {
+                    if (p.textContent.includes(keyword)) {
+                        const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        p.innerHTML = p.innerHTML.replace(regex, '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline; text-decoration: underline; text-decoration-color: #e67e22; font-weight: 600;">$1</span>');
+                        modified = true;
+                    }
+                });
+                if (modified) {
+                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+    }
+
+    function showExplanation(questionNum) {
+        if (!explanationMode) return;
+        
+        showHighlightForQuestion(questionNum);
+        
+        if (explanations[`q${questionNum}`]) {
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+            
+            let explanationHtml = explanations[`q${questionNum}`];
+            
+            if (examSubmitted) {
+                const userAnswer = getUserAnswer(questionNum);
+                const correctAnswer = answerKey[`q${questionNum}`];
+                
+                const isCorrect = userAnswer ? 
+                    userAnswer.toString().toLowerCase().trim() === correctAnswer.toString().toLowerCase().trim() : 
+                    false;
+                
+                explanationHtml += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
+                explanationHtml += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+                if (!isCorrect) {
+                    explanationHtml += `<strong>Đáp án đúng:</strong> ${correctAnswer}`;
+                }
+                explanationHtml += `</div>`;
+            }
+            
+            document.getElementById('explanationText').innerHTML = explanationHtml;
+        }
+    }
+
+    // ==================== SETUP EYE ICONS ====================
+    function setupEyeIcons() {
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                const questionNum = this.getAttribute('data-question');
+                
+                if (explanationMode) {
+                    showExplanation(questionNum);
+                }
+            });
+        });
+    }
+
+    document.getElementById('closeExplanation').addEventListener('click', () => {
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+    });
+
+    // ==================== MARK ANSWERS ====================
+    function markAnswers() {
+        // Headings 14-20
+        for (let i = 14; i <= 20; i++) {
+            const slot = document.getElementById(`drop${i}`);
+            if (slot) {
+                const selected = slot.getAttribute('data-selected');
+                const correct = answerKey[`q${i}`];
+                // Remove old badges
+                const oldBadge = slot.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                
+                if (selected) {
+                    if (selected === correct) {
+                        slot.style.border = '3px solid #4CAF50';
+                    } else {
+                        slot.style.border = '3px solid #f44336';
+                        const slotContent = slot.querySelector('.slot-content');
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correct;
+                        slotContent.appendChild(badge);
+                    }
+                } else {
+                    slot.style.border = '3px solid #f44336';
+                    const slotContent = slot.querySelector('.slot-content');
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = correct;
+                    slotContent.appendChild(badge);
+                }
+            }
+        }
+        
+        // Summary 21-26
+        for (let i = 21; i <= 26; i++) {
+            const input = document.getElementById(`q${i}`);
+            if (input) {
+                const userAnswer = input.value.trim().toLowerCase();
+                const correct = answerKey[`q${i}`].toLowerCase();
+                input.classList.remove('correct', 'incorrect-marked');
+                
+                const parent = input.parentNode;
+                const oldBadge = parent.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                
+                if (userAnswer) {
+                    if (userAnswer === correct) {
+                        input.classList.add('correct');
+                    } else {
+                        input.classList.add('incorrect-marked');
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = answerKey[`q${i}`];
+                        parent.appendChild(badge);
+                    }
+                } else {
+                    input.classList.add('incorrect-marked');
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${i}`];
+                    parent.appendChild(badge);
+                }
+            }
+        }
+    }
+
+    // ==================== CALCULATE RESULTS ====================
+    function calculateResults() {
+        let correct = 0;
+        let total = 13;
+        
+        for (let i = 14; i <= 26; i++) {
+            let u = getUserAnswer(i);
+            let correctAns = answerKey[`q${i}`];
+            
+            if (u) {
+                if (i <= 20) {
+                    if (u === correctAns) correct++;
+                } else {
+                    if (u === correctAns.toLowerCase()) correct++;
+                }
+            }
+        }
+        
+        const percentage = Math.round(correct / total * 100);
+        const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(timeTaken / 60);
+        const seconds = timeTaken % 60;
+        
+        return {
+            correct,
+            total,
+            percentage,
+            timeString: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        };
+    }
+
+    // ==================== SUBMIT ====================
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (examSubmitted) return;
+        
+        let unanswered = [];
+        for (let i = 14; i <= 26; i++) {
+            if (!getUserAnswer(i)) unanswered.push(i);
+        }
+        
+        if (unanswered.length > 0) {
+            const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm. Bạn có chắc muốn nộp bài?`);
+            if (!confirmSubmit) return;
+        }
+        
+        examSubmitted = true;
+        timerStopped = true; // Stop the timer
+        
+        markAnswers();
+        
+        const results = calculateResults();
+        
+        const resultStats = document.getElementById('resultStats');
+        resultStats.style.display = 'inline-block';
+        resultStats.textContent = `Kết quả: ${results.correct}/${results.total} (${results.percentage}%) - Thời gian: ${results.timeString}`;
+        
+        document.getElementById('explainBtn').disabled = false;
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+        
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
+        document.getElementById('explanationText').innerHTML = `
+            <h4>Kết quả bài làm:</h4>
+            <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
+            <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
+            <p><strong>Thời gian làm bài:</strong> ${results.timeString}</p>
+            <p>Nhấn "Xem giải thích" để xem chi tiết từng câu.</p>
+        `;
+    });
+
+    // ==================== EXPLAIN ====================
+    document.getElementById('explainBtn').addEventListener('click', function() {
+        if (!examSubmitted) return;
+        
+        explanationMode = true;
+        
+        // Hiện tất cả eye icons
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.style.display = 'inline-block';
+        });
+        
+        this.disabled = true;
+        this.textContent = 'Đang xem giải thích';
+        
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+        
+        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+    });
+
+    // ==================== RESET ====================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('Bạn có chắc muốn reset tất cả?')) {
+            examSubmitted = false;
+            explanationMode = false;
+            timerStopped = false; // Restart timer
+            startTime = Date.now(); // Reset start time for result calculation
+            
+            for (let i = 14; i <= 20; i++) {
+                const slot = document.getElementById(`drop${i}`);
+                if (slot) {
+                    slot.querySelector('.slot-content').textContent = '';
+                    slot.removeAttribute('data-selected');
+                    slot.querySelector('.remove-chip').style.display = 'none';
+                    slot.style.border = '';
+                }
+            }
+            headings.forEach(h => h.classList.remove('hidden'));
+            
+            for (let i = 21; i <= 26; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect-marked');
+                    input.style.width = ''; // Reset width
+                    const parent = input.parentNode;
+                    const badge = parent.querySelector('.correct-answer-badge');
+                    if (badge) badge.remove();
+                }
+            }
+            
+            // Ẩn tất cả eye icons khi reset
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.style.display = 'none';
+            });
+            
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Nộp bài';
+            
+            document.getElementById('explainBtn').disabled = true;
+            document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            
+            document.getElementById('resultStats').style.display = 'none';
+            document.getElementById('explanationPanel').classList.remove('show');
+            
+            clearAllHighlights();
+            
+            updateAnswerCount();
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        }
+    });
+
+    // ==================== RIGHT-CLICK HIGHLIGHT ====================
+    const contextMenu = document.getElementById('contextMenu');
+    
+    document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection.toString().trim() === '') return;
+        window.selectedRange = selection.getRangeAt(0);
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+    });
+
+    document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection.toString().trim() === '') return;
+        window.selectedRange = selection.getRangeAt(0);
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+    });
+
+    document.addEventListener('click', () => {
+        contextMenu.style.display = 'none';
+    });
+
+    window.applyHighlight = (color) => {
+        if (!window.selectedRange) return;
+        try {
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            const range = window.selectedRange.cloneRange();
+            const contents = range.extractContents();
+            span.appendChild(contents);
+            range.insertNode(span);
+        } catch (e) {
+            alert('Không thể highlight đoạn này');
+        }
+        contextMenu.style.display = 'none';
+        window.selectedRange = null;
+    };
+
+    window.removeHighlight = () => {
+        if (!window.selectedRange) return;
+        const range = window.selectedRange.cloneRange();
+        document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+            if (range.intersectsNode(h)) {
+                const parent = h.parentNode;
+                while (h.firstChild) {
+                    parent.insertBefore(h.firstChild, h);
+                }
+                parent.removeChild(h);
+            }
+        });
+        window.getSelection().removeAllRanges();
+        contextMenu.style.display = 'none';
+        window.selectedRange = null;
+    };
+
+    // ==================== AUTO-RESIZE INPUTS ====================
+    function autoResizeInput(input) {
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.whiteSpace = 'pre';
+        tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily;
+        tempSpan.style.fontSize = window.getComputedStyle(input).fontSize;
+        tempSpan.style.fontWeight = window.getComputedStyle(input).fontWeight;
+        tempSpan.style.padding = window.getComputedStyle(input).padding;
+        tempSpan.style.border = window.getComputedStyle(input).border;
+        document.body.appendChild(tempSpan);
+        
+        function updateWidth() {
+            let value = input.value || ' ';
+            tempSpan.textContent = value;
+            let width = tempSpan.offsetWidth + 20;
+            input.style.width = Math.max(60, Math.min(300, width)) + 'px';
+        }
+        
+        updateWidth();
+        input.addEventListener('input', updateWidth);
+        input.addEventListener('change', updateWidth);
+    }
+    
+    // Áp dụng cho tất cả các input của câu 21-26
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['q21', 'q22', 'q23', 'q24', 'q25', 'q26'].map(id => document.getElementById(id));
+        inputs.forEach(input => {
+            if (input) {
+                autoResizeInput(input);
+            }
+        });
+    });
+
+    // ==================== INIT ====================
+    createNavButtons();
+    updateAnswerCount();
+    setupEyeIcons();
+    
+    // Ẩn eye icons ban đầu
+    document.querySelectorAll('.eye-icon').forEach(icon => {
+        icon.style.display = 'none';
+    });
+</script>
+</body>
+</html>
