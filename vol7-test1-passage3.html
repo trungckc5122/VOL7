@@ -106,11 +106,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
         }
         .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
         .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
         .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
-        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
         .main-area {
             display: flex; flex: 1; overflow: hidden;
@@ -140,16 +141,43 @@
         }
         .reading-text p {
             margin-bottom: 15px;
+            position: relative;
         }
         .questions-list {
             flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px;
+            position: relative;
         }
 
         .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
 
-        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; }
-        .highlight-green { background-color: #a9d6b0; }
-        .highlight-pink { background-color: #fbb9c0; }
+        /* Highlight colors */
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; display: inline; }
+        
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+            animation: highlightFadeIn 0.5s ease;
+        }
+        
+        @keyframes highlightFadeIn {
+            from { background-color: #fff; }
+            to { background-color: #f9e79f; }
+        }
+        
+        .keyword-highlight {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+            background-color: #fff3cd;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
         
         .question-highlight { 
             background-color: #fef9e7; 
@@ -197,13 +225,18 @@
         .tf-option.correct .tf-text { color: #4CAF50; font-weight: bold; }
         .tf-option.incorrect .tf-text { color: #f44336; font-weight: bold; }
 
-        .question-wrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .question-wrapper { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 8px;
+            position: relative;
+        }
         .question-number { font-weight: bold; color: #1e3a5f; margin-right: 5px; min-width: 25px; }
 
         .letter-input {
             width: 45px;
             text-align: center;
-            text-transform: uppercase;
             font-weight: bold;
             border: none;
             border-bottom: 2px solid #bdc3c7;
@@ -214,7 +247,7 @@
             outline: none;
             border-radius: 4px 4px 0 0;
             margin: 0 5px;
-            font-family: 'Times New Roman';
+            font-family: 'Times New Roman', serif;
         }
         .letter-input.correct {
             border-bottom-color: #27ae60 !important;
@@ -236,6 +269,12 @@
             margin-left: 8px;
             font-weight: bold;
             vertical-align: middle;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .eye-icon {
@@ -288,14 +327,15 @@
 
         .explanation-panel {
             background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none;
+            z-index: 100;
         }
         .explanation-panel.show { display: block; }
         .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
         .close-btn { cursor: pointer; color: #666; }
         .close-btn:hover { color: #1e3a5f; }
 
-        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; }
-        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; }
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
 
         .question-item {
             margin-bottom: 15px;
@@ -338,6 +378,45 @@
         .heading-item.dragging { opacity: 0.5; }
         .heading-item.hidden { display: none; }
         
+        .paragraph-drop-zone {
+            background: #f0ebe0;
+            border: 2px dashed #9a8c7a;
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 45px;
+        }
+        .paragraph-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            min-width: 30px;
+        }
+        .drop-slot {
+            flex: 1;
+            min-height: 30px;
+            background: white;
+            border: 2px dashed #9a8c7a;
+            border-radius: 6px;
+            padding: 5px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .slot-content {
+            flex: 1;
+            font-weight: 500;
+        }
+        .remove-chip {
+            color: #f44336;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 0 5px;
+        }
+        
         .drop-area {
             margin: 15px 0;
         }
@@ -354,27 +433,6 @@
             font-weight: 700;
             color: #1e3a5f;
             width: 140px;
-        }
-        .drop-slot {
-            flex: 1;
-            min-height: 45px;
-            background: white;
-            border: 2px dashed #9a8c7a;
-            border-radius: 6px;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .slot-content {
-            flex: 1;
-        }
-        .remove-chip {
-            color: #f44336;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 0 5px;
         }
 
         .match-row {
@@ -408,6 +466,13 @@
             height: 2px;
             background: linear-gradient(to right, #e6b422, #b0aa9a, #e6b422);
             margin: 30px 0 20px;
+        }
+        
+        .reading-text .paragraph-drop-zone {
+            background: #e8e0d5;
+            border: 2px solid #b0aa9a;
+            margin-top: 5px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -448,18 +513,58 @@
             <div class="reading-text font-medium" id="readingContent">
                 <h1>Neanderthal Technology</h1>
                 
+                <!-- Drop zone for Paragraph A -->
+                <div class="paragraph-drop-zone" id="dropZoneA" data-paragraph="27">
+                    <span class="paragraph-label">A:</span>
+                    <div class="drop-slot" id="readingDrop27">
+                        <span class="slot-content"></span>
+                        <span class="remove-chip" style="display: none;">✕</span>
+                    </div>
+                </div>
                 <p><strong>A</strong><br>
                 We think of our prehistoric ancestors as people of the ice and snow, living in caves, and for many of the west European Neanderthalers that is a just picture of their life. But where there were no caves, further to the east on the Russian steppe, for example, open-air sites with some sort of constructed shelter were the only option. We now know much more about the cave sites than the open-air ones because, historically, it was the cave sites of Western Europe that were first explored by archaeologists and also because open-air sites are harder to find - many of them have disappeared under deep mud deposits or under the rising postglacial seas. Caves, moreover, aid the survival of archaeological material and can preserve the records of remote millennia.</p>
                 
+                <!-- Drop zone for Paragraph B -->
+                <div class="paragraph-drop-zone" id="dropZoneB" data-paragraph="28">
+                    <span class="paragraph-label">B:</span>
+                    <div class="drop-slot" id="readingDrop28">
+                        <span class="slot-content"></span>
+                        <span class="remove-chip" style="display: none;">✕</span>
+                    </div>
+                </div>
                 <p><strong>B</strong><br>
                 In south-west France, the limestone caves of the Périgord region made ideal homes for the Neanderthal people. There were good supplies of flint to hand for axes and the like, and the caves were often sited in small river valleys that offered protection against the worst of the weather. The Neanderthalers liked south-facing caves, for obvious reasons of sunshine and wind avoidance, and caves at some height above the valley floor offered refuge from floods and good game-watching vantage points. The Périgord region during the last ice age was, in fact, an exceptionally benign habitat for humans. It enjoyed a rather maritime climate with cooler summers that permitted the extension of tundra and steppe over its higher plateaux, and its year-round high levels of sunshine favoured the growth of the ground plants needed by reindeer, bison and horse. Winters were mild for the ice age, animals never needed to migrate far from summer to winter, and men never needed to travel far from home to find abundant supplies of meat.</p>
                 
+                <!-- Drop zone for Paragraph C -->
+                <div class="paragraph-drop-zone" id="dropZoneC" data-paragraph="29">
+                    <span class="paragraph-label">C:</span>
+                    <div class="drop-slot" id="readingDrop29">
+                        <span class="slot-content"></span>
+                        <span class="remove-chip" style="display: none;">✕</span>
+                    </div>
+                </div>
                 <p><strong>C</strong><br>
                 In Central and Eastern Europe, where caves were unavailable, such open-air sites as have been discovered were mostly located near water - both because this was a good area to be for people and animals, and also because the sedimentation potential of lakes and stream courses has aided archaeological preservation - whereas erosion has presumably blown away sites which were out in the open. Some of the open-air sites in Germany, Central Europe and Russia have provided valuable information about Neanderthal man and his way of life. From Moldova, for example, comes evidence that has been interpreted as the remains of wind-break structures, or even a large tent: a ring up to about 8 x 5m in size, of mainly mammoth bones enclosing a dense concentration of stone tools, animal bones and ash.</p>
                 
+                <!-- Drop zone for Paragraph D -->
+                <div class="paragraph-drop-zone" id="dropZoneD" data-paragraph="30">
+                    <span class="paragraph-label">D:</span>
+                    <div class="drop-slot" id="readingDrop30">
+                        <span class="slot-content"></span>
+                        <span class="remove-chip" style="display: none;">✕</span>
+                    </div>
+                </div>
                 <p><strong>D</strong><br>
                 From the west European caves more evidence of built structures is available, and some of it goes back a long way in time. In the Grotte du Lazaret, near Nice, at a date during the last ice age but one, claims for some sort of skin tent within the cave have been advanced, on the basis of arrangements of large stones out from the cave wall that might have supported timber struts for a covering of skins up to the rock face above. At Lazaret, what might be openings in the hypothesised tents seem to point away from the cave mouth, and finds of wolf and fox foot bones, without the rest of the skeletons, inside these 'tents' have been thought to indicate the use of animal pelts as bed coverings. The two patches of ash at Lazaret that mark ancient fires, with stone tools around them evidently made and used on the spot, are edged with small marine mollusc shells, prompting the excavator to suggest that seaweed had been used as bedding around the fires. The cave of Baume-Bonne in the Basses-Alpes region of France, another early site, contains ten square metres of cobbles brought up from the local river and laid down, as though to take care of a puddle area in the cave, with the smoothest and roundest surfaces of the stones uppermost, and there are other similar cases.</p>
                 
+                <!-- Drop zone for Paragraph E -->
+                <div class="paragraph-drop-zone" id="dropZoneE" data-paragraph="31">
+                    <span class="paragraph-label">E:</span>
+                    <div class="drop-slot" id="readingDrop31">
+                        <span class="slot-content"></span>
+                        <span class="remove-chip" style="display: none;">✕</span>
+                    </div>
+                </div>
                 <p><strong>E</strong><br>
                 The ash encountered in concentrations at some sites testifies to the Neanderthal people's use of fire: not surprising, since use of fire was, by Neanderthal times, an already ancient accomplishment of evolving humanity, and survival in the sub-arctic conditions faced by the Neanderthalers is inconceivable without control of fire. Fire gave warmth, light, heat for cooking and defence against predatory animals. A charred piece of birch from Krapina in Croatia, is thought to be the remains of a fire-making twirl stick. But Neanderthal hearths, in the sense of specially constructed places for fire, are fewer and harder to identify with certainty than the mere ash piles that are a regular feature of their sites. They seem often to have just lit a small fire (40-50cm across) on the existing ground surface of the cave, without preparation. Judging from the shallow penetration of heat effects under the ash, this fire was only of a short duration. Sometimes the fires were larger in size, up to one metre across, and quite irregular in shape. It is not always easy to decide how much additional structure some fires possessed: claims of stone circles to contain the fire run up against the fact that stones tend to litter the cave floors everywhere and those around a fire can quite accidentally look as though they were arranged in a circle.</p>
             </div>
@@ -488,9 +593,9 @@
                         <div class="heading-item" draggable="true" data-value="vi">vi A vital source of power</div>
                     </div>
 
-                    <!-- Drop Zones -->
+                    <!-- Drop Zones for Display (synchronized with reading panel) -->
                     <div class="drop-area">
-                        <div class="drop-row" data-paragraph="27">
+                        <div class="drop-row" data-paragraph="27" id="drop-row-27">
                             <span class="drop-label">27 Paragraph A</span>
                             <div class="drop-slot" id="drop27">
                                 <span class="slot-content"></span>
@@ -498,7 +603,7 @@
                             </div>
                             <span class="eye-icon" data-question="27">👁️</span>
                         </div>
-                        <div class="drop-row" data-paragraph="28">
+                        <div class="drop-row" data-paragraph="28" id="drop-row-28">
                             <span class="drop-label">28 Paragraph B</span>
                             <div class="drop-slot" id="drop28">
                                 <span class="slot-content"></span>
@@ -506,7 +611,7 @@
                             </div>
                             <span class="eye-icon" data-question="28">👁️</span>
                         </div>
-                        <div class="drop-row" data-paragraph="29">
+                        <div class="drop-row" data-paragraph="29" id="drop-row-29">
                             <span class="drop-label">29 Paragraph C</span>
                             <div class="drop-slot" id="drop29">
                                 <span class="slot-content"></span>
@@ -514,7 +619,7 @@
                             </div>
                             <span class="eye-icon" data-question="29">👁️</span>
                         </div>
-                        <div class="drop-row" data-paragraph="30">
+                        <div class="drop-row" data-paragraph="30" id="drop-row-30">
                             <span class="drop-label">30 Paragraph D</span>
                             <div class="drop-slot" id="drop30">
                                 <span class="slot-content"></span>
@@ -522,7 +627,7 @@
                             </div>
                             <span class="eye-icon" data-question="30">👁️</span>
                         </div>
-                        <div class="drop-row" data-paragraph="31">
+                        <div class="drop-row" data-paragraph="31" id="drop-row-31">
                             <span class="drop-label">31 Paragraph E</span>
                             <div class="drop-slot" id="drop31">
                                 <span class="slot-content"></span>
@@ -617,37 +722,37 @@
                 <div class="section-divider"></div>
 
                 <!-- Summary 37-39 -->
-<h3>Questions 37-39</h3>
-<p><em>Complete the summary below. Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
+                <h3>Questions 37-39</h3>
+                <p><em>Complete the summary below. Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
 
-<h4>The use of fire</h4>
-<div style="background: #f9f7f0; padding: 20px; border-radius: 8px; margin: 15px 0;">
-    <p style="margin-bottom: 15px; line-height: 2;">
-        Neanderthalers could not have survived without fire because the conditions they lived in were 
-        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
-            <input class="letter-input" id="q37" data-answer="sub-arctic" placeholder="answer" style="width:100px; margin:0 3px;">
-            <span class="eye-icon" data-question="37" style="display:none; margin-left:2px;">👁️</span>
-        </span>.
-    </p>
-    
-    <p style="margin-bottom: 15px; line-height: 2;">
-        Most evidence of purpose-built fires takes the form of ash piles, features of which suggest that the fires lasted a 
-        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
-            <input class="letter-input" id="q38" data-answer="short" placeholder="answer" style="width:70px; margin:0 3px;">
-            <span class="eye-icon" data-question="38" style="display:none; margin-left:2px;">👁️</span>
-        </span> time.
-    </p>
-    
-    <p style="margin-bottom: 5px; line-height: 2;">
-        It is hard to be certain about the size and structure of the fires, though they were certainly needed to protect the occupants from dangerous 
-        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
-            <input class="letter-input" id="q39" data-answer="predatory animals" placeholder="answer" style="width:150px; margin:0 3px;">
-            <span class="eye-icon" data-question="39" style="display:none; margin-left:2px;">👁️</span>
-        </span>, among other things.
-    </p>
-</div>
+                <h4>The use of fire</h4>
+                <div style="background: #f9f7f0; padding: 20px; border-radius: 8px; margin: 15px 0;">
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        Neanderthalers could not have survived without fire because the conditions they lived in were 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q37" data-answer="sub-arctic" style="width:100px; margin:0 3px;">
+                            <span class="eye-icon" data-question="37" style="display:none; margin-left:2px;">👁️</span>
+                        </span>.
+                    </p>
+                    
+                    <p style="margin-bottom: 15px; line-height: 2;">
+                        Most evidence of purpose-built fires takes the form of ash piles, features of which suggest that the fires lasted a 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q38" data-answer="short" style="width:70px; margin:0 3px;">
+                            <span class="eye-icon" data-question="38" style="display:none; margin-left:2px;">👁️</span>
+                        </span> time.
+                    </p>
+                    
+                    <p style="margin-bottom: 5px; line-height: 2;">
+                        It is hard to be certain about the size and structure of the fires, though they were certainly needed to protect the occupants from dangerous 
+                        <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;">
+                            <input class="letter-input" id="q39" data-answer="predatory animals" style="width:150px; margin:0 3px;">
+                            <span class="eye-icon" data-question="39" style="display:none; margin-left:2px;">👁️</span>
+                        </span>, among other things.
+                    </p>
+                </div>
 
-<div class="section-divider"></div>
+                <div class="section-divider"></div>
 
                 <!-- MCQ 40 -->
                 <h3>Question 40</h3>
@@ -693,7 +798,7 @@
         <div onclick="applyHighlight('yellow')">Highlight vàng</div>
         <div onclick="applyHighlight('green')">Highlight xanh lá</div>
         <div onclick="applyHighlight('pink')">Highlight hồng</div>
-        <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
     </div>
 </div>
 
@@ -703,6 +808,11 @@
     let explanationMode = false;
     let startTime = Date.now();
     let readingMode = false;
+    let timerRunning = true;
+    let timeLeft = 3600;
+    const timerEl = document.getElementById('timerDisplay');
+    let timerInterval;
+    let selectedRange = null;
 
     // ANSWER KEY
     const answerKey = {
@@ -711,7 +821,67 @@
         q37: 'sub-arctic', q38: 'short', q39: 'predatory animals', q40: 'C'
     };
 
-    // Explanations với câu trích dẫn
+    // ==================== LOCATIONS WITH KEYWORDS ====================
+    const answerLocations = {
+        q27: { 
+            text: "But where there were no caves, further to the east on the Russian steppe, for example, open-air sites with some sort of constructed shelter were the only option.",
+            keywords: ["caves", "open-air sites", "constructed shelter"] 
+        },
+        q28: { 
+            text: "The Périgord region during the last ice age was, in fact, an exceptionally benign habitat for humans.",
+            keywords: ["exceptionally benign habitat"] 
+        },
+        q29: { 
+            text: "From Moldova, for example, comes evidence that has been interpreted as the remains of wind-break structures, or even a large tent: a ring up to about 8 x 5m in size, of mainly mammoth bones",
+            keywords: ["wind-break structures", "tent", "ring"] 
+        },
+        q30: { 
+            text: "The two patches of ash at Lazaret that mark ancient fires, with stone tools around them evidently made and used on the spot, are edged with small marine mollusc shells, prompting the excavator to suggest that seaweed had been used as bedding around the fires. The cave of Baume-Bonne in the Basses-Alpes region of France, another early site, contains ten square metres of cobbles brought up from the local river and laid down, as though to take care of a puddle area",
+            keywords: ["patches of ash", "mollusc shells", "cobbles", "puddle area"] 
+        },
+        q31: { 
+            text: "survival in the sub-arctic conditions faced by the Neanderthalers is inconceivable without control of fire. Fire gave warmth, light, heat for cooking and defence against predatory animals.",
+            keywords: ["control of fire", "warmth", "defence", "vital source"] 
+        },
+        q32: { 
+            text: "A charred piece of birch from Krapina in Croatia, is thought to be the remains of a fire-making twirl stick.",
+            keywords: ["charred piece of birch", "Krapina"] 
+        },
+        q33: { 
+            text: "The cave of Baume-Bonne in the Basses-Alpes region of France, another early site, contains ten square metres of cobbles brought up from the local river and laid down, as though to take care of a puddle area",
+            keywords: ["Baume-Bonne", "puddle area"] 
+        },
+        q34: { 
+            text: "The two patches of ash at Lazaret that mark ancient fires, with stone tools around them evidently made and used on the spot, are edged with small marine mollusc shells",
+            keywords: ["Lazaret", "mollusc shells"] 
+        },
+        q35: { 
+            text: "From Moldova, for example, comes evidence that has been interpreted as the remains of wind-break structures, or even a large tent: a ring up to about 8 x 5m in size, of mainly mammoth bones",
+            keywords: ["Moldova", "ring", "mammoth bones"] 
+        },
+        q36: { 
+            text: "At Lazaret, what might be openings in the hypothesised tents seem to point away from the cave mouth, and finds of wolf and fox foot bones, without the rest of the skeletons, inside these 'tents' have been thought to indicate the use of animal pelts as bed coverings.",
+            keywords: ["Lazaret", "wolf and fox foot bones", "animal pelts"] 
+        },
+        q37: { 
+            text: "survival in the sub-arctic conditions faced by the Neanderthalers is inconceivable without control of fire.",
+            keywords: ["sub-arctic"] 
+        },
+        q38: { 
+            text: "Judging from the shallow penetration of heat effects under the ash, this fire was only of a short duration.",
+            keywords: ["short duration"] 
+        },
+        q39: { 
+            text: "Fire gave warmth, light, heat for cooking and defence against predatory animals.",
+            keywords: ["predatory animals"] 
+        },
+        q40: { 
+            text: "We think of our prehistoric ancestors as people of the ice and snow, living in caves, and for many of the west European Neanderthalers that is a just picture of their life. But where there were no caves, further to the east on the Russian steppe, for example, open-air sites with some sort of constructed shelter were the only option.",
+            keywords: ["caves", "open-air sites", "settlements"] 
+        }
+    };
+
+    // ==================== EXPLANATIONS ====================
     const explanations = {
         q27: "<strong>Đáp án: v (Contrasting two types of home)</strong><br><br><strong>Giải thích:</strong> Đoạn A so sánh hai loại nơi ở: hang động và nơi ở ngoài trời.<br><br><strong>Trong bài:</strong> 'We think of our prehistoric ancestors as people of the ice and snow, living in caves... But where there were no caves... open-air sites with some sort of constructed shelter were the only option.'",
         q28: "<strong>Đáp án: iii (A perfect place to live)</strong><br><br><strong>Giải thích:</strong> Đoạn B mô tả vùng Périgord là môi trường sống đặc biệt thuận lợi.<br><br><strong>Trong bài:</strong> 'The Périgord region during the last ice age was, in fact, an exceptionally benign habitat for humans.'",
@@ -730,16 +900,16 @@
     };
 
     // ==================== TIMER ====================
-    let timeLeft = 3600;
-    const timerEl = document.getElementById('timerDisplay');
-    const timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-            timeLeft--;
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-    }, 1000);
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (!examSubmitted && timerRunning && timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
 
     // ==================== READING MODE TOGGLE ====================
     const testWrapper = document.getElementById('testWrapper');
@@ -816,17 +986,39 @@
 
     function scrollToQuestion(questionNum) {
         if (questionNum <= 31) {
-            const dropRow = document.querySelector(`.drop-row[data-paragraph="${questionNum}"]`);
-            if (dropRow) dropRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const dropRow = document.getElementById(`drop-row-${questionNum}`);
+            if (dropRow) {
+                dropRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                dropRow.classList.add('question-highlight');
+                setTimeout(() => dropRow.classList.remove('question-highlight'), 1500);
+            }
         } else if (questionNum <= 36) {
             const select = document.getElementById(`q${questionNum}`);
-            if (select) select.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (select) {
+                select.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const matchRow = select.closest('.match-row');
+                if (matchRow) {
+                    matchRow.classList.add('question-highlight');
+                    setTimeout(() => matchRow.classList.remove('question-highlight'), 1500);
+                }
+            }
         } else if (questionNum <= 39) {
             const input = document.getElementById(`q${questionNum}`);
-            if (input) input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (input) {
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const wrapper = input.closest('.question-wrapper');
+                if (wrapper) {
+                    wrapper.classList.add('question-highlight');
+                    setTimeout(() => wrapper.classList.remove('question-highlight'), 1500);
+                }
+            }
         } else {
             const item = document.getElementById('q40-item');
-            if (item) item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (item) {
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                item.classList.add('question-highlight');
+                setTimeout(() => item.classList.remove('question-highlight'), 1500);
+            }
         }
     }
 
@@ -873,7 +1065,6 @@
 
     // ==================== DRAG AND DROP HEADINGS ====================
     const headings = document.querySelectorAll('.heading-item');
-    const dropSlots = document.querySelectorAll('.drop-slot');
     let draggedItem = null;
 
     headings.forEach(item => {
@@ -888,7 +1079,8 @@
         });
     });
 
-    dropSlots.forEach(slot => {
+    // Xử lý drop cho cả reading panel và questions panel
+    document.querySelectorAll('.drop-slot').forEach(slot => {
         slot.addEventListener('dragover', (e) => e.preventDefault());
         slot.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -896,40 +1088,78 @@
             
             const value = draggedItem.getAttribute('data-value');
             const text = draggedItem.textContent;
-            const slotContent = slot.querySelector('.slot-content');
-            const removeBtn = slot.querySelector('.remove-chip');
             
-            if (slotContent.textContent.trim() !== '') {
-                const oldText = slotContent.textContent;
-                headings.forEach(h => {
-                    if (h.textContent === oldText) {
-                        h.classList.remove('hidden');
-                    }
-                });
+            // Lấy số paragraph từ id của slot (readingDrop27 -> 27, drop27 -> 27)
+            let paragraphNum;
+            if (slot.id.includes('readingDrop')) {
+                paragraphNum = slot.id.replace('readingDrop', '');
+            } else if (slot.id.includes('drop')) {
+                paragraphNum = slot.id.replace('drop', '');
             }
             
-            slotContent.textContent = text;
-            slot.setAttribute('data-selected', value);
-            removeBtn.style.display = 'inline';
+            // Tìm slot tương ứng ở panel kia
+            const readingSlot = document.getElementById(`readingDrop${paragraphNum}`);
+            const displaySlot = document.getElementById(`drop${paragraphNum}`);
+            
+            // Xóa nội dung cũ nếu có
+            [readingSlot, displaySlot].forEach(s => {
+                if (s) {
+                    const oldText = s.querySelector('.slot-content').textContent;
+                    if (oldText) {
+                        headings.forEach(h => {
+                            if (h.textContent === oldText) h.classList.remove('hidden');
+                        });
+                    }
+                    s.querySelector('.slot-content').textContent = '';
+                    s.removeAttribute('data-selected');
+                    s.querySelector('.remove-chip').style.display = 'none';
+                }
+            });
+            
+            // Set nội dung mới cho cả hai slot
+            [readingSlot, displaySlot].forEach(s => {
+                if (s) {
+                    s.querySelector('.slot-content').textContent = text;
+                    s.setAttribute('data-selected', value);
+                    s.querySelector('.remove-chip').style.display = 'inline';
+                }
+            });
+            
             draggedItem.classList.add('hidden');
             updateAnswerCount();
         });
     });
 
+    // Xử lý nút xóa
     document.querySelectorAll('.remove-chip').forEach(btn => {
         btn.addEventListener('click', function() {
             const slot = this.closest('.drop-slot');
             const slotContent = slot.querySelector('.slot-content');
             const removedText = slotContent.textContent;
-            slotContent.textContent = '';
-            slot.removeAttribute('data-selected');
-            this.style.display = 'none';
             
-            headings.forEach(h => {
-                if (h.textContent === removedText) {
-                    h.classList.remove('hidden');
+            // Lấy số paragraph từ id của slot
+            let paragraphNum;
+            if (slot.id.includes('readingDrop')) {
+                paragraphNum = slot.id.replace('readingDrop', '');
+            } else if (slot.id.includes('drop')) {
+                paragraphNum = slot.id.replace('drop', '');
+            }
+            
+            const readingSlot = document.getElementById(`readingDrop${paragraphNum}`);
+            const displaySlot = document.getElementById(`drop${paragraphNum}`);
+            
+            [readingSlot, displaySlot].forEach(s => {
+                if (s) {
+                    s.querySelector('.slot-content').textContent = '';
+                    s.removeAttribute('data-selected');
+                    s.querySelector('.remove-chip').style.display = 'none';
                 }
             });
+            
+            headings.forEach(h => {
+                if (h.textContent === removedText) h.classList.remove('hidden');
+            });
+            
             updateAnswerCount();
         });
     });
@@ -942,9 +1172,36 @@
         }
     });
 
-    // ==================== HÀM XÓA HIGHLIGHT ====================
+    // ==================== HELPER: FIND NODE AND OFFSET ====================
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) {
+                return { node, offset: targetPos - currentPos.value };
+            }
+            currentPos.value += len;
+        } else {
+            for (let child of node.childNodes) {
+                const result = findNodeAndOffset(child, targetPos, currentPos);
+                if (result) return result;
+            }
+        }
+        return null;
+    }
+
+    // ==================== CLEAR ALL HIGHLIGHTS ====================
     function clearAllHighlights() {
         document.querySelectorAll('.dynamic-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        
+        document.querySelectorAll('.keyword-highlight').forEach(el => {
             const parent = el.parentNode;
             if (parent) {
                 while (el.firstChild) {
@@ -963,295 +1220,188 @@
         });
     }
 
-    // ==================== HÀM HIGHLIGHT THỦ CÔNG ====================
-    function showHighlightForQuestion(questionNum) {
+    // ==================== HIGHLIGHT ANSWER LOCATION ====================
+    function highlightAnswerLocation(questionNum) {
         clearAllHighlights();
+        
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
         
         // Highlight câu hỏi
         if (questionNum <= 31) {
-            const dropRow = document.querySelector(`.drop-row[data-paragraph="${questionNum}"]`);
-            if (dropRow) dropRow.classList.add('question-highlight');
+            const dropRow = document.getElementById(`drop-row-${questionNum}`);
+            if (dropRow) {
+                dropRow.classList.add('question-highlight');
+                setTimeout(() => {
+                    dropRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
         } else if (questionNum <= 36) {
-            const matchRow = document.getElementById(`q${questionNum}`)?.closest('.match-row');
-            if (matchRow) matchRow.classList.add('question-highlight');
+            const select = document.getElementById(`q${questionNum}`);
+            if (select) {
+                const matchRow = select.closest('.match-row');
+                if (matchRow) {
+                    matchRow.classList.add('question-highlight');
+                    setTimeout(() => {
+                        matchRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
+            }
         } else if (questionNum <= 39) {
             const input = document.getElementById(`q${questionNum}`);
             if (input) {
                 const wrapper = input.closest('.question-wrapper');
-                if (wrapper) wrapper.classList.add('question-highlight');
+                if (wrapper) {
+                    wrapper.classList.add('question-highlight');
+                    setTimeout(() => {
+                        wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
             }
         } else {
             const item = document.getElementById('q40-item');
-            if (item) item.classList.add('question-highlight');
-        }
-        
-        // Eye icon active
-        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
-        if (eyeIcon) eyeIcon.classList.add('active');
-        
-        // Badge cho câu 37-39
-        if (questionNum >= 37 && questionNum <= 39) {
-            const input = document.getElementById(`q${questionNum}`);
-            if (input) {
-                const oldBadge = input.parentNode.querySelector('.correct-answer-badge');
-                if (oldBadge) oldBadge.remove();
-                const correctAnswer = answerKey[`q${questionNum}`];
-                const badge = document.createElement('span');
-                badge.className = 'correct-answer-badge';
-                badge.textContent = correctAnswer;
-                input.parentNode.appendChild(badge);
+            if (item) {
+                item.classList.add('question-highlight');
+                setTimeout(() => {
+                    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             }
         }
+        
+        // Active eye icon
+        const currentEyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (currentEyeIcon) currentEyeIcon.classList.add('active');
         
         // Highlight trong bài đọc
-        const paragraphs = document.querySelectorAll('#readingContent p');
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
         
-        // Câu 27
-        if (questionNum == 27) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('But where there were no caves') && p.textContent.includes('open-air sites')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(We think of our prehistoric ancestors as people of the ice and snow, living in caves, and for many of the west European Neanderthalers that is a just picture of their life. But where there were no caves, further to the east on the Russian steppe, for example, open-air sites with some sort of constructed shelter were the only option.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(caves|open-air sites)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        for (let p of paragraphs) {
+            if (loc.text && p.textContent.includes(loc.text)) {
+                try {
+                    const text = p.textContent;
+                    const startIdx = text.indexOf(loc.text);
+                    
+                    let currentPos = {value: 0};
+                    const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                    
+                    currentPos = {value: 0};
+                    const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                    
+                    if (startNodeInfo && endNodeInfo) {
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                        range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        setTimeout(() => {
+                            const highlightSpan = document.querySelector('.dynamic-highlight');
+                            if (highlightSpan && loc.keywords && loc.keywords.length > 0) {
+                                let html = highlightSpan.innerHTML;
+                                loc.keywords.forEach(keyword => {
+                                    try {
+                                        const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                        const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+                                        html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
+                                    } catch (e) {}
+                                });
+                                highlightSpan.innerHTML = html;
+                            }
+                        }, 50);
+                        
+                        setTimeout(() => {
+                            const highlighted = document.querySelector('.dynamic-highlight');
+                            if (highlighted) {
+                                highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 300);
+                        
+                        return true;
+                    }
+                } catch (e) {
+                    console.log('Lỗi highlight:', e);
                 }
-            });
+                break;
+            }
         }
-        // Câu 28
-        else if (questionNum == 28) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('exceptionally benign habitat')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(The Périgord region during the last ice age was, in fact, an exceptionally benign habitat for humans.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(exceptionally benign habitat)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 29
-        else if (questionNum == 29) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('From Moldova') && p.textContent.includes('tent')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(From Moldova, for example, comes evidence that has been interpreted as the remains of wind-break structures, or even a large tent: a ring up to about 8 x 5m in size, of mainly mammoth bones enclosing a dense concentration of stone tools, animal bones and ash.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(tent|wind-break structures|ring)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 30
-        else if (questionNum == 30) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('patches of ash') && p.textContent.includes('mollusc shells') && p.textContent.includes('cobbles')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(The two patches of ash at Lazaret that mark ancient fires, with stone tools around them evidently made and used on the spot, are edged with small marine mollusc shells, prompting the excavator to suggest that seaweed had been used as bedding around the fires. The cave of Baume-Bonne in the Basses-Alpes region of France, another early site, contains ten square metres of cobbles brought up from the local river and laid down, as though to take care of a puddle area in the cave, with the smoothest and roundest surfaces of the stones uppermost, and there are other similar cases.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(patches of ash|mollusc shells|cobbles|puddle area)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 31
-        else if (questionNum == 31) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('control of fire') && p.textContent.includes('defence against predatory animals')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(survival in the sub-arctic conditions faced by the Neanderthalers is inconceivable without control of fire. Fire gave warmth, light, heat for cooking and defence against predatory animals.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(control of fire|warmth|defence)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 32
-        else if (questionNum == 32) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('charred piece of birch from Krapina')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(A charred piece of birch from Krapina in Croatia, is thought to be the remains of a fire-making twirl stick.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(charred piece of birch|Krapina)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 33
-        else if (questionNum == 33) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('Baume-Bonne') && p.textContent.includes('puddle area')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(The cave of Baume-Bonne in the Basses-Alpes region of France, another early site, contains ten square metres of cobbles brought up from the local river and laid down, as though to take care of a puddle area in the cave, with the smoothest and roundest surfaces of the stones uppermost, and there are other similar cases.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Baume-Bonne|cobbles|puddle area)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 34
-        else if (questionNum == 34) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('edged with small marine mollusc shells')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(The two patches of ash at Lazaret that mark ancient fires, with stone tools around them evidently made and used on the spot, are edged with small marine mollusc shells,)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(mollusc shells)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 35
-        else if (questionNum == 35) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('From Moldova') && p.textContent.includes('ring') && p.textContent.includes('mammoth bones')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(From Moldova, for example, comes evidence that has been interpreted as the remains of wind-break structures, or even a large tent: a ring up to about 8 x 5m in size, of mainly mammoth bones enclosing a dense concentration of stone tools, animal bones and ash.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(ring|mammoth bones)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 36
-        else if (questionNum == 36) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('wolf and fox foot bones') && p.textContent.includes('animal pelts')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(At Lazaret, what might be openings in the hypothesised tents seem to point away from the cave mouth, and finds of wolf and fox foot bones, without the rest of the skeletons, inside these 'tents' have been thought to indicate the use of animal pelts as bed coverings.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(wolf and fox foot bones|animal pelts)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 37
-        else if (questionNum == 37) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('sub-arctic conditions')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(survival in the sub-arctic conditions faced by the Neanderthalers is inconceivable without control of fire.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(sub-arctic)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 38
-        else if (questionNum == 38) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('only of a short duration')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Judging from the shallow penetration of heat effects under the ash, this fire was only of a short duration.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(short duration)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 39
-        else if (questionNum == 39) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('defence against predatory animals')) {
-                    p.innerHTML = p.innerHTML.replace(
-                        /(Fire gave warmth, light, heat for cooking and defence against predatory animals.)/g,
-                        '<span class="dynamic-highlight" style="background-color: #f9e79f; display: inline;">$1</span>'
-                    );
-                    p.innerHTML = p.innerHTML.replace(
-                        /(predatory animals)/g,
-                        '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
-                    );
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
-        // Câu 40
-        else if (questionNum == 40) {
-            paragraphs.forEach(p => {
-                if (p.textContent.includes('cave sites') && p.textContent.includes('open-air sites')) {
-                    p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
-        }
+        
+        return false;
     }
 
+    // ==================== SHOW EXPLANATION ====================
     function showExplanation(questionNum) {
-        if (!explanationMode) return;
+        if (!explanationMode && !examSubmitted) return;
         
-        showHighlightForQuestion(questionNum);
+        highlightAnswerLocation(questionNum);
         
-        if (explanations[`q${questionNum}`]) {
-            document.getElementById('explanationPanel').classList.add('show');
-            document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+        
+        let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+        
+        if (examSubmitted) {
+            const userAnswer = getUserAnswer(questionNum);
+            const correct = answerKey[`q${questionNum}`];
+            const isCorrect = userAnswer && userAnswer.toString().toLowerCase().trim() === correct.toString().toLowerCase().trim();
             
-            let explanationHtml = explanations[`q${questionNum}`];
-            
-            if (examSubmitted) {
-                const userAnswer = getUserAnswer(questionNum);
-                const correctAnswer = answerKey[`q${questionNum}`];
-                
-                const isCorrect = userAnswer ? 
-                    userAnswer.toString().toLowerCase().trim() === correctAnswer.toString().toLowerCase().trim() : 
-                    false;
-                
-                explanationHtml += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
-                explanationHtml += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
-                if (!isCorrect) {
-                    explanationHtml += `<strong>Đáp án đúng:</strong> ${correctAnswer}`;
-                }
-                explanationHtml += `</div>`;
+            html += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
+            html += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+            if (!isCorrect && correct) {
+                html += `<strong>Đáp án đúng:</strong> ${correct}`;
+            } else if (isCorrect) {
+                html += `<strong>✅ Đúng!</strong>`;
             }
+            html += `</div>`;
+        }
+        
+        document.getElementById('explanationText').innerHTML = html;
+        
+        if (explanationMode && examSubmitted) {
+            document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
             
-            document.getElementById('explanationText').innerHTML = explanationHtml;
+            if (questionNum <= 31) {
+                const dropRow = document.getElementById(`drop-row-${questionNum}`);
+                if (dropRow) {
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    const slot = dropRow.querySelector('.slot-content');
+                    if (slot && !slot.querySelector('.correct-answer-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correctAnswer;
+                        slot.appendChild(badge);
+                    }
+                }
+            } else if (questionNum <= 36) {
+                const select = document.getElementById(`q${questionNum}`);
+                if (select) {
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    const parent = select.parentNode;
+                    if (!parent.querySelector('.correct-answer-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correctAnswer;
+                        parent.appendChild(badge);
+                    }
+                }
+            } else if (questionNum <= 39) {
+                const input = document.getElementById(`q${questionNum}`);
+                if (input) {
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    const wrapper = input.closest('.question-wrapper');
+                    if (wrapper && !wrapper.querySelector('.correct-answer-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correctAnswer;
+                        wrapper.appendChild(badge);
+                    }
+                }
+            }
         }
     }
 
@@ -1263,10 +1413,7 @@
                 e.preventDefault();
                 
                 const questionNum = this.getAttribute('data-question');
-                
-                if (explanationMode) {
-                    showExplanation(questionNum);
-                }
+                showExplanation(questionNum);
             });
         });
     }
@@ -1274,7 +1421,6 @@
     document.getElementById('closeExplanation').addEventListener('click', () => {
         document.getElementById('explanationPanel').classList.remove('show');
         clearAllHighlights();
-        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
     });
 
     // ==================== MARK ANSWERS ====================
@@ -1285,6 +1431,11 @@
             if (slot) {
                 const selected = slot.getAttribute('data-selected');
                 const correct = answerKey[`q${i}`];
+                const oldBadge = slot.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                
+                slot.style.border = '';
+                
                 if (selected) {
                     if (selected === correct) {
                         slot.style.border = '3px solid #4CAF50';
@@ -1352,7 +1503,7 @@
                 if (oldBadge) oldBadge.remove();
                 
                 if (userAnswer) {
-                    if (userAnswer === correct || (i === 39 && (userAnswer === 'animals' || userAnswer === 'predatory animals'))) {
+                    if (userAnswer === correct) {
                         input.classList.add('correct');
                     } else {
                         input.classList.add('incorrect-marked');
@@ -1414,11 +1565,7 @@
                 } else if (i <= 36) {
                     if (u === correctAns) correct++;
                 } else if (i <= 39) {
-                    if (i === 39) {
-                        if (u === 'animals' || u === 'predatory animals') correct++;
-                    } else {
-                        if (u === correctAns.toLowerCase()) correct++;
-                    }
+                    if (u === correctAns.toLowerCase()) correct++;
                 } else {
                     if (u === correctAns) correct++;
                 }
@@ -1453,6 +1600,8 @@
         }
         
         examSubmitted = true;
+        timerRunning = false;
+        clearInterval(timerInterval);
         
         markAnswers();
         
@@ -1474,7 +1623,7 @@
             <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
             <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
             <p><strong>Thời gian làm bài:</strong> ${results.timeString}</p>
-            <p>Nhấn "Xem giải thích" để xem chi tiết từng câu.</p>
+            <p>Nhấn "Xem giải thích" và click vào 👁️ để xem chi tiết từng câu.</p>
         `;
     });
 
@@ -1484,7 +1633,8 @@
         
         explanationMode = true;
         
-        // Hiện tất cả eye icons
+        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+        
         document.querySelectorAll('.eye-icon').forEach(icon => {
             icon.style.display = 'inline-block';
         });
@@ -1494,8 +1644,6 @@
         
         document.getElementById('explanationPanel').classList.remove('show');
         clearAllHighlights();
-        
-        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
     });
 
     // ==================== RESET ====================
@@ -1503,19 +1651,26 @@
         if (confirm('Bạn có chắc muốn reset tất cả?')) {
             examSubmitted = false;
             explanationMode = false;
+            timerRunning = true;
+            timeLeft = 3600;
             startTime = Date.now();
             
+            // Reset headings
             for (let i = 27; i <= 31; i++) {
-                const slot = document.getElementById(`drop${i}`);
-                if (slot) {
-                    slot.querySelector('.slot-content').textContent = '';
-                    slot.removeAttribute('data-selected');
-                    slot.querySelector('.remove-chip').style.display = 'none';
-                    slot.style.border = '';
-                }
+                const readingSlot = document.getElementById(`readingDrop${i}`);
+                const displaySlot = document.getElementById(`drop${i}`);
+                [readingSlot, displaySlot].forEach(slot => {
+                    if (slot) {
+                        slot.querySelector('.slot-content').textContent = '';
+                        slot.removeAttribute('data-selected');
+                        slot.querySelector('.remove-chip').style.display = 'none';
+                        slot.style.border = '';
+                    }
+                });
             }
             headings.forEach(h => h.classList.remove('hidden'));
             
+            // Reset matching 32-36
             for (let i = 32; i <= 36; i++) {
                 const select = document.getElementById(`q${i}`);
                 if (select) {
@@ -1527,17 +1682,20 @@
                 }
             }
             
+            // Reset summary 37-39
             for (let i = 37; i <= 39; i++) {
                 const input = document.getElementById(`q${i}`);
                 if (input) {
                     input.value = '';
                     input.classList.remove('correct', 'incorrect-marked');
+                    input.style.width = '';
                     const parent = input.parentNode;
                     const badge = parent.querySelector('.correct-answer-badge');
                     if (badge) badge.remove();
                 }
             }
             
+            // Reset MCQ 40
             const radios = document.querySelectorAll('input[name="q40"]');
             radios.forEach(radio => radio.checked = false);
             const group = document.getElementById('q40-group');
@@ -1547,7 +1705,7 @@
                 });
             }
             
-            // Ẩn tất cả eye icons khi reset
+            // Ẩn eye icons
             document.querySelectorAll('.eye-icon').forEach(icon => {
                 icon.style.display = 'none';
             });
@@ -1562,7 +1720,6 @@
             document.getElementById('explanationPanel').classList.remove('show');
             
             clearAllHighlights();
-            
             updateAnswerCount();
             
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -1576,7 +1733,7 @@
         e.preventDefault();
         const selection = window.getSelection();
         if (selection.toString().trim() === '') return;
-        window.selectedRange = selection.getRangeAt(0);
+        selectedRange = selection.getRangeAt(0);
         contextMenu.style.display = 'block';
         contextMenu.style.left = e.pageX + 'px';
         contextMenu.style.top = e.pageY + 'px';
@@ -1586,7 +1743,7 @@
         e.preventDefault();
         const selection = window.getSelection();
         if (selection.toString().trim() === '') return;
-        window.selectedRange = selection.getRangeAt(0);
+        selectedRange = selection.getRangeAt(0);
         contextMenu.style.display = 'block';
         contextMenu.style.left = e.pageX + 'px';
         contextMenu.style.top = e.pageY + 'px';
@@ -1597,11 +1754,12 @@
     });
 
     window.applyHighlight = (color) => {
-        if (!window.selectedRange) return;
+        if (!selectedRange) return;
         try {
             const span = document.createElement('span');
             span.className = `highlight-${color}`;
-            const range = window.selectedRange.cloneRange();
+            const range = selectedRange.cloneRange();
+            window.getSelection().removeAllRanges();
             const contents = range.extractContents();
             span.appendChild(contents);
             range.insertNode(span);
@@ -1609,52 +1767,30 @@
             alert('Không thể highlight đoạn này');
         }
         contextMenu.style.display = 'none';
-        window.selectedRange = null;
+        selectedRange = null;
     };
 
     window.removeHighlight = () => {
-        if (!window.selectedRange) return;
-        const range = window.selectedRange.cloneRange();
-        document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
-            if (range.intersectsNode(h)) {
-                const parent = h.parentNode;
-                while (h.firstChild) {
-                    parent.insertBefore(h.firstChild, h);
+        if (!selectedRange) return;
+        try {
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) {
+                        parent.insertBefore(h.firstChild, h);
+                    }
+                    parent.removeChild(h);
                 }
-                parent.removeChild(h);
-            }
-        });
-        window.getSelection().removeAllRanges();
+            });
+            window.getSelection().removeAllRanges();
+        } catch (e) {}
         contextMenu.style.display = 'none';
-        window.selectedRange = null;
+        selectedRange = null;
     };
 
-    // ==================== INIT ====================
-    createNavButtons();
-    updateAnswerCount();
-    setupEyeIcons();
-    
-    // Ẩn eye icons ban đầu
-    document.querySelectorAll('.eye-icon').forEach(icon => {
-        icon.style.display = 'none';
-    });
-    
-    document.querySelectorAll('.match-select, .letter-input, input[type="radio"]').forEach(el => {
-        el.addEventListener('change', updateAnswerCount);
-        if (el.classList.contains('letter-input')) {
-            el.addEventListener('input', function() {
-                this.value = this.value.toLowerCase();
-                updateAnswerCount();
-                const badge = this.parentNode.querySelector('.correct-answer-badge');
-                if (badge && !explanationMode) badge.remove();
-            });
-        }
-    });
-</script>
-<script>
-    // Auto-resize input fields based on content
+    // ==================== AUTO-RESIZE INPUTS ====================
     function autoResizeInput(input) {
-        // Tạo một span ảo để đo kích thước
         const tempSpan = document.createElement('span');
         tempSpan.style.visibility = 'hidden';
         tempSpan.style.position = 'absolute';
@@ -1666,31 +1802,36 @@
         tempSpan.style.border = window.getComputedStyle(input).border;
         document.body.appendChild(tempSpan);
         
-        // Hàm cập nhật độ rộng
         function updateWidth() {
-            let value = input.value || input.placeholder || '';
+            let value = input.value || ' ';
             tempSpan.textContent = value;
-            let width = tempSpan.offsetWidth + 20; // Thêm padding
-            input.style.width = Math.max(50, Math.min(300, width)) + 'px'; // Giới hạn min 50px, max 300px
+            let width = tempSpan.offsetWidth + 20;
+            input.style.width = Math.max(50, Math.min(300, width)) + 'px';
         }
         
-        // Cập nhật lần đầu
         updateWidth();
-        
-        // Cập nhật khi người dùng nhập
         input.addEventListener('input', updateWidth);
         input.addEventListener('change', updateWidth);
     }
     
-    // Áp dụng cho tất cả các input của câu 37-39
+    // Áp dụng cho inputs 37-39
     document.addEventListener('DOMContentLoaded', function() {
         const inputs = ['q37', 'q38', 'q39'].map(id => document.getElementById(id));
         inputs.forEach(input => {
-            if (input) {
-                autoResizeInput(input);
-            }
+            if (input) autoResizeInput(input);
         });
     });
-    </script>
+
+    // ==================== INIT ====================
+    createNavButtons();
+    updateAnswerCount();
+    setupEyeIcons();
+    
+    document.querySelectorAll('.eye-icon').forEach(icon => {
+        icon.style.display = 'none';
+    });
+    
+    startTimer();
+</script>
 </body>
 </html>
