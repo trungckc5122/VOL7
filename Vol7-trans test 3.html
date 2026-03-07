@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vol 7 Test 3 - Song ngữ Anh Việt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1600px;
+            background: #ecf0f1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        /* Reading mode */
+        .app-container.reading-mode {
+            background: #f8f5e6;
+        }
+        .app-container.reading-mode .col-content {
+            background: #fffaf0;
+        }
+        .app-container.reading-mode .col-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+        .app-container.reading-mode .status-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f2a44 100%);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .brand h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #e6b422;
+        }
+
+        .passage-selector {
+            display: flex;
+            gap: 10px;
+            background: #1a2f44;
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #e6b422;
+        }
+
+        .passage-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .passage-btn:hover {
+            background: #2d4b77;
+        }
+
+        .passage-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: 0.3s;
+            border: 1px solid #e6b422;
+        }
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+            margin-left: 15px;
+        }
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Main area with resizable columns */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background: #bdc3c7;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
+        }
+
+        .column.en-column {
+            width: 50%;
+        }
+
+        .column.vi-column {
+            width: 50%;
+        }
+
+        .col-header {
+            background: #d2cbbc;
+            padding: 10px 18px;
+            font-weight: 700;
+            color: #1e3a5f;
+            border-bottom: 2px solid #b0aa9a;
+            font-size: 1rem;
+        }
+
+        .col-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            line-height: 1.8;
+            font-size: 16px;
+            background: #fffcf5;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Font size classes */
+        .col-content.font-small {
+            font-size: 14px;
+        }
+        .col-content.font-medium {
+            font-size: 16px;
+        }
+        .col-content.font-large {
+            font-size: 18px;
+        }
+
+        /* Typography */
+        .col-content h1, .col-content h2 {
+            font-size: 1.9rem;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        .col-content h3 {
+            font-size: 1.4rem;
+            color: #2d4b77;
+            margin: 25px 0 15px;
+        }
+        .col-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+        .col-content em {
+            color: #5d3a1a;
+            font-style: italic;
+        }
+        .col-content strong {
+            color: #1e3a5f;
+        }
+        .col-content .paragraph-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-right: 8px;
+        }
+
+        /* Right-click menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+            min-width: 160px;
+        }
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Highlight colors */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+        }
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+        }
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            background: #d2cbbc;
+            padding: 8px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            border-top: 1px solid #b0aa9a;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 4px 16px;
+            border: none;
+            border-radius: 30px;
+            background: #1e3a5f;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #2d4b77;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #1e3a5f;
+            color: #1e3a5f;
+        }
+        .btn-outline:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="brand">
+            <h1>IELTS Vol 7 · Test 3</h1>
+        </div>
+        <div class="passage-selector" id="passageSelector">
+            <button class="passage-btn active" data-passage="1">Passage 1</button>
+            <button class="passage-btn" data-passage="2">Passage 2</button>
+            <button class="passage-btn" data-passage="3">Passage 3</button>
+        </div>
+        <div class="header-controls">
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+           
+        </div>
+    </div>
+
+    <!-- Main resizable columns -->
+    <div class="main-area" id="mainArea">
+        <!-- Cột gốc -->
+        <div class="column en-column" id="enColumn">
+            <div class="col-header">Bản gốc</div>
+            <div class="col-content font-medium" id="enContent"></div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+        <!-- Cột dịch -->
+        <div class="column vi-column" id="viColumn">
+            <div class="col-header">Bản dịch</div>
+            <div class="col-content font-medium" id="viContent"></div>
+        </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+        <span>Bôi đen văn bản → nhấp chuột phải để highlight màu</span>
+        <button class="btn btn-outline" id="resetHighlightBtn">Xóa tất cả highlight</button>
+        <button class="btn btn-outline" id="syncScrollBtn" style="background: #e6b422; color: #1e3a5f; border: 1px solid #1e3a5f;">Đồng bộ cuộn: BẬT</button>
+
+    </div>
+
+    <!-- Right-click menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đoạn chọn</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DỮ LIỆU PASSAGE 1,2,3 (Vol 7 Test 3)
+        const passages = {
+            1: {
+                en: [
+                    "<h1>The development of plastics</h1>",
+                    "<p>The first plastics were developed as a substitute for natural rubber. Chemically, rubber is a polymer - a compound containing large molecules that are formed by the bonding of many smaller, simpler units, repeated over and over again. The same bonding principle - polymerization - is the basis of the creation of a huge range of plastics by the chemical industry.</p>",
+                    "<p>The first plastic was developed as a result of a competition in the USA. In the 1860s, $10,000 was offered to anybody who could replace ivory - supplies of which were declining - with something equally good as a material for making billiard balls. The prize was won by John Wesley Hyatt, with a material called celluloid. Celluloid was made by dissolving cellulose, a carbohydrate obtained from plants, in a solution of camphor dissolved in ethanol. This new material rapidly found other applications in the manufacture of everyday products such as knife handles and detachable collars and cuffs. But perhaps the best-known celluloid product was photographic film, without which the film industry could never have taken off at the end of the 19th century.</p>",
+                    "<p>Celluloid can be repeatedly softened and reshaped by heat, and is known as a thermoplastic. In 1907, Leo Baekeland (1863-1944), a Belgian chemist working in the USA, invented a different kind of plastic, by causing phenol and formaldehyde to react together. Baekeland called it Bakelite, and it was the first of the thermosets-plastic that can be cast and moulded while hot, but cannot be softened by heat and reshaped once they have set. Bakelite was a good insulator, and was resistant to water and acid. With these properties it was soon being used in the manufacture of electrical switches as well as a variety of domestic items.</p>",
+                    "<p>As the century went on, the range of newly developed plastic increased. Chemists began looking for other small molecules that could be strung together to make polymers. In the 1930s, chemists in Britain discovered that the gas ethylene would polymerize under heat and pressure to form a thermoplastic they called polythene. Polypropylene followed in the 1950s. Both are used to make bottles, pipes and plastic bags. A small change in the starting material - replacing a hydrogen atom in ethylene with a chlorine atom - produced rigid PVC (polyvinyl chloride), a fireproof plastic suitable for drains and gutters. By adding certain chemicals, a soft form of PVC can be produced, suitable as a substitute for rubber in items such as waterproof clothing. A closely related plastic is Teflon or PTFE (polytetrafluoroethylene). It produces very little friction, making it ideal for products such as non-stick frying pans.</p>",
+                    "<p>Polystyrene, a hard, clear material like glass, was developed during the 1930s in Germany, and its applications included food containers and toys. Expanded polystyrene is rigid and is widely used in packaging and insulation. Polyurethane, developed in the same country, was commonly produced as a foam which was very useful in the production of insulating materials.</p>",
+                    "<p>In the 1930s, the first of the man-made fibres was created-nylon. Its inventor was a chemist called Wallace Carothers (1896-1937), who worked for the Du Pont company in the USA. He found that under the right conditions two particular chemicals would form a polymer that could be pumped out through holes and then stretched to form long glossy threads that could be woven like silk. Its first use was to make parachutes for the US armed forces in World War II. In the postwar years, it completely replaced silk in the manufacture of stockings.</p>",
+                    "<p>Many other synthetic fibres joined nylon, including Orion, Acrilan, and Terylene. Today most garments are made of a blend of natural fibres, such as cotton and wool, and man-made fibres that make fabrics easier to look after.</p>",
+                    "<p>Despite its enormous usefulness, plastic has its drawbacks. In fact one its great strengths - its indestructibility - is its greatest disadvantage. Beaches all over the world, even on the remotest island, are littered with plastic bottles that nothing can destroy. Nor is it very easy to recycle plastics, as different types of plastic are often found in the same items and call for different treatments.</p>",
+                    "<p>Plastics can be made biodegradable by incorporating into their structure a material such as starch, which is attacked by bacteria and causes the plastic to fall apart. Other materials can be incorporated that gradually decay in sunlight - although bottles made of such materials have to be stored in the dark, to ensure they do not disintegrate before they have been used.</p>"
+                ],
+                vi: [
+                    "<h1>Sự phát triển của nhựa</h1>",
+                    "<p>Những loại nhựa đầu tiên được phát triển như một chất thay thế cho cao su tự nhiên. Về mặt hóa học, cao su là một polymer - một hợp chất chứa các phân tử lớn được hình thành do sự liên kết của nhiều đơn vị nhỏ hơn, đơn giản hơn, lặp đi lặp lại nhiều lần. Nguyên tắc liên kết tương tự - sự trùng hợp - là cơ sở để ngành công nghiệp hóa chất tạo ra một loạt các loại nhựa.</p>",
+                    "<p>Loại nhựa đầu tiên được phát triển là kết quả của một cuộc thi ở Mỹ. Vào những năm 1860, giải thưởng 10.000 đô la được trao cho bất kỳ ai có thể thay thế ngà voi - nguồn cung đang suy giảm - bằng một thứ gì đó tốt tương đương làm nguyên liệu sản xuất bóng bi-a. Giải thưởng đã thuộc về John Wesley Hyatt, với một vật liệu gọi là celluloid. Celluloid được tạo ra bằng cách hòa tan cellulose, một carbohydrate thu được từ thực vật, trong dung dịch long não hòa tan trong ethanol. Vật liệu mới này nhanh chóng được ứng dụng trong sản xuất các sản phẩm hàng ngày như cán dao, cổ tay áo và cổ áo rời. Nhưng có lẽ sản phẩm celluloid nổi tiếng nhất là phim ảnh, nếu không có nó thì ngành công nghiệp điện ảnh đã không thể cất cánh vào cuối thế kỷ 19.</p>",
+                    "<p>Celluloid có thể được làm mềm và tạo hình lại nhiều lần bằng nhiệt, và được gọi là nhựa nhiệt dẻo. Năm 1907, Leo Baekeland (1863-1944), một nhà hóa học người Bỉ làm việc tại Mỹ, đã phát minh ra một loại nhựa khác, bằng cách cho phenol và formaldehyde phản ứng với nhau. Baekeland gọi nó là Bakelite, và nó là loại nhựa nhiệt rắn đầu tiên - loại nhựa có thể đúc và tạo hình khi nóng, nhưng không thể làm mềm bằng nhiệt và tạo hình lại sau khi đã đông cứng. Bakelite là chất cách điện tốt, chống nước và axit. Với những đặc tính này, nó sớm được sử dụng trong sản xuất các công tắc điện cũng như nhiều đồ gia dụng.</p>",
+                    "<p>Khi thế kỷ trôi qua, phạm vi các loại nhựa mới phát triển ngày càng tăng. Các nhà hóa học bắt đầu tìm kiếm các phân tử nhỏ khác có thể liên kết với nhau để tạo thành polymer. Vào những năm 1930, các nhà hóa học ở Anh phát hiện ra rằng khí ethylene sẽ trùng hợp dưới nhiệt và áp suất để tạo thành một loại nhựa nhiệt dẻo mà họ gọi là polythene. Polypropylene ra đời sau đó vào những năm 1950. Cả hai đều được sử dụng để làm chai lọ, ống và túi nhựa. Một thay đổi nhỏ trong nguyên liệu ban đầu - thay thế một nguyên tử hydro trong ethylene bằng một nguyên tử clo - đã tạo ra PVC cứng (polyvinyl clorua), một loại nhựa chống cháy thích hợp cho ống thoát nước và máng xối. Bằng cách thêm một số hóa chất nhất định, có thể sản xuất PVC dạng mềm, thích hợp làm chất thay thế cao su trong các mặt hàng như quần áo chống thấm nước. Một loại nhựa có liên quan chặt chẽ là Teflon hay PTFE (polytetrafluoroethylene). Nó tạo ra rất ít ma sát, lý tưởng cho các sản phẩm như chảo chống dính.</p>",
+                    "<p>Polystyrene, một vật liệu cứng, trong suốt như thủy tinh, được phát triển vào những năm 1930 tại Đức, và các ứng dụng của nó bao gồm hộp đựng thực phẩm và đồ chơi. Polystyrene mở rộng (xốp) cứng và được sử dụng rộng rãi trong đóng gói và cách nhiệt. Polyurethane, được phát triển tại cùng quốc gia, thường được sản xuất dưới dạng bọt xốp, rất hữu ích trong sản xuất vật liệu cách nhiệt.</p>",
+                    "<p>Vào những năm 1930, sợi nhân tạo đầu tiên ra đời - nylon. Nhà phát minh của nó là một nhà hóa học tên Wallace Carothers (1896-1937), làm việc cho công ty Du Pont ở Mỹ. Ông phát hiện ra rằng trong điều kiện thích hợp, hai hóa chất đặc biệt sẽ tạo thành một polymer có thể được bơm qua các lỗ và sau đó kéo căng để tạo thành các sợi dài bóng có thể dệt như lụa. Ứng dụng đầu tiên của nó là làm dù cho lực lượng vũ trang Hoa Kỳ trong Thế chiến II. Trong những năm sau chiến tranh, nó đã thay thế hoàn toàn lụa trong sản xuất hàng dệt kim.</p>",
+                    "<p>Nhiều loại sợi tổng hợp khác đã gia nhập cùng nylon, bao gồm Orion, Acrilan và Terylene. Ngày nay, hầu hết các loại quần áo được làm từ hỗn hợp sợi tự nhiên, chẳng hạn như cotton và len, và sợi nhân tạo giúp vải dễ chăm sóc hơn.</p>",
+                    "<p>Mặc dù có tính hữu dụng to lớn, nhựa vẫn có những nhược điểm. Thực tế, một trong những ưu điểm lớn của nó - tính khó phân hủy - lại là nhược điểm lớn nhất. Các bãi biển trên khắp thế giới, ngay cả trên hòn đảo xa xôi nhất, đều đầy rẫy những chai nhựa mà không gì có thể phá hủy được. Việc tái chế nhựa cũng không dễ dàng, vì các loại nhựa khác nhau thường được tìm thấy trong cùng một sản phẩm và đòi hỏi các phương pháp xử lý khác nhau.</p>",
+                    "<p>Nhựa có thể được làm phân hủy sinh học bằng cách kết hợp vào cấu trúc của chúng một vật liệu như tinh bột, bị vi khuẩn tấn công và khiến nhựa phân rã. Các vật liệu khác có thể được kết hợp để phân hủy dần dần dưới ánh sáng mặt trời - mặc dù chai làm từ những vật liệu này phải được bảo quản trong bóng tối để đảm bảo chúng không bị phân hủy trước khi được sử dụng.</p>"
+                ]
+            },
+            2: {
+                en: [
+                    "<h1>Lean Production - innovation in manufacturing systems</h1>",
+                    "<p><strong>A</strong><br>After the First World War, car makers Henry Ford and Arthur Sloan of General Motors moved world manufacturing from centuries of craft production into the age of mass production. Largely as a result of this, the United States soon dominated the world economy. After the Second World War, and approximately a hundred years after Japan opened up to the modern world, Eiji Toyoda and Taiichi Ohno pioneered the concept of lean production at the Toyota car company. And now, although superimposing the method on existing mass production systems causes pain and upheaval, manufacturers around the world are trying to embrace this innovative system.</p>",
+                    "<p><strong>B</strong><br>Perhaps the best way to describe lean production is to compare it with the two other major manufacturing systems: craft production and mass production. The craft producer uses highly skilled workers and simple but flexible tools to make exactly what the customer asks for - one item at a time. A present day example of this method is the customised production of a few exotic sports cars. The concept of craft production remains very popular, but the problem with it is obvious. Goods produced by the craft method - as cars once exclusively were - cost too much for most of us to afford. So at the beginning of the twentieth century, mass production was developed. Mass producers design products which are then made by unskilled or semi-skilled workers, using expensive, single-purpose machines. These churn out standardised products in very high volumes. Because the machinery costs so much, and is so intolerant of disruption, the mass producer keeps standard designs in production for as long as possible. The result is that the customer gets lower costs, but at the expense of variety, and by means of work methods which most employees find boring and dispiriting. By contrast, the lean production system combines the advantages of craft and mass production, while avoiding the high cost of the former and the rigidity of the latter. Towards this end, companies appoint teams of multi-skilled workers to all levels of the organisation, and use highly flexible and increasingly automated machines to produce goods in enormous volume and variety.</p>",
+                    "<p><strong>C</strong><br>Lean production is so called because, compared with mass production, it uses less of everything - half the human effort in the factory, half the manufacturing space, half the investment in tools, and half the engineering hours to develop the new product. It also results in far fewer defects.</p>",
+                    "<p><strong>D</strong><br>Perhaps the most striking contrast between mass and lean production systems lies in their production standards. Mass producers set a limited goal for themselves: ‘good enough’, which translates into an acceptable number of defects, a maximum acceptable number of inventories, and a narrow range of standardised products. Lean producers, on the other hand, are unwilling to compromise standards in any of these areas.</p>",
+                    "<p><strong>E</strong><br>Although cost reduction is the primary objective of the lean production system, it must meet three other intermediate objectives in order to achieve this: quantity control, quality assurance and respect for humanity. Firstly, the system must be able to adapt to daily and monthly fluctuations in demand. Secondly, each separate process must supply only good units to the subsequent process. Thirdly, in as far as the system uses human resources to attain its cost objectives, respect for human needs must be cultivated. It should be emphasised that none of these three objectives can be achieved separately.</p>",
+                    "<p><strong>F</strong><br>The continuous flow of lean manufacturing production relies on two practical mechanisms: just-in-time and automation. Just-in-time means, for example, that in the process of assembling the parts to build a car, components from the preceding process should arrive at the next part of the line at exactly the right time and in the correct quantities. If just-in-time is fully realised throughout the company, then superfluous inventories are completely eliminated from the factory, making stores or warehouses unnecessary. However, relying solely on a central planning approach to control schedules for all stages of the production process simultaneously is very difficult in the case of cars, which consist of thousands of parts. So the lean system looks at the production flow in reverse; in other words, employees go to the preceding process to withdraw the necessary quantity of units at the appropriate time. The preceding process must produce only sufficient quantities of units to replace those that have been withdrawn, and in turn withdraws the requisite number of components from the process that precedes it.</p>",
+                    "<p><strong>G</strong><br>Autonomation is the automatic checking for abnormalities in the production process. In order to realise just-in-time perfectly, only units which are in perfect condition must be allowed to flow to the next process, and this flow must be regular and uninterrupted. In other words, quality control must coexist with just-in-time procedures throughout the system. Autonomation involves building in a mechanism to prevent the multiplication of defects in machines or product lines. For example, in Toyota factories almost all the machines have been fitted with stopping devices, and the concept of autonomation has been extended to manual production lines. If something abnormal happens there, the worker pushes a button to stop the whole line, and lights, which are hung so high in the factory that they are visible to everyone, indicate the position of the problem.</p>"
+                ],
+                vi: [
+                    "<h1>Sản xuất tinh gọn - đổi mới trong hệ thống sản xuất</h1>",
+                    "<p><strong>A</strong><br>Sau Chiến tranh Thế giới thứ nhất, các nhà sản xuất ô tô Henry Ford và Arthur Sloan của General Motors đã đưa ngành sản xuất thế giới từ hàng thế kỷ sản xuất thủ công sang kỷ nguyên sản xuất hàng loạt. Phần lớn nhờ điều này, Hoa Kỳ nhanh chóng thống trị nền kinh tế thế giới. Sau Chiến tranh Thế giới thứ hai, và khoảng một trăm năm sau khi Nhật Bản mở cửa với thế giới hiện đại, Eiji Toyoda và Taiichi Ohno đã tiên phong đưa ra khái niệm sản xuất tinh gọn tại công ty ô tô Toyota. Và bây giờ, mặc dù việc áp dụng phương pháp này lên các hệ thống sản xuất hàng loạt hiện có gây ra đau đớn và xáo trộn, các nhà sản xuất trên khắp thế giới đang cố gắng nắm bắt hệ thống sáng tạo này.</p>",
+                    "<p><strong>B</strong><br>Có lẽ cách tốt nhất để mô tả sản xuất tinh gọn là so sánh nó với hai hệ thống sản xuất chính khác: sản xuất thủ công và sản xuất hàng loạt. Nhà sản xuất thủ công sử dụng công nhân lành nghề cao và các công cụ đơn giản nhưng linh hoạt để làm chính xác những gì khách hàng yêu cầu - mỗi lần một sản phẩm. Một ví dụ ngày nay của phương pháp này là sản xuất tùy chỉnh một vài chiếc xe thể thao độc đáo. Khái niệm sản xuất thủ công vẫn rất phổ biến, nhưng vấn đề của nó là rõ ràng. Hàng hóa được sản xuất bằng phương pháp thủ công - như ô tô đã từng được sản xuất độc quyền - có giá quá cao so với khả năng chi trả của hầu hết chúng ta. Vì vậy, vào đầu thế kỷ XX, sản xuất hàng loạt đã được phát triển. Các nhà sản xuất hàng loạt thiết kế sản phẩm, sau đó được làm bởi công nhân không có tay nghề hoặc bán lành nghề, sử dụng máy móc đắt tiền, chuyên dụng. Những cỗ máy này sản xuất hàng loạt sản phẩm tiêu chuẩn hóa với số lượng rất lớn. Bởi vì máy móc tốn kém như vậy và rất dễ bị gián đoạn, nhà sản xuất hàng loạt giữ các thiết kế tiêu chuẩn trong sản xuất càng lâu càng tốt. Kết quả là khách hàng nhận được chi phí thấp hơn, nhưng phải đánh đổi bằng sự đa dạng, và bằng các phương pháp làm việc mà hầu hết nhân viên cảm thấy nhàm chán và mất tinh thần. Ngược lại, hệ thống sản xuất tinh gọn kết hợp những ưu điểm của sản xuất thủ công và sản xuất hàng loạt, đồng thời tránh được chi phí cao của hệ thống trước và sự cứng nhắc của hệ thống sau. Để đạt được mục tiêu này, các công ty bố trí các nhóm công nhân đa kỹ năng ở tất cả các cấp của tổ chức và sử dụng máy móc linh hoạt cao và ngày càng tự động để sản xuất hàng hóa với số lượng và chủng loại lớn.</p>",
+                    "<p><strong>C</strong><br>Sản xuất tinh gọn được gọi như vậy bởi vì, so với sản xuất hàng loạt, nó sử dụng ít hơn mọi thứ - một nửa công sức lao động trong nhà máy, một nửa không gian sản xuất, một nửa đầu tư vào công cụ và một nửa số giờ kỹ thuật để phát triển sản phẩm mới. Nó cũng dẫn đến ít lỗi hơn nhiều.</p>",
+                    "<p><strong>D</strong><br>Có lẽ sự tương phản nổi bật nhất giữa hệ thống sản xuất hàng loạt và tinh gọn nằm ở tiêu chuẩn sản xuất của chúng. Các nhà sản xuất hàng loạt đặt ra một mục tiêu giới hạn cho chính họ: 'đủ tốt', được chuyển thành số lượng lỗi chấp nhận được, số lượng tồn kho tối đa chấp nhận được và một loạt sản phẩm tiêu chuẩn hóa hẹp. Mặt khác, các nhà sản xuất tinh gọn không sẵn sàng thỏa hiệp các tiêu chuẩn trong bất kỳ lĩnh vực nào trong số này.</p>",
+                    "<p><strong>E</strong><br>Mặc dù giảm chi phí là mục tiêu chính của hệ thống sản xuất tinh gọn, nhưng nó phải đáp ứng ba mục tiêu trung gian khác để đạt được điều này: kiểm soát số lượng, đảm bảo chất lượng và tôn trọng con người. Thứ nhất, hệ thống phải có khả năng thích ứng với biến động hàng ngày và hàng tháng về nhu cầu. Thứ hai, mỗi quy trình riêng biệt chỉ được cung cấp các đơn vị tốt cho quy trình tiếp theo. Thứ ba, trong chừng mực hệ thống sử dụng nguồn nhân lực để đạt được các mục tiêu chi phí, thì sự tôn trọng nhu cầu của con người phải được vun đắp. Cần nhấn mạnh rằng không có mục tiêu nào trong ba mục tiêu này có thể đạt được một cách riêng lẻ.</p>",
+                    "<p><strong>F</strong><br>Dòng chảy liên tục của sản xuất tinh gọn dựa trên hai cơ chế thực tế: đúng lúc (just-in-time) và tự động hóa. Đúng lúc có nghĩa là, ví dụ, trong quá trình lắp ráp các bộ phận để chế tạo ô tô, các thành phần từ quy trình trước sẽ đến bộ phận tiếp theo của dây chuyền vào đúng thời điểm và với số lượng chính xác. Nếu just-in-time được thực hiện hoàn toàn trong toàn công ty, thì hàng tồn kho dư thừa sẽ bị loại bỏ hoàn toàn khỏi nhà máy, khiến cho các cửa hàng hoặc nhà kho không còn cần thiết. Tuy nhiên, chỉ dựa vào phương pháp lập kế hoạch trung tâm để kiểm soát lịch trình cho tất cả các giai đoạn của quy trình sản xuất đồng thời là rất khó trong trường hợp ô tô, vốn bao gồm hàng nghìn bộ phận. Vì vậy, hệ thống tinh gọn nhìn nhận dòng chảy sản xuất theo hướng ngược lại; nói cách khác, nhân viên đến quy trình trước để rút số lượng đơn vị cần thiết vào thời điểm thích hợp. Quy trình trước chỉ phải sản xuất đủ số lượng đơn vị để thay thế những đơn vị đã được rút, và đến lượt nó lại rút số lượng thành phần cần thiết từ quy trình trước nó.</p>",
+                    "<p><strong>G</strong><br>Tự động hóa (Autonomation) là việc tự động kiểm tra các bất thường trong quy trình sản xuất. Để thực hiện just-in-time một cách hoàn hảo, chỉ những đơn vị ở trong tình trạng hoàn hảo mới được phép chuyển sang quy trình tiếp theo, và dòng chảy này phải đều đặn và không bị gián đoạn. Nói cách khác, kiểm soát chất lượng phải cùng tồn tại với các quy trình just-in-time trong toàn bộ hệ thống. Autonomation liên quan đến việc xây dựng một cơ chế để ngăn chặn sự nhân lên của các lỗi trong máy móc hoặc dây chuyền sản xuất. Ví dụ, trong các nhà máy của Toyota, hầu hết các máy móc đều được trang bị thiết bị dừng, và khái niệm autonomation đã được mở rộng sang các dây chuyền sản xuất thủ công. Nếu có điều gì bất thường xảy ra ở đó, công nhân nhấn nút để dừng toàn bộ dây chuyền, và đèn, được treo cao trong nhà máy để mọi người đều có thể nhìn thấy, chỉ ra vị trí của vấn đề.</p>"
+                ]
+            },
+            3: {
+                en: [
+                    "<h1>The Animal Connection</h1>",
+                    "<p><em>Professor of anthropology Pat Shipman looks at the ways in which our relationships with animals have shaped our own human evolution.</em></p>",
+                    "<p>Travel anywhere and you see something so common it may not even catch your attention. Wherever there are people, animals are being walked, herded and fed. Many, such as dogs, cats and sheep, are domesticated, but you will also find people living alongside wild creatures like monkeys and wolves. Close contact with animals is not confined to one particular culture, region or ethnic group but is a universal human trait.</p>",
+                    "<p>On the face of it this makes little sense. No other mammal adopts individuals from another species, with good reason. Since the ultimate prize in evolution is perpetuating your genes, providing food for another species is counterproductive to success. Even if pets offer friendship, that cannot explain why our bond with other species arose in the first place. Who would bring a ferocious wolf into their home in the hope that thousands of years later it would become a loving pet?</p>",
+                    "<p>As an anthropologist I have tried to understand this puzzle by looking to the past for the origins of our link with animals. What I found was a long and unbroken evolutionary trail of evidence I call the 'animal connection'. This trail links to three important developments in human evolution: tool making, language and domestication. If I am correct, and I believe that further research will conclusively show that I am, the animal connection is a hugely significant force instrumental in our global success.</p>",
+                    "<p>The trail begins at least 2.6 million years ago. That is when the first tools appear in the archaeological record. This development required the intellectual breakthrough of realizing that the properties of an object can be altered. Man learnt how to turn stone into small, sharp items that could cut up animal carcasses, providing them with an evolutionary shortcut to becoming predators.</p>",
+                    "<p>There were many consequences of the new hunting lifestyle. On the plus side, eating more meat and fat was a requirement for the increase in relative brain size. And since meat tends to come in bigger packages than leaves and roots, meat eaters could spend less time finding food and more on activities like learning and social interaction. On the minus side, preying on animals put our ancestors into direct competition with the other predators that shared their ecosystem, animals such as lions and hyenas. To get the upper hand, they needed more than just tools, and that is where the animal connection comes in. What made it possible for our ancestors to compete successfully with true carnivores was the ability to pay very close attention to the habits of both potential prey and competitors. Knowledge was power, so we acquired a deep understanding of the minds of other animals. Another significant consequence of becoming more predatory was the need to live at lower densities, as successful predators soon exhaust food supplies. The record of the geographic distribution of our ancestors provides further support for my idea that the animal connection has shaped our evolution. Early man lived in Africa and nowhere else, but then underwent a dramatic expansion in territory, forced by the search for new hunting grounds.</p>",
+                    "<p>Throughout the period of these enormous changes in the lifestyle of our ancestors, gathering, sharing and recording knowledge became increasingly advantageous, and examples of prehistoric art that appear in Europe, Asia, Africa and Australia allow us to eavesdrop on their conversations. Through the art, we realize the main topic was animals: their colours, shapes, postures and habits. This focus is even more striking considering the scenes of human life depicted. Pictures of people, social interaction and ceremonies are rare.</p>",
+                    "<p>This leads me on to the development of language. Nobody doubts this proved a major adaptive advantage to our ancestors in developing complex behaviours. How it arose, however, remains a mystery. I believe I am the first to propose a continuity between the strong human-animal link that appeared 2.6 million years ago and the origin of language. The complexity and importance of animal-related information, indicated in the predominance of animal images, spurred early humans to move beyond what other species could achieve. Vervet monkeys, for example, have different cries for eagles and snakes, but they cannot discuss what threats might appear tomorrow. The property of full language is that it is comprised of vocabulary and grammatical rules that can be combined in an infinite number of ways to convey fine shades of meaning.</p>",
+                    "<p>As our ancestors became more involved with animals, the third product of the animal connection appeared: domestication, which has long been linked with the keeping of animals like sheep. Domestic animals are usually considered as 'walking larders', or easy food sources, reflecting the idea that the basis of this change was a drive for greater food security. Looking at the origins of domestication for clues to its underlying reasons, I found fundamental flaws in this idea. Instead, my analysis suggests domestication emerged as a natural progression of our close association with, and understanding of, other species. If domestication was about knowing where your next meal was coming from, the first domesticate ought to have been a food source, yet analysis of fossils shows that the domestication of dogs pre-dated that of any other species, even plants, from wolves. Furthermore, if the objective was to have meat to eat, you wouldn't select an animal that eats two kilograms of meat a day. It was familiarity with this species that led to eventual domestication.</p>"
+                ],
+                vi: [
+                    "<h1>Mối liên hệ với động vật</h1>",
+                    "<p><em>Giáo sư nhân chủng học Pat Shipman xem xét những cách mà mối quan hệ của chúng ta với động vật đã định hình sự tiến hóa của chính loài người.</em></p>",
+                    "<p>Du lịch bất cứ đâu bạn cũng thấy một điều phổ biến đến mức có thể không thu hút sự chú ý của bạn. Bất cứ nơi nào có người, động vật đang được dắt đi, lùa và cho ăn. Nhiều loài, như chó, mèo và cừu, được thuần hóa, nhưng bạn cũng sẽ thấy mọi người sống cùng với các sinh vật hoang dã như khỉ và sói. Tiếp xúc gần gũi với động vật không chỉ giới hạn ở một nền văn hóa, khu vực hay nhóm dân tộc cụ thể nào mà là một đặc điểm chung của toàn nhân loại.</p>",
+                    "<p>Thoạt nhìn, điều này có vẻ ít ý nghĩa. Không có động vật có vú nào khác nhận nuôi các cá thể từ loài khác, và có lý do chính đáng. Vì giải thưởng tối thượng trong tiến hóa là duy trì mãi mãi gen của bạn, việc cung cấp thức ăn cho loài khác là phản tác dụng đối với sự thành công. Ngay cả khi vật nuôi mang lại tình bạn, điều đó không thể giải thích tại sao mối liên kết của chúng ta với các loài khác lại nảy sinh ngay từ đầu. Ai sẽ mang một con sói hung dữ vào nhà với hy vọng hàng nghìn năm sau nó sẽ trở thành một con vật cưng đáng yêu?</p>",
+                    "<p>Là một nhà nhân chủng học, tôi đã cố gắng hiểu câu đố này bằng cách nhìn về quá khứ để tìm nguồn gốc mối liên kết của chúng ta với động vật. Những gì tôi tìm thấy là một chuỗi bằng chứng tiến hóa lâu dài và không gián đoạn mà tôi gọi là 'mối liên hệ với động vật'. Chuỗi bằng chứng này liên kết với ba bước phát triển quan trọng trong quá trình tiến hóa của loài người: chế tạo công cụ, ngôn ngữ và thuần hóa. Nếu tôi đúng, và tôi tin rằng nghiên cứu sâu hơn sẽ chứng minh một cách thuyết phục rằng tôi đúng, thì mối liên hệ với động vật là một lực lượng vô cùng quan trọng, có vai trò then chốt trong thành công toàn cầu của chúng ta.</p>",
+                    "<p>Chuỗi bằng chứng bắt đầu ít nhất 2,6 triệu năm trước. Đó là thời điểm những công cụ đầu tiên xuất hiện trong ghi chép khảo cổ học. Sự phát triển này đòi hỏi một bước đột phá về trí tuệ: nhận ra rằng các đặc tính của một vật thể có thể bị thay đổi. Con người học cách biến đá thành những vật nhỏ, sắc nhọn có thể cắt xẻ thân xác động vật, cung cấp cho họ một lối tắt tiến hóa để trở thành động vật ăn thịt.</p>",
+                    "<p>Đã có nhiều hậu quả từ lối sống săn bắt mới. Mặt tích cực, ăn nhiều thịt và mỡ hơn là một yêu cầu để gia tăng kích thước não tương đối. Và vì thịt thường có khẩu phần lớn hơn lá và rễ, người ăn thịt có thể dành ít thời gian tìm kiếm thức ăn hơn và nhiều thời gian hơn cho các hoạt động như học hỏi và tương tác xã hội. Mặt tiêu cực, việc săn bắt động vật đã đặt tổ tiên chúng ta vào sự cạnh tranh trực tiếp với những động vật ăn thịt khác cùng chung hệ sinh thái, những loài như sư tử và linh cẩu. Để giành được thế thượng phong, họ cần nhiều thứ hơn là chỉ công cụ, và đó là lúc mối liên hệ với động vật phát huy tác dụng. Điều giúp tổ tiên chúng ta cạnh tranh thành công với những loài ăn thịt thực sự là khả năng chú ý rất kỹ đến tập tính của cả con mồi tiềm năng và đối thủ cạnh tranh. Kiến thức là sức mạnh, vì vậy chúng ta đã có được sự hiểu biết sâu sắc về tâm trí của các loài động vật khác. Một hệ quả quan trọng khác của việc trở nên săn mồi nhiều hơn là nhu cầu sống với mật độ thấp hơn, vì những kẻ săn mồi thành công nhanh chóng làm cạn kiệt nguồn thức ăn. Ghi chép về sự phân bố địa lý của tổ tiên chúng ta cung cấp thêm hỗ trợ cho ý tưởng của tôi rằng mối liên hệ với động vật đã định hình sự tiến hóa của chúng ta. Người đầu tiên sống ở châu Phi và không nơi nào khác, nhưng sau đó đã trải qua một sự mở rộng lãnh thổ đáng kể, bị thúc đẩy bởi việc tìm kiếm các bãi săn mới.</p>",
+                    "<p>Trong suốt thời kỳ có những thay đổi to lớn này trong lối sống của tổ tiên chúng ta, việc thu thập, chia sẻ và ghi lại kiến thức ngày càng trở nên có lợi, và các ví dụ về nghệ thuật thời tiền sử xuất hiện ở châu Âu, châu Á, châu Phi và châu Úc cho phép chúng ta nghe lén những cuộc trò chuyện của họ. Qua nghệ thuật, chúng ta nhận ra chủ đề chính là động vật: màu sắc, hình dạng, tư thế và tập tính của chúng. Sự tập trung này còn nổi bật hơn khi xem xét các cảnh được mô tả về đời sống con người. Hình ảnh về con người, tương tác xã hội và nghi lễ rất hiếm.</p>",
+                    "<p>Điều này dẫn tôi đến sự phát triển của ngôn ngữ. Không ai nghi ngờ rằng điều này đã chứng tỏ một lợi thế thích nghi lớn cho tổ tiên chúng ta trong việc phát triển các hành vi phức tạp. Tuy nhiên, nó phát sinh như thế nào vẫn còn là một bí ẩn. Tôi tin rằng tôi là người đầu tiên đề xuất tính liên tục giữa mối liên kết mạnh mẽ giữa người và động vật xuất hiện cách đây 2,6 triệu năm và nguồn gốc của ngôn ngữ. Sự phức tạp và tầm quan trọng của thông tin liên quan đến động vật, được chỉ ra bởi sự chiếm ưu thế của các hình ảnh động vật, đã thúc đẩy con người sơ khai vượt ra ngoài những gì các loài khác có thể đạt được. Ví dụ, khỉ Vervet có những tiếng kêu khác nhau để báo hiệu đại bàng và rắn, nhưng chúng không thể thảo luận về những mối đe dọa có thể xuất hiện vào ngày mai. Đặc tính của ngôn ngữ hoàn chỉnh là nó bao gồm từ vựng và các quy tắc ngữ pháp có thể được kết hợp theo vô số cách để truyền đạt các sắc thái ý nghĩa tinh tế.</p>",
+                    "<p>Khi tổ tiên của chúng ta ngày càng gắn bó hơn với động vật, sản phẩm thứ ba của mối liên hệ với động vật xuất hiện: thuần hóa, vốn từ lâu đã được liên kết với việc nuôi các loài động vật như cừu. Động vật thuần hóa thường được coi là 'kho lương thực biết đi', hay nguồn thức ăn dễ dàng, phản ánh ý tưởng rằng cơ sở của sự thay đổi này là động lực tìm kiếm an ninh lương thực lớn hơn. Nhìn vào nguồn gốc của quá trình thuần hóa để tìm manh mối cho những lý do cơ bản của nó, tôi đã tìm thấy những sai sót cơ bản trong ý tưởng này. Thay vào đó, phân tích của tôi cho thấy quá trình thuần hóa nổi lên như một bước tiến tự nhiên từ sự gắn bó chặt chẽ và sự hiểu biết của chúng ta về các loài khác. Nếu thuần hóa là về việc biết bữa ăn tiếp theo của bạn đến từ đâu, thì loài được thuần hóa đầu tiên đáng lẽ phải là nguồn thức ăn, nhưng phân tích hóa thạch cho thấy việc thuần hóa chó có trước bất kỳ loài nào khác, thậm chí cả thực vật, từ loài sói. Hơn nữa, nếu mục tiêu là có thịt để ăn, bạn sẽ không chọn một loài động vật ăn hai kg thịt mỗi ngày. Chính sự quen thuộc với loài này đã dẫn đến quá trình thuần hóa cuối cùng.</p>"
+                ]
+            }
+        };
+
+        // Variables
+        let currentPassage = 1;
+        let readingMode = false;
+        
+        // DOM elements
+        const enDiv = document.getElementById('enContent');
+        const viDiv = document.getElementById('viContent');
+        const appContainer = document.getElementById('appContainer');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        const readingModeToggle = document.getElementById('readingModeToggle');
+
+        // Load passage
+        function loadPassage(id) {
+            const p = passages[id];
+            if (!p) return;
+            
+            let enHtml = '';
+            p.en.forEach(para => {
+                enHtml += para;
+            });
+            enDiv.innerHTML = enHtml;
+
+            let viHtml = '';
+            p.vi.forEach(para => {
+                viHtml += para;
+            });
+            viDiv.innerHTML = viHtml;
+        }
+
+        loadPassage(1);
+
+        // Passage selector
+        document.querySelectorAll('.passage-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const id = parseInt(btn.getAttribute('data-passage'), 10);
+                currentPassage = id;
+                loadPassage(id);
+            });
+        });
+
+        // Reading mode toggle
+        readingModeToggle.addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                appContainer.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                appContainer.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // Font size controls
+        document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+            
+            const contents = document.querySelectorAll('.col-content');
+            contents.forEach(el => {
+                el.classList.remove('font-small', 'font-medium', 'font-large');
+                el.classList.add(`font-${size}`);
+            });
+        }
+
+        // Resize columns
+        const resizer = document.getElementById('resizer');
+        const enColumn = document.getElementById('enColumn');
+        const viColumn = document.getElementById('viColumn');
+        const mainArea = document.getElementById('mainArea');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', () => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const rect = mainArea.getBoundingClientRect();
+            let leftWidth = e.clientX - rect.left - 4;
+            if (leftWidth < 200) leftWidth = 200;
+            if (leftWidth > rect.width - 200) leftWidth = rect.width - 200;
+            enColumn.style.width = leftWidth + 'px';
+            viColumn.style.width = (rect.width - leftWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // Timer
+        let timeLeft = 3600;
+        const timerEl = document.getElementById('timerDisplay');
+        setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        // Right-click highlight
+        const contextMenu = document.getElementById('contextMenu');
+        let selectedRange = null;
+
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target;
+            if (target.closest('.col-content')) {
+                e.preventDefault();
+                const selection = window.getSelection();
+                if (selection.toString().trim()) {
+                    selectedRange = selection.getRangeAt(0);
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = e.pageX + 'px';
+                    contextMenu.style.top = e.pageY + 'px';
+                }
+            }
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            try {
+                const range = selectedRange.cloneRange();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) {
+                alert('Không thể highlight vùng này.');
+            }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // Reset all highlights
+        document.getElementById('resetHighlightBtn').addEventListener('click', () => {
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                const parent = h.parentNode;
+                while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                parent.removeChild(h);
+            });
+        });
+
+        // Đồng bộ cuộn có bật/tắt
+        const enContent = document.getElementById('enContent');
+        const viContent = document.getElementById('viContent');
+        const syncBtn = document.getElementById('syncScrollBtn');
+
+        let syncEnabled = true;
+        let isSyncing = false;
+
+        syncBtn.addEventListener('click', () => {
+            syncEnabled = !syncEnabled;
+            if (syncEnabled) {
+                syncBtn.style.background = '#e6b422';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: BẬT';
+            } else {
+                syncBtn.style.background = 'transparent';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: TẮT';
+            }
+        });
+
+        function syncScroll(source, target) {
+            if (!syncEnabled || isSyncing) return;
+            isSyncing = true;
+            
+            const sourceScrollRatio = source.scrollTop / (source.scrollHeight - source.clientHeight);
+            target.scrollTop = sourceScrollRatio * (target.scrollHeight - target.clientHeight);
+            
+            isSyncing = false;
+        }
+
+        enContent.addEventListener('scroll', () => syncScroll(enContent, viContent));
+        viContent.addEventListener('scroll', () => syncScroll(viContent, enContent));
+    })();
+</script>
+</body>
+</html>

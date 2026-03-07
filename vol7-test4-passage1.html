@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vol 7 - Reading Test 4 - Passage 1 - Rubber</title>
+    <style>
+        /* Giữ nguyên toàn bộ CSS từ file trước */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+
+        .test-wrapper.reading-mode .reading-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .questions-panel {
+            background: #fffaf0;
+        }
+
+        .test-wrapper.reading-mode .reading-text {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .questions-list {
+            color: #5a4a3a;
+        }
+
+        .test-wrapper.reading-mode .panel-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+
+        .test-wrapper.reading-mode .question-nav {
+            background: #d6cdb8;
+        }
+
+        .test-wrapper.reading-mode .bottom-bar {
+            background: #d6cdb8;
+        }
+
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 5px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 20px;
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        .candidate {
+            background: #2d4b77;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        .question-types {
+            background: #0f2a44;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            border: 1px solid #e6b422;
+        }
+
+        .timer {
+            background: #0f2a44;
+            padding: 4px 15px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: monospace;
+            border: 1px solid #e6b422;
+        }
+
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px 8px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reading-mode-toggle:hover {
+            background: #3e5f8a;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid #e6b422;
+        }
+
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .toggle-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 2px;
+            background: #2d4b77;
+            padding: 2px;
+            border-radius: 30px;
+        }
+
+        .font-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #e6b422;
+            color: #1e3a5f;
+            border-color: #e6b422;
+        }
+
+        .nav-btn.answered {
+            background: #4CAF50;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .nav-btn.answered:hover {
+            background: #66bb6a;
+        }
+
+        .nav-btn.unanswered {
+            background: #e0e0e0;
+            color: #757575;
+            border-color: #9e9e9e;
+        }
+
+        .nav-btn.unanswered:hover {
+            background: #bdbdbd;
+            color: #424242;
+        }
+
+        .nav-btn.active {
+            border: 3px solid #e6b422;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .reading-panel {
+            width: 45%;
+            background: #fffcf5;
+            border-right: 2px solid #b0aa9a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .questions-panel {
+            width: 55%;
+            background: #f8f6f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .reading-text {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.7;
+            font-size: 15px;
+            position: relative;
+        }
+
+        .questions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 25px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .reading-text.font-small, .questions-list.font-small { font-size: 13px; }
+        .reading-text.font-small p, .questions-list.font-small p,
+        .reading-text.font-small li, .questions-list.font-small li { font-size: 13px; }
+
+        .reading-text.font-medium, .questions-list.font-medium { font-size: 15px; }
+        .reading-text.font-medium p, .questions-list.font-medium p,
+        .reading-text.font-medium li, .questions-list.font-medium li { font-size: 15px; }
+
+        .reading-text.font-large, .questions-list.font-large { font-size: 17px; }
+        .reading-text.font-large p, .questions-list.font-large p,
+        .reading-text.font-large li, .questions-list.font-large li { font-size: 17px; }
+
+        .reading-text h1 {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .reading-text h3 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+        }
+
+        .reading-text p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .reading-text em {
+            color: #5a4a3a;
+            font-style: italic;
+        }
+
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+        }
+
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+        }
+        
+        .dynamic-highlight.keyword-underline,
+        .dynamic-highlight.style-text-decoration {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+            background-color: #fff3cd;
+        }
+
+        .question-highlight {
+            background-color: #fef9e7;
+            border-left: 4px solid #f1c40f;
+            padding-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .questions-list h3 {
+            font-size: 22px;
+            color: #1e3a5f;
+            margin: 20px 0 15px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+
+        .questions-list h4 {
+            font-size: 20px;
+            color: #1e3a5f;
+            margin: 25px 0 15px;
+        }
+
+        .questions-list h5 {
+            font-size: 18px;
+            color: #2d4b77;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+
+        .questions-list h6 {
+            font-size: 17px;
+            color: #1e3a5f;
+            margin: 15px 0 10px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .questions-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+            border: 1px solid #b0aa9a;
+        }
+
+        .questions-list th {
+            background: #d2cbbc;
+            color: #1e3a5f;
+            font-weight: 600;
+            padding: 8px 5px;
+            border: 1px solid #9a8c7a;
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        .questions-list td {
+            padding: 8px 5px;
+            border: 1px solid #b0aa9a;
+            vertical-align: middle;
+            background-color: #fffcf5;
+        }
+
+        .questions-list td .fill-input {
+            width: 120px;
+            margin: 0;
+        }
+
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+            list-style-type: disc;
+        }
+
+        .questions-list li {
+            margin: 8px 0;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .questions-list p {
+            margin: 10px 0;
+        }
+
+        .note-box {
+            background: #f0ebe0;
+            border-left: 4px solid #e6b422;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .bold-text {
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .fill-input {
+            padding: 5px 10px;
+            border: 1px solid #9a8c7a;
+            border-radius: 5px;
+            width: 140px;
+            font-size: 14px;
+            margin: 0 5px;
+            background: white;
+        }
+
+        .fill-input.correct {
+            border: 2px solid #4CAF50;
+            background-color: #e8f5e8;
+        }
+
+        .fill-input.incorrect {
+            border: 2px solid #f44336;
+            background-color: #ffebee;
+        }
+
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .tf-group {
+            margin: 5px 0 15px 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tf-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .tf-option.correct .tf-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .tf-option.incorrect .tf-text {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .answer-badge {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 13px;
+        }
+
+        .eye-icon {
+            display: none;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .eye-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .eye-icon.active {
+            opacity: 1;
+            color: #e6b422;
+        }
+
+        .question-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-right: 5px;
+            min-width: 25px;
+        }
+
+        .tf-statement {
+            flex: 1;
+        }
+
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d4b77;
+        }
+
+        .btn-primary:disabled {
+            background: #9aaec2;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-success:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .progress {
+            background: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border: 1px solid #1e3a5f;
+            font-size: 14px;
+        }
+
+        .result-stats {
+            background: #1e3a5f;
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .explanation-panel {
+            background: #fffef9;
+            border-left: 4px solid #e6b422;
+            padding: 12px 20px;
+            margin: 0 20px 12px 20px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .explanation-panel.show {
+            display: block;
+        }
+
+        .explanation-header {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .close-btn:hover {
+            color: #1e3a5f;
+        }
+
+        .explanation-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .answer-feedback {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .answer-feedback.correct {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .answer-feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+
+        .question-item.highlight-question {
+            border-left: 3px solid #f1c40f;
+            background-color: #fef9e7;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-wrapper" id="testWrapper">
+        <!-- Header -->
+        <div class="ielts-header">
+            <div class="brand">
+                <div class="ielts-logo">IELTS</div>
+                <div class="candidate">Vol 7 - Test 4 - Passage 1</div>
+                <div class="question-types">True/False/Not Given • Summary Completion</div>
+                
+                <!-- Reading Mode Toggle -->
+                <div class="reading-mode-toggle" id="readingModeToggle">
+                    <div class="toggle-switch" id="toggleSwitch"></div>
+                    <span class="toggle-label">Đọc sách</span>
+                </div>
+
+                <!-- Font Size Controls -->
+                <div class="font-controls">
+                    <button class="font-btn" id="fontSmall" title="Chữ nhỏ">A-</button>
+                    <button class="font-btn active" id="fontMedium" title="Chữ vừa">A</button>
+                    <button class="font-btn" id="fontLarge" title="Chữ lớn">A+</button>
+                </div>
+            </div>
+            <div class="timer" id="timerDisplay">60:00</div>
+        </div>
+
+        <!-- Question Navigator -->
+        <div class="question-nav">
+            <span style="font-weight: 600; color: #1e3a5f; font-size: 14px;">Câu:</span>
+            <div class="nav-buttons" id="navButtons"></div>
+        </div>
+
+        <!-- Main Content with Resizable Columns -->
+        <div class="main-area" id="mainArea">
+            <!-- Reading Column -->
+            <div class="reading-panel" id="readingPanel">
+                <div class="panel-header">
+                    <span>READING PASSAGE 1</span>
+                    <span class="warning-text">Không highlight các câu khác đoạn cùng lúc</span>
+                </div>
+                <div class="reading-text font-medium" id="readingContent">
+                    <h1>Rubber</h1>
+                    <p><em>T and W Musgrove discuss the origins and early uses of rubber</em></p>
+                    
+                    <p>The plants that produce rubber are spread right across the globe, and grow in many different habitats. One might think it likely, therefore, that humankind has known about rubber for thousands of years. Yet, unlike other crops of economic importance, rubber led a relatively anonymous life until the last 150 years or so. The Indians of South America appear to be the first people to have understood the properties of rubber, and the Aztecs of what is now Mexico were the first to be recorded using the substance; a wall painting dating back to the sixth century depicts a scene of a tributary offering of crude rubber. With the arrival of Columbus in the Americas and the resulting Spanish influx, further evidence starts to appear concerning the Native American use of rubber. Antonio de Herrera y Tordesillas describes a ritual game played with a rubber ball at the court of the Aztec Emperor Montezuma II, and the Mayan and Toltec people are known to have taken part in similar activities. Rubber was also used to make raincoats, shoes, jars, torches and musical instruments, all of which must have been made from the indigenous Castilla elastica, as the Para plant now favoured for rubber cultivation does not grow in the Mexican region.</p>
+                    
+                    <p>The first description of latex (liquid rubber) extraction is made by Juan de Torquemada, who noted that if a receptacle was not at hand the Native Americans would place the latex on their bodies to allow it to solidify. However, no real interest in rubber was shown by any European until Charles de la Condamine, a French mathematician, published an account of his journey to South America in 1735. The journey was undertaken on behalf of the Paris Academy of Sciences to measure an arc of the meridian line on the equator, but the journey home was to turn out to be more significant than the true purpose of the trip. Condamine explored Brazil and Peru and discovered how the local people used one single piece of coagulated latex to make boots. The boots were impervious to water and, when smoked, looked like real leather. In 1747 the first description of the rubber tree and latex tapping was made by a military engineer and amateur botanist, François Fresneau, who was posted to French Guiana. The publications of Condamine and Fresneau created considerable excitement among French scientists, and an attempt was made to discover a solvent that could turn the crude rubber into a substance for commercial exploitation.</p>
+                    
+                    <p>In 1818 a British medical student named James Syme first used rubber to make waterproof cloth. Another early use of the substance was as an eraser of pencil marks, hence the name 'rubber'. This was complemented by balloons, rubber bands, braces, boots for the army and other ideas that met with varying degrees of success. In 1820 Thomas Hancock, an English manufacturer of rubber goods such as driving belts, industrial rollers and rubber hoses, invented a machine he called the 'pookie', which chewed up waste strips for re-use. It was discovered that the masticated rubber was more malleable, while maintaining much of its elasticity. In Scotland at the same time Charles Mackintosh had discovered a way of using rubber as waterproofing material, by a process he patented in 1823. Hancock and Mackintosh joined forces in 1834, and three years later Hancock invented a machine for spreading rubber onto material.</p>
+                    
+                    <p>Despite their beneficial qualities, such as waterproofing, rubber goods were still not particularly popular as they had some major flaws, including the fact that they dissolved malodorously. They also became pliant when warm and rigid when cold. Then in 1839 the American Charles Goodyear discovered that it was possible to stabilise rubber by mixing it with sulphur while exposing it to heat - a process he called vulcanisation - and the full versatility of this extraordinary substance became apparent.</p>
+                    
+                    <p>Rubber goods could now be manufactured which had all the beneficial qualities of the material, such as durability, elasticity and variability, but which were not sticky, soluble or governed by the vagaries of the weather. The economic potential of rubber was now clearly evident. It played an important role in the Industrial Revolution, being employed in the steam engines found in factories, mills, mines and railways. It made a triumphant entrance as a new and innovative material at the Great Exhibition of 1851, where shoes, airbeds, furniture and clothing made out of newly improved rubber were proudly displayed.</p>
+                    
+                    <p>One of the most important rubber inventions was made in 1888, when an Irishman called John Boyd Dunlop produced the first pneumatic tyre. Solid rubber tyres had been used for the previous 18 years, but Dunlop's new design, which he updated in 1890, immediately became popular. In 1895 Dunlop's tyres were first used in motor cars, and with the mass production of cars just over the horizon the rubber industry had never looked healthier. The import levels of rubber over the nineteenth century bear witness to its irrepressible rise. In 1830 Britain had imported just 211 kg of crude rubber. This had risen to 10,000 kg in 1857, and by 1874 levels were just under six times as much again.</p>
+                </div>
+            </div>
+
+            <!-- Resizer Handle -->
+            <div class="resizer" id="resizer"></div>
+
+            <!-- Questions Column -->
+            <div class="questions-panel" id="questionsPanel">
+                <div class="panel-header">
+                    <span>QUESTIONS 1-13</span>
+                    <span class="answer-badge" id="answeredCount">0/13 answered</span>
+                </div>
+                <div class="questions-list font-medium" id="questionsContent">
+                    <!-- Questions 1-6 -->
+                    <h3>Questions 1-6</h3>
+                    <p><em>Do the following statements agree with the information given in Reading Passage 1?</em></p>
+                    <p>In boxes 1-6 on your answer sheet, write</p>
+                    
+                    <div class="note-box">
+                        <p><strong>TRUE</strong> if the statement agrees with the information</p>
+                        <p><strong>FALSE</strong> if the statement contradicts the information</p>
+                        <p><strong>NOT GIVEN</strong> if there is no information on this</p>
+                    </div>
+
+                    <ol style="list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 20px;" class="question-item" id="q1-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">1.</span>
+                                <span class="tf-statement">Rubber plants grow only in certain regions of the world.</span>
+                                <span class="eye-icon" data-question="1">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q1-group">
+                                <label class="tf-option"><input type="radio" name="q1" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q1" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q1" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q2-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">2.</span>
+                                <span class="tf-statement">Rubber was extracted in Mexico as early as the sixth century.</span>
+                                <span class="eye-icon" data-question="2">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q2-group">
+                                <label class="tf-option"><input type="radio" name="q2" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q2" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q2" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q3-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">3.</span>
+                                <span class="tf-statement">Rubber from the Castilla elastica plant is of poorer quality than that from the Para plant.</span>
+                                <span class="eye-icon" data-question="3">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q3-group">
+                                <label class="tf-option"><input type="radio" name="q3" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q3" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q3" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q4-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">4.</span>
+                                <span class="tf-statement">A French mathematician inspired real interest in rubber amongst Europeans.</span>
+                                <span class="eye-icon" data-question="4">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q4-group">
+                                <label class="tf-option"><input type="radio" name="q4" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q4" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q4" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q5-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">5.</span>
+                                <span class="tf-statement">The process of vulcanisation was discovered by accident.</span>
+                                <span class="eye-icon" data-question="5">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q5-group">
+                                <label class="tf-option"><input type="radio" name="q5" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q5" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q5" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;" class="question-item" id="q6-item">
+                            <div class="question-wrapper">
+                                <span class="question-number">6.</span>
+                                <span class="tf-statement">Imports of crude rubber into Britain fell during the nineteenth century.</span>
+                                <span class="eye-icon" data-question="6">👁️</span>
+                            </div>
+                            <div class="tf-group" id="q6-group">
+                                <label class="tf-option"><input type="radio" name="q6" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                                <label class="tf-option"><input type="radio" name="q6" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                                <label class="tf-option"><input type="radio" name="q6" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <!-- Questions 7-13 -->
+                    <h3 style="margin-top: 30px;">Questions 7-13</h3>
+                    <p><em>Complete the summary below.</em></p>
+                    <p><em>Write <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</em></p>
+                    
+                    <h5>The Commercial Development of Rubber</h5>
+                    
+                    <p>Early European travellers gave accounts of various rubber objects in use in Central and South America, and these accounts created interest in the commercial exploitation of rubber. In 1818, <span class="bold-text" data-question="7">7</span> <input class="fill-input" id="q7" data-answer="waterproof cloth"><span class="eye-icon" data-question="7">👁️</span> was produced using rubber, and in 1820 a machine was invented for recycling <span class="bold-text" data-question="8">8</span> <input class="fill-input" id="q8" data-answer="waste strips"><span class="eye-icon" data-question="8">👁️</span> of rubber. Over the next few years, other attempts were made to improve rubber, but some problems remained. For example, rubber products smelt bad when they were dissolved, and could turn either soft or <span class="bold-text" data-question="9">9</span> <input class="fill-input" id="q9" data-answer="rigid"><span class="eye-icon" data-question="9">👁️</span> depending on the temperature. However, in 1839 a new process to <span class="bold-text" data-question="10">10</span> <input class="fill-input" id="q10" data-answer="stabilise"><span class="eye-icon" data-question="10">👁️</span> the substance greatly increased its potential. For example, rubber was used in the creation of the <span class="bold-text" data-question="11">11</span> <input class="fill-input" id="q11" data-answer="steam engines"><span class="eye-icon" data-question="11">👁️</span> industry during the Industrial Revolution. Then in 1888 the <span class="bold-text" data-question="12">12</span> <input class="fill-input" id="q12" data-answer="pneumatic tyre"><span class="eye-icon" data-question="12">👁️</span> was developed, and a few years later the <span class="bold-text" data-question="13">13</span> <input class="fill-input" id="q13" data-answer="mass production"><span class="eye-icon" data-question="13">👁️</span> of the motor car began.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="bottom-bar">
+            <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+            <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+            <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+            <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+            <div class="result-stats" id="resultStats" style="display: none;"></div>
+        </div>
+
+        <!-- Explanation Panel -->
+        <div class="explanation-panel" id="explanationPanel">
+            <div class="explanation-header">
+                <span id="explanationTitle">Giải thích câu hỏi</span>
+                <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+            </div>
+            <div class="explanation-content" id="explanationText">
+                Nhấn vào biểu tượng con mắt để xem giải thích.
+            </div>
+        </div>
+
+        <!-- Right-click Context Menu -->
+        <div class="context-menu" id="contextMenu">
+            <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+            <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+            <div onclick="applyHighlight('pink')">Highlight hồng</div>
+            <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBAL VARIABLES ====================
+        let selectedRange = null;
+        let selectedTarget = null;
+        let currentHighlightedQuestion = null;
+        let examSubmitted = false;
+        let explanationMode = false;
+        let startTime = Date.now();
+        let endTime = null;
+        let readingMode = false;
+        let timerInterval;
+        
+        // Answer key from provided answers in explanation file
+        const answerKey = {
+            q1: 'FALSE', q2: 'NOT GIVEN', q3: 'NOT GIVEN', q4: 'TRUE', q5: 'NOT GIVEN', q6: 'FALSE',
+            q7: 'waterproof cloth', q8: 'waste strips', q9: 'rigid', q10: 'stabilise', q11: 'steam engines', q12: 'pneumatic tyre', q13: 'mass production'
+        };
+
+        // Mapping câu hỏi với câu văn chứa đáp án dựa vào explanation
+        const answerLocations = {
+            q1: { 
+                text: "The plants that produce rubber are spread right across the globe, and grow in many different habitats", 
+                keywords: ["spread right across the globe"] 
+            },
+            q2: { 
+                text: "a wall painting dating back to the sixth century depicts a scene of a tributary offering of crude rubber", 
+                keywords: ["offering of crude rubber"] 
+            },
+            q3: { 
+                text: "all of which must have been made from the indigenous Castilla elastica, as the Para plant now favoured for rubber cultivation does not grow in the Mexican region", 
+                keywords: ["Castilla elastica", "Para plant now favoured"] 
+            },
+            q4: { 
+                text: "However, no real interest in rubber was shown by any European until Charles de la Condamine, a French mathematician, published an account of his journey to South America in 1735", 
+                keywords: ["Charles de la Condamine", "French mathematician", "real interest"] 
+            },
+            q5: { 
+                text: "Then in 1839 the American Charles Goodyear discovered that it was possible to stabilise rubber by mixing it with sulphur while exposing it to heat - a process he called vulcanisation", 
+                keywords: ["Charles Goodyear discovered"] 
+            },
+            q6: { 
+                text: "In 1830 Britain had imported just 211 kg of crude rubber. This had risen to 10,000 kg in 1857, and by 1874 levels were just under six times as much again", 
+                keywords: ["imported just 211 kg", "risen to 10,000 kg", "six times as much"] 
+            },
+            q7: { 
+                text: "In 1818 a British medical student named James Syme first used rubber to make waterproof cloth", 
+                keywords: ["waterproof cloth"] 
+            },
+            q8: { 
+                text: "In 1820 Thomas Hancock, an English manufacturer of rubber goods such as driving belts, industrial rollers and rubber hoses, invented a machine he called the 'pookie', which chewed up waste strips for re-use", 
+                keywords: ["waste strips"] 
+            },
+            q9: { 
+                text: "They also became pliant when warm and rigid when cold", 
+                keywords: ["rigid when cold"] 
+            },
+            q10: { 
+                text: "Then in 1839 the American Charles Goodyear discovered that it was possible to stabilise rubber by mixing it with sulphur while exposing it to heat", 
+                keywords: ["stabilise"] 
+            },
+            q11: { 
+                text: "It played an important role in the Industrial Revolution, being employed in the steam engines found in factories, mills, mines and railways", 
+                keywords: ["steam engines"] 
+            },
+            q12: { 
+                text: "One of the most important rubber inventions was made in 1888, when an Irishman called John Boyd Dunlop produced the first pneumatic tyre", 
+                keywords: ["pneumatic tyre"] 
+            },
+            q13: { 
+                text: "In 1895 Dunlop's tyres were first used in motor cars, and with the mass production of cars just over the horizon the rubber industry had never looked healthier", 
+                keywords: ["mass production"] 
+            }
+        };
+
+        // Explanations from the file
+        const explanations = {
+            q1: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'The plants that produce rubber are spread right across the globe, and grow in many different habitats.' → Câu nói 'only in certain regions' trái ngược với thông tin trong bài.",
+            q2: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> 'a wall painting dating back to the sixth century depicts a scene of a tributary offering of crude rubber.' → Bài đọc cho thấy việc sử dụng cao su vào thế kỷ thứ 6 nhưng không đề cập đến việc chiết xuất mủ cao su vào thời điểm đó.",
+            q3: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> 'all of which must have been made from the indigenous Castilla elastica, as the Para plant now favoured for rubber cultivation does not grow in the Mexican region.' → Bài đọc không so sánh chất lượng giữa hai loại cây này.",
+            q4: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> 'no real interest in rubber was shown by any European until Charles de la Condamine, a French mathematician, published an account of his journey' → Ấn phẩm của Condamine đã tạo ra sự quan tâm của người châu Âu.",
+            q5: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> 'Then in 1839 the American Charles Goodyear discovered that it was possible to stabilise rubber...' → Bài đọc không nói rõ việc phát hiện ra quá trình lưu hóa là tình cờ hay cố ý.",
+            q6: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> 'In 1830 Britain had imported just 211 kg of crude rubber. This had risen to 10,000 kg in 1857, and by 1874 levels were just under six times as much again.' → Nhập khẩu tăng chứ không giảm.",
+            q7: "<strong>Đáp án: waterproof cloth</strong><br><br><strong>Giải thích:</strong> 'In 1818 a British medical student named James Syme first used rubber to make waterproof cloth.'",
+            q8: "<strong>Đáp án: waste strips</strong><br><br><strong>Giải thích:</strong> 'In 1820 Thomas Hancock ... invented a machine ... which chewed up waste strips for re-use.'",
+            q9: "<strong>Đáp án: rigid</strong><br><br><strong>Giải thích:</strong> 'They also became pliant when warm and rigid when cold.'",
+            q10: "<strong>Đáp án: stabilise</strong><br><br><strong>Giải thích:</strong> 'Charles Goodyear discovered that it was possible to stabilise rubber by mixing it with sulphur...'",
+            q11: "<strong>Đáp án: steam engines</strong><br><br><strong>Giải thích:</strong> 'It played an important role in the Industrial Revolution, being employed in the steam engines...'",
+            q12: "<strong>Đáp án: pneumatic tyre</strong><br><br><strong>Giải thích:</strong> 'One of the most important rubber inventions was made in 1888, when ... John Boyd Dunlop produced the first pneumatic tyre.'",
+            q13: "<strong>Đáp án: mass production</strong><br><br><strong>Giải thích:</strong> 'with the mass production of cars just over the horizon...'"
+        };
+
+        // ==================== TIMER ====================
+        function startTimer() {
+            let timeLeft = 3600; // 60 phút
+            const timerEl = document.getElementById('timerDisplay');
+            
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0 && !examSubmitted) {
+                    timeLeft--;
+                    const mins = Math.floor(timeLeft / 60);
+                    const secs = timeLeft % 60;
+                    timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                } else if (examSubmitted) {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+        }
+
+        // ==================== READING MODE TOGGLE ====================
+        const testWrapper = document.getElementById('testWrapper');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        
+        document.getElementById('readingModeToggle').addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                testWrapper.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                testWrapper.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // ==================== FONT SIZE CONTROLS ====================
+        document.getElementById('fontSmall').addEventListener('click', function() { setFontSize('small'); });
+        document.getElementById('fontMedium').addEventListener('click', function() { setFontSize('medium'); });
+        document.getElementById('fontLarge').addEventListener('click', function() { setFontSize('large'); });
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            if (size === 'small') document.getElementById('fontSmall').classList.add('active');
+            if (size === 'medium') document.getElementById('fontMedium').classList.add('active');
+            if (size === 'large') document.getElementById('fontLarge').classList.add('active');
+            
+            const readingContent = document.getElementById('readingContent');
+            readingContent.classList.remove('font-small', 'font-medium', 'font-large');
+            readingContent.classList.add(`font-${size}`);
+            
+            const questionsContent = document.getElementById('questionsContent');
+            questionsContent.classList.remove('font-small', 'font-medium', 'font-large');
+            questionsContent.classList.add(`font-${size}`);
+        }
+
+        // ==================== RESIZE COLUMNS ====================
+        const readingPanel = document.getElementById('readingPanel');
+        const questionsPanel = document.getElementById('questionsPanel');
+        const resizer = document.getElementById('resizer');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const mainArea = document.getElementById('mainArea');
+            const rect = mainArea.getBoundingClientRect();
+            let readingWidth = e.clientX - rect.left - 4;
+            
+            if (readingWidth < 250) readingWidth = 250;
+            if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+            
+            readingPanel.style.width = readingWidth + 'px';
+            questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // ==================== NAVIGATION BUTTONS ====================
+        function createNavButtons() {
+            const navContainer = document.getElementById('navButtons');
+            navContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 13; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn unanswered';
+                btn.textContent = i;
+                btn.setAttribute('data-question', i);
+                
+                btn.addEventListener('click', function() {
+                    const qNum = this.getAttribute('data-question');
+                    scrollToQuestion(qNum);
+                    
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                
+                navContainer.appendChild(btn);
+            }
+        }
+
+        function scrollToQuestion(questionNum) {
+            let element = null;
+            
+            if (questionNum <= 6) {
+                element = document.getElementById(`q${questionNum}-item`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
+                element = document.getElementById(`q${questionNum}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-question') === questionNum.toString()) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateNavButtons() {
+            for (let i = 1; i <= 13; i++) {
+                const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+                if (!btn) continue;
+                
+                let isAnswered = false;
+                
+                if (i <= 6) {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                        isAnswered = true;
+                    }
+                } else {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') {
+                        isAnswered = true;
+                    }
+                }
+                
+                btn.classList.remove('answered', 'unanswered');
+                btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+            }
+        }
+
+        // ==================== COUNT ANSWERS ====================
+        function updateAnswerCount() {
+            let answered = 0;
+            
+            for (let i = 1; i <= 6; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                    answered++;
+                }
+            }
+            
+            for (let i = 7; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input && input.value.trim() !== '') answered++;
+            }
+            
+            document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+            document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+            
+            updateNavButtons();
+        }
+
+        document.querySelectorAll('.fill-input').forEach(el => {
+            el.addEventListener('input', function() { updateAnswerCount(); });
+        });
+        
+        document.querySelectorAll('input[type="radio"]').forEach(el => {
+            el.addEventListener('change', function() { updateAnswerCount(); });
+        });
+
+        // ==================== RIGHT-CLICK HIGHLIGHT ====================
+        const contextMenu = document.getElementById('contextMenu');
+        
+        document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            
+            selectedRange = selection.getRangeAt(0);
+            selectedTarget = 'reading';
+            
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+
+        document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const selection = window.getSelection();
+            if (selection.toString().trim() === '') return;
+            
+            selectedRange = selection.getRangeAt(0);
+            selectedTarget = 'questions';
+            
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            
+            try {
+                const span = document.createElement('span');
+                span.className = `highlight-${color}`;
+                
+                const range = selectedRange.cloneRange();
+                window.getSelection().removeAllRanges();
+                
+                try {
+                    const contents = range.extractContents();
+                    span.appendChild(contents);
+                    range.insertNode(span);
+                } catch (e) {
+                    console.log('Lỗi extract range:', e);
+                    
+                    const startContainer = range.startContainer;
+                    const endContainer = range.endContainer;
+                    const startOffset = range.startOffset;
+                    const endOffset = range.endOffset;
+                    
+                    if (startContainer === endContainer) {
+                        const text = startContainer.textContent;
+                        const parent = startContainer.parentNode;
+                        
+                        const beforeText = document.createTextNode(text.substring(0, startOffset));
+                        const highlightText = document.createElement('span');
+                        highlightText.className = `highlight-${color}`;
+                        highlightText.textContent = text.substring(startOffset, endOffset);
+                        const afterText = document.createTextNode(text.substring(endOffset));
+                        
+                        parent.replaceChild(afterText, startContainer);
+                        parent.insertBefore(highlightText, afterText);
+                        parent.insertBefore(beforeText, highlightText);
+                    } else {
+                        alert('Không thể highlight đoạn văn bản phức tạp này.');
+                    }
+                }
+            } catch (e) {
+                console.log('Lỗi highlight:', e);
+                alert('Có lỗi khi highlight. Vui lòng thử lại.');
+            }
+            
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            
+            try {
+                const range = selectedRange.cloneRange();
+                const highlights = document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink');
+                
+                highlights.forEach(highlight => {
+                    if (range.intersectsNode(highlight)) {
+                        const parent = highlight.parentNode;
+                        while (highlight.firstChild) {
+                            parent.insertBefore(highlight.firstChild, highlight);
+                        }
+                        parent.removeChild(highlight);
+                    }
+                });
+            } catch (e) {
+                console.log('Lỗi khi xóa highlight:', e);
+            }
+            
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // ==================== CLEAR HIGHLIGHTS ====================
+        function clearAllHighlights() {
+            document.querySelectorAll('.dynamic-highlight').forEach(el => {
+                const parent = el.parentNode;
+                if (parent) {
+                    while (el.firstChild) {
+                        parent.insertBefore(el.firstChild, el);
+                    }
+                    parent.removeChild(el);
+                }
+            });
+            
+            document.querySelectorAll('.question-highlight').forEach(el => {
+                el.classList.remove('question-highlight');
+            });
+            
+            document.querySelectorAll('.eye-icon.active').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            currentHighlightedQuestion = null;
+        }
+
+        // ==================== HIGHLIGHT QUESTION ====================
+        function highlightQuestion(questionNum) {
+            document.querySelectorAll('.question-highlight').forEach(el => {
+                el.classList.remove('question-highlight');
+            });
+            
+            if (questionNum <= 6) {
+                const questionItem = document.getElementById(`q${questionNum}-item`);
+                if (questionItem) {
+                    questionItem.classList.add('question-highlight');
+                }
+            } else {
+                const input = document.getElementById(`q${questionNum}`);
+                if (input) {
+                    const td = input.closest('td');
+                    if (td) td.classList.add('question-highlight');
+                    else {
+                        const tr = input.closest('tr');
+                        if (tr) tr.classList.add('question-highlight');
+                    }
+                }
+            }
+        }
+
+        // ==================== HIGHLIGHT ANSWER LOCATION ====================
+        function highlightAnswerLocation(questionNum) {
+            clearAllHighlights();
+            
+            const readingContent = document.getElementById('readingContent');
+            const location = answerLocations[`q${questionNum}`];
+            
+            if (!location) return false;
+            
+            highlightQuestion(questionNum);
+            
+            const fullText = location.text;
+            const keywords = location.keywords || [];
+            
+            const paragraphs = readingContent.getElementsByTagName('p');
+            let found = false;
+            
+            for (let p of paragraphs) {
+                if (p.textContent.includes(fullText)) {
+                    found = true;
+                    try {
+                        const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
+                        const textNodes = [];
+                        while (walker.nextNode()) textNodes.push(walker.currentNode);
+                        
+                        let combinedText = '';
+                        const nodeRanges = [];
+                        for (let node of textNodes) {
+                            const start = combinedText.length;
+                            combinedText += node.textContent;
+                            nodeRanges.push({ node, start, end: combinedText.length });
+                        }
+                        
+                        const searchStart = combinedText.indexOf(fullText);
+                        if (searchStart === -1) continue;
+                        
+                        const searchEnd = searchStart + fullText.length;
+                        
+                        const startNodeInfo = nodeRanges.find(r => r.start <= searchStart && r.end > searchStart);
+                        const endNodeInfo = nodeRanges.find(r => r.start < searchEnd && r.end >= searchEnd);
+                        
+                        if (!startNodeInfo || !endNodeInfo) continue;
+                        
+                        const startOffset = searchStart - startNodeInfo.start;
+                        const endOffset = searchEnd - endNodeInfo.start;
+                        
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startOffset);
+                        range.setEnd(endNodeInfo.node, endOffset);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        keywords.forEach(keyword => {
+                            const keywordRegex = new RegExp(`(${keyword})`, 'gi');
+                            const highlightSpan = document.querySelector('.dynamic-highlight');
+                            if (highlightSpan) {
+                                const html = highlightSpan.innerHTML;
+                                highlightSpan.innerHTML = html.replace(
+                                    keywordRegex,
+                                    '<span class="dynamic-highlight" style="text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline;">$1</span>'
+                                );
+                            }
+                        });
+                        
+                        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        document.querySelectorAll('.eye-icon').forEach(icon => icon.classList.remove('active'));
+                        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                        if (eyeIcon) eyeIcon.classList.add('active');
+                        
+                        currentHighlightedQuestion = questionNum;
+                    } catch (e) {
+                        console.log('Lỗi khi highlight:', e);
+                    }
+                    break;
+                }
+            }
+            
+            if (!found) {
+                for (let p of paragraphs) {
+                    for (let keyword of keywords) {
+                        if (p.textContent.includes(keyword)) {
+                            try {
+                                const regex = new RegExp(`(${keyword})`, 'i');
+                                const match = p.textContent.match(regex);
+                                if (!match) continue;
+                                
+                                const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null);
+                                const textNodes = [];
+                                while (walker.nextNode()) textNodes.push(walker.currentNode);
+                                
+                                let combinedText = '';
+                                const nodeRanges = [];
+                                for (let node of textNodes) {
+                                    const start = combinedText.length;
+                                    combinedText += node.textContent;
+                                    nodeRanges.push({ node, start, end: combinedText.length });
+                                }
+                                
+                                const searchStart = combinedText.indexOf(keyword);
+                                if (searchStart === -1) continue;
+                                const searchEnd = searchStart + keyword.length;
+                                
+                                const startNodeInfo = nodeRanges.find(r => r.start <= searchStart && r.end > searchStart);
+                                const endNodeInfo = nodeRanges.find(r => r.start < searchEnd && r.end >= searchEnd);
+                                
+                                if (!startNodeInfo || !endNodeInfo) continue;
+                                
+                                const startOffset = searchStart - startNodeInfo.start;
+                                const endOffset = searchEnd - endNodeInfo.start;
+                                
+                                const range = document.createRange();
+                                range.setStart(startNodeInfo.node, startOffset);
+                                range.setEnd(endNodeInfo.node, endOffset);
+                                
+                                const span = document.createElement('span');
+                                span.className = 'dynamic-highlight';
+                                
+                                const contents = range.extractContents();
+                                span.appendChild(contents);
+                                range.insertNode(span);
+                                
+                                span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                                document.querySelectorAll('.eye-icon').forEach(icon => icon.classList.remove('active'));
+                                const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+                                if (eyeIcon) eyeIcon.classList.add('active');
+                                
+                                currentHighlightedQuestion = questionNum;
+                            } catch (e) {
+                                console.log('Lỗi khi highlight keyword:', e);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        // ==================== SHOW EXPLANATION ====================
+        function showExplanation(questionNum) {
+            if (!explanationMode) return;
+            
+            const expKey = `q${questionNum}`;
+            
+            if (explanations[expKey]) {
+                document.getElementById('explanationPanel').classList.add('show');
+                document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+                
+                let explanationHtml = explanations[expKey];
+                
+                if (examSubmitted) {
+                    const userAnswer = getUserAnswer(questionNum);
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    
+                    explanationHtml += `<div class="answer-feedback ${userAnswer ? (userAnswer.toString().toLowerCase().trim() === correctAnswer.toString().toLowerCase().trim() ? 'correct' : 'incorrect') : 'incorrect'}">`;
+                    explanationHtml += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+                    if (!userAnswer || userAnswer.toString().toLowerCase().trim() !== correctAnswer.toString().toLowerCase().trim()) {
+                        explanationHtml += `<strong>Đáp án đúng:</strong> ${correctAnswer}`;
+                    }
+                    explanationHtml += `</div>`;
+                }
+                
+                document.getElementById('explanationText').innerHTML = explanationHtml;
+                
+                clearAllHighlights();
+                setTimeout(() => {
+                    highlightAnswerLocation(questionNum);
+                }, 100);
+                
+                if (examSubmitted && questionNum >= 7) {
+                    const input = document.getElementById(`q${questionNum}`);
+                    if (input && input.classList.contains('incorrect')) {
+                        if (!input.parentNode.querySelector('.correct-answer-badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'correct-answer-badge';
+                            badge.textContent = answerKey[`q${questionNum}`];
+                            input.parentNode.appendChild(badge);
+                        }
+                    }
+                }
+            }
+        }
+
+        // ==================== GET USER ANSWER ====================
+        function getUserAnswer(questionNum) {
+            if (questionNum <= 6) {
+                const selected = document.querySelector(`input[name="q${questionNum}"]:checked`);
+                return selected ? selected.value : null;
+            } else {
+                const input = document.getElementById(`q${questionNum}`);
+                return input ? input.value.trim() : null;
+            }
+        }
+
+        // ==================== MARK ANSWERS ====================
+        function markAnswers() {
+            for (let i = 1; i <= 6; i++) {
+                const group = document.getElementById(`q${i}-group`);
+                if (!group) continue;
+                
+                const options = group.querySelectorAll('.tf-option');
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctAnswer = answerKey[`q${i}`];
+                
+                options.forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                    const radio = option.querySelector('input[type="radio"]');
+                    
+                    if (radio.value === correctAnswer) {
+                        option.classList.add('correct');
+                    }
+                    
+                    if (selected && radio.value === selected.value && radio.value !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                if (!selected) {
+                    options.forEach(option => {
+                        const radio = option.querySelector('input[type="radio"]');
+                        if (radio.value === correctAnswer) {
+                            option.classList.add('correct');
+                        }
+                    });
+                }
+            }
+            
+            for (let i = 7; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswer = answerKey[`q${i}`].toLowerCase();
+                    
+                    input.classList.remove('correct', 'incorrect');
+                    
+                    if (userAnswer) {
+                        if (userAnswer === correctAnswer) {
+                            input.classList.add('correct');
+                        } else {
+                            input.classList.add('incorrect');
+                        }
+                    } else {
+                        input.classList.add('incorrect');
+                    }
+                }
+            }
+        }
+
+        // ==================== CALCULATE RESULTS ====================
+        function calculateResults() {
+            let correct = 0;
+            let total = 13;
+            
+            for (let i = 1; i <= 6; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && selected.value === answerKey[`q${i}`]) correct++;
+            }
+            
+            for (let i = 7; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    if (userAnswer === answerKey[`q${i}`].toLowerCase()) correct++;
+                }
+            }
+            
+            const percentage = Math.round(correct / total * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            return { correct, total, percentage, timeString: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}` };
+        }
+
+        // ==================== SETUP EYE ICONS ====================
+        function setupEyeIcons() {
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const questionNum = this.getAttribute('data-question');
+                    showExplanation(questionNum);
+                });
+            });
+        }
+
+        // ==================== CLOSE EXPLANATION ====================
+        document.getElementById('closeExplanation').addEventListener('click', () => {
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // ==================== SUBMIT ====================
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            if (examSubmitted) return;
+            
+            let unanswered = [];
+            for (let i = 1; i <= 13; i++) {
+                let isAnswered = false;
+                
+                if (i <= 6) {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) isAnswered = true;
+                } else {
+                    const input = document.getElementById(`q${i}`);
+                    if (input && input.value.trim() !== '') isAnswered = true;
+                }
+                
+                if (!isAnswered) unanswered.push(i);
+            }
+            
+            if (unanswered.length > 0) {
+                const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm. Bạn có chắc muốn nộp bài?`);
+                if (!confirmSubmit) return;
+            }
+            
+            examSubmitted = true;
+            endTime = Date.now();
+            
+            clearInterval(timerInterval);
+            
+            markAnswers();
+            
+            const results = calculateResults();
+            
+            const resultStats = document.getElementById('resultStats');
+            resultStats.style.display = 'inline-block';
+            resultStats.textContent = `Kết quả: ${results.correct}/${results.total} (${results.percentage}%) - Thời gian: ${results.timeString}`;
+            
+            document.getElementById('explainBtn').disabled = false;
+            this.disabled = true;
+            this.textContent = 'Đã nộp bài';
+            
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
+            document.getElementById('explanationText').innerHTML = `
+                <h4>Kết quả bài làm:</h4>
+                <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
+                <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
+                <p><strong>Thời gian làm bài:</strong> ${results.timeString}</p>
+                <p>Nhấn "Xem giải thích" để xem chi tiết từng câu.</p>
+            `;
+        });
+
+        // ==================== EXPLAIN ====================
+        document.getElementById('explainBtn').addEventListener('click', function() {
+            if (!examSubmitted) return;
+            
+            explanationMode = true;
+            
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.style.display = 'inline-block';
+            });
+            
+            this.disabled = true;
+            this.textContent = 'Đang xem giải thích';
+            
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        // ==================== RESET ====================
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Bạn có chắc muốn reset tất cả?')) {
+                examSubmitted = false;
+                explanationMode = false;
+                startTime = Date.now();
+                
+                clearInterval(timerInterval);
+                startTimer();
+                
+                for (let i = 1; i <= 6; i++) {
+                    const radios = document.querySelectorAll(`input[name="q${i}"]`);
+                    radios.forEach(radio => radio.checked = false);
+                    
+                    const group = document.getElementById(`q${i}-group`);
+                    if (group) {
+                        group.querySelectorAll('.tf-option').forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                        });
+                    }
+                }
+                
+                for (let i = 7; i <= 13; i++) {
+                    const input = document.getElementById(`q${i}`);
+                    if (input) {
+                        input.value = '';
+                        input.classList.remove('correct', 'incorrect');
+                        
+                        const badge = input.parentNode.querySelector('.correct-answer-badge');
+                        if (badge) badge.remove();
+                    }
+                }
+                
+                document.querySelectorAll('.eye-icon').forEach(icon => {
+                    icon.style.display = 'none';
+                });
+                
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').textContent = 'Nộp bài';
+                document.getElementById('explainBtn').disabled = true;
+                document.getElementById('explainBtn').textContent = 'Xem giải thích';
+                
+                document.getElementById('resultStats').style.display = 'none';
+                document.getElementById('explanationPanel').classList.remove('show');
+                
+                clearAllHighlights();
+                
+                document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(el => {
+                    const parent = el.parentNode;
+                    if (parent) {
+                        while (el.firstChild) {
+                            parent.insertBefore(el.firstChild, el);
+                        }
+                        parent.removeChild(el);
+                    }
+                });
+                
+                updateAnswerCount();
+                
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+        });
+
+        // ==================== INITIALIZE ====================
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.style.display = 'none';
+        });
+
+        createNavButtons();
+        updateAnswerCount();
+        setupEyeIcons();
+        startTimer();
+    </script>
+</body>
+</html>
