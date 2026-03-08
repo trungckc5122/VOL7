@@ -1652,6 +1652,89 @@
     
     startTimer();
 </script>
-</body>
+<!-- ==================== THÊM PHẦN NÀY VÀO CUỐI FILE ==================== -->
+<script>
+// ==================== THÊM 2 DÒNG NÀY ====================
+// Khai báo vol và test hiện tại
+let currentVol = 7;   // Vol hiện tại (1-7)
+let currentTest = 3;  // Test hiện tại (1-10)
 
+// Hàm lưu dữ liệu vào localStorage với key động
+function saveToDashboard() {
+    // Kiểm tra xem đã nộp bài chưa
+    if (!examSubmitted) return;
+    
+    // Thu thập dữ liệu từ passage 2
+    const passageData = {
+        passageId: 2,
+        name: 'Lean Production',
+        totalQuestions: 13,
+        correctCount: 0,
+        timeSpent: document.getElementById('timerDisplay').textContent,
+        details: []
+    };
+    
+    // Đếm số câu đúng và thu thập chi tiết
+    let correctCount = 0;
+    
+    // Câu 14-20 (headings) - lấy từ drop slots
+    for (let i = 14; i <= 20; i++) {
+        const slot = document.getElementById(`displayDrop${i}`);
+        const selected = slot ? slot.getAttribute('data-selected') : null;
+        const correctAnswer = answerKey[`q${i}`];
+        const isCorrect = selected === correctAnswer;
+        
+        if (isCorrect) correctCount++;
+        
+        passageData.details.push({
+            question: i,
+            user: selected || '(trống)',
+            correct: correctAnswer,
+            isCorrect: isCorrect
+        });
+    }
+    
+    // Câu 21-26 (sentence completion)
+    for (let i = 21; i <= 26; i++) {
+        const input = document.getElementById(`q${i}`);
+        if (input) {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = answerKey[`q${i}`].toLowerCase();
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    passageData.correctCount = correctCount;
+    
+    // Tạo key động dựa trên vol và test
+    const key = `ielts_vol${currentVol}_test${currentTest}_passage_2`;
+    localStorage.setItem(key, JSON.stringify(passageData));
+    
+    console.log(`Đã lưu dữ liệu passage 2 vào dashboard với key: ${key}`);
+}
+
+// Ghi đè sự kiện nộp bài để lưu dữ liệu sau khi submit
+const originalSubmitHandler = document.getElementById('submitBtn').onclick;
+document.getElementById('submitBtn').onclick = function() {
+    // Gọi hàm submit gốc
+    if (typeof originalSubmitHandler === 'function') {
+        originalSubmitHandler.call(this);
+    }
+    // Lưu dữ liệu sau khi submit
+    setTimeout(saveToDashboard, 500);
+};
+
+console.log('Passage 2 đã sẵn sàng để lưu dữ liệu vào dashboard với vol/test động');
+</script>
+<!-- ==================== KẾT THÚC PHẦN THÊM ==================== -->
+</body>
 </html>

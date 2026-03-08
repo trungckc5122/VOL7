@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading Dashboard - Vol/Test Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            width: 100%;
+            background: #f5f3ee;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 20px 30px;
+            border-bottom: 4px solid #e6b422;
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-header p {
+            color: #e6e6e6;
+            font-size: 16px;
+        }
+
+        .test-info {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .info-card {
+            background: #2d4b77;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid #e6b422;
+        }
+
+        .info-card .label {
+            font-size: 14px;
+            color: #b0c4de;
+        }
+
+        .info-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e6b422;
+        }
+
+        /* Controls */
+        .selector-bar {
+            background: #2d4b77;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #e6b422;
+        }
+
+        .selector-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .selector-item select {
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 2px solid #e6b422;
+            background: #1e3a5f;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .selector-item select:hover {
+            background: #2d4b77;
+        }
+
+        .selector-item label {
+            font-weight: 600;
+            color: #e6b422;
+        }
+
+        .dashboard-content {
+            padding: 30px;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .passage-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid #1e3a5f;
+        }
+
+        .passage-card h3 {
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .passage-card .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .passage-card .stats .stat-label {
+            color: #666;
+        }
+
+        .passage-card .stats .stat-value {
+            font-weight: bold;
+            color: #1e3a5f;
+            font-size: 18px;
+        }
+
+        .passage-card .correct-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .passage-card .time-badge {
+            background: #e6b422;
+            color: #1e3a5f;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .no-data {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .overall-section {
+            background: #e8e0d5;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #b0aa9a;
+        }
+
+        .overall-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .overall-header h2 {
+            color: #1e3a5f;
+            font-size: 24px;
+        }
+
+        .band-badge {
+            background: #e6b422;
+            color: #1e3a5f;
+            padding: 8px 25px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1e3a5f;
+        }
+
+        .stat-box .stat-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .stat-box.highlight {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .stat-box.highlight .stat-number {
+            color: #e6b422;
+        }
+
+        .stat-box.highlight .stat-label {
+            color: #b0c4de;
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .detail-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            border: none;
+            background: #f0ebe0;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1e3a5f;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background: #e6b422;
+        }
+
+        .tab-btn.active {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .answer-table th {
+            background: #2d4b77;
+            color: white;
+            padding: 10px;
+        }
+
+        .answer-table td {
+            padding: 10px;
+            border: 1px solid #d2cbbc;
+        }
+
+        .answer-table .correct {
+            background: #e8f5e8;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .answer-table .incorrect {
+            background: #ffebee;
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .answer-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d4b77;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+
+        .refresh-note {
+            color: #666;
+            font-size: 13px;
+            margin-left: 15px;
+        }
+
+        .footer {
+            background: #d2cbbc;
+            padding: 15px 30px;
+            text-align: center;
+            color: #1e3a5f;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1>IELTS Reading Dashboard</h1>
+            <p>Quản lý kết quả luyện tập Reading theo từng Vol và Test</p>
+            <div class="test-info">
+                <div class="info-card">
+                    <span class="label">Tổng số câu / test</span>
+                    <span class="value" id="totalQuestions">40</span>
+                </div>
+                <div class="info-card">
+                    <span class="label">Thời gian tối đa / test</span>
+                    <span class="value">60 phút</span>
+                </div>
+                <div class="info-card">
+                    <span class="label">Cập nhật</span>
+                    <span class="value" id="lastUpdate">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selector Bar -->
+        <div class="selector-bar">
+            <div class="selector-item">
+                <label for="volSelect">Vol:</label>
+                <select id="volSelect"></select>
+            </div>
+            <div class="selector-item">
+                <label for="testSelect">Test:</label>
+                <select id="testSelect"></select>
+            </div>
+            <div style="flex:1; text-align:right; color:#e6b422;">
+                <span id="selectedDisplay">Vol 7 - Test 3</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Overall Section -->
+            <div class="overall-section">
+                <div class="overall-header">
+                    <h2>Kết quả tổng thể</h2>
+                    <div class="band-badge" id="overallBand">—</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalCorrect">0/40</div>
+                        <div class="stat-label">Tổng số câu đúng</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalPercent">0%</div>
+                        <div class="stat-label">Tỷ lệ đúng</div>
+                    </div>
+                    <div class="stat-box highlight">
+                        <div class="stat-number" id="totalTime">00:00</div>
+                        <div class="stat-label">Tổng thời gian đã làm</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passage Summary Cards -->
+            <h2 style="color: #1e3a5f; margin-bottom: 15px;">Chi tiết từng bài đọc</h2>
+            <div class="summary-cards" id="passageCards"></div>
+
+            <!-- Detail Tabs -->
+            <div class="detail-section">
+                <div class="detail-tabs">
+                    <button class="tab-btn active" onclick="showTab(1)">Passage 1</button>
+                    <button class="tab-btn" onclick="showTab(2)">Passage 2</button>
+                    <button class="tab-btn" onclick="showTab(3)">Passage 3</button>
+                </div>
+
+                <!-- Passage 1 Details -->
+                <div class="tab-pane active" id="tab1">
+                    <h4 style="margin-bottom: 15px; color: #1e3a5f;"><span id="passage1Name">Passage 1</span> (Câu 1-13)</h4>
+                    <table class="answer-table" id="passage1Table">
+                        <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
+                        <tbody id="passage1Body"></tbody>
+                    </table>
+                </div>
+                <!-- Passage 2 Details -->
+                <div class="tab-pane" id="tab2">
+                    <h4 style="margin-bottom: 15px; color: #1e3a5f;"><span id="passage2Name">Passage 2</span> (Câu 14-26)</h4>
+                    <table class="answer-table" id="passage2Table">
+                        <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
+                        <tbody id="passage2Body"></tbody>
+                    </table>
+                </div>
+                <!-- Passage 3 Details -->
+                <div class="tab-pane" id="tab3">
+                    <h4 style="margin-bottom: 15px; color: #1e3a5f;"><span id="passage3Name">Passage 3</span> (Câu 27-40)</h4>
+                    <table class="answer-table" id="passage3Table">
+                        <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
+                        <tbody id="passage3Body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="refreshData()">Làm mới</button>
+                <button class="btn btn-warning" onclick="clearCurrentTest()">Xóa dữ liệu test này</button>
+                <button class="btn btn-danger" onclick="clearAllData()">Xóa tất cả dữ liệu</button>
+                <span class="refresh-note">Dữ liệu tự động cập nhật mỗi 5 giây</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            IELTS Reading Dashboard | Dữ liệu được lưu trên trình duyệt của bạn
+        </div>
+    </div>
+
+    <script>
+        // ==================== CẤU HÌNH ====================
+        const TOTAL_TIME_PER_PASSAGE = 3600; // 60 phút = 3600 giây
+
+        // Tên các passage (có thể tuỳ chỉnh)
+        const PASSAGE_NAMES = {
+            1: 'The development of plastics',
+            2: 'Lean Production',
+            3: 'The Animal Connection'
+        };
+
+        // Số câu cho mỗi passage
+        const PASSAGE_QUESTIONS = {
+            1: { start: 1, end: 13 },
+            2: { start: 14, end: 26 },
+            3: { start: 27, end: 40 }
+        };
+
+        // ==================== BIẾN TOÀN CỤC ====================
+        let currentVol = 7;
+        let currentTest = 3;
+
+        // ==================== HÀM TIỆN ÍCH ====================
+        function formatTime(seconds) {
+            if (!seconds || isNaN(seconds) || seconds < 0) return '00:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function parseTimeString(timeStr) {
+            if (!timeStr || timeStr === '00:00' || timeStr === '0:00') return TOTAL_TIME_PER_PASSAGE; // Mặc định là 60 phút (chưa làm)
+            
+            // Xử lý định dạng MM:SS
+            const parts = timeStr.split(':');
+            if (parts.length === 2) {
+                const mins = parseInt(parts[0]) || 0;
+                const secs = parseInt(parts[1]) || 0;
+                return (mins * 60) + secs;
+            }
+            return TOTAL_TIME_PER_PASSAGE;
+        }
+
+        function calculateBandScore(correctCount) {
+            if (correctCount >= 39) return 9.0;
+            if (correctCount >= 37) return 8.5;
+            if (correctCount >= 35) return 8.0;
+            if (correctCount >= 33) return 7.5;
+            if (correctCount >= 30) return 7.0;
+            if (correctCount >= 27) return 6.5;
+            if (correctCount >= 23) return 6.0;
+            if (correctCount >= 20) return 5.5;
+            if (correctCount >= 16) return 5.0;
+            if (correctCount >= 13) return 4.5;
+            if (correctCount >= 10) return 4.0;
+            if (correctCount >= 7) return 3.5;
+            if (correctCount >= 5) return 3.0;
+            if (correctCount >= 3) return 2.5;
+            return 1.0;
+        }
+
+        // ==================== TẠO KEY LƯU TRỮ ====================
+        function getStorageKey(passage) {
+            return `ielts_vol${currentVol}_test${currentTest}_passage_${passage}`;
+        }
+
+        // ==================== LẤY DỮ LIỆU TỪ LOCALSTORAGE ====================
+        function getPassageData(passage) {
+            const key = getStorageKey(passage);
+            const data = localStorage.getItem(key);
+            if (data) {
+                try {
+                    return JSON.parse(data);
+                } catch (e) {
+                    console.error(`Lỗi parse dữ liệu passage ${passage}:`, e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        function loadAllData() {
+            const passages = [];
+            let totalCorrect = 0;
+            let totalQuestions = 0;
+            let totalElapsedSeconds = 0;
+            let hasAnyData = false;
+
+            for (let p = 1; p <= 3; p++) {
+                const data = getPassageData(p);
+                
+                if (data) {
+                    hasAnyData = true;
+                    
+                    // THỜI GIAN ĐÃ LÀM = 60 phút - thời gian còn lại
+                    // Nếu không có timeSpent hoặc timeSpent không hợp lệ, coi như chưa làm (thời gian còn lại = 60 phút)
+                    let remainingSeconds = TOTAL_TIME_PER_PASSAGE; // Mặc định chưa làm
+                    
+                    if (data.timeSpent && typeof data.timeSpent === 'string' && data.timeSpent !== '') {
+                        // Parse thời gian CÒN LẠI từ đồng hồ đếm ngược
+                        const parsed = parseTimeString(data.timeSpent);
+                        // parsed trả về số giây còn lại, nếu nhỏ hơn TOTAL_TIME_PER_PASSAGE thì mới dùng
+                        if (parsed >= 0 && parsed <= TOTAL_TIME_PER_PASSAGE) {
+                            remainingSeconds = parsed;
+                        }
+                    }
+                    
+                    // Thời gian đã làm = Tổng thời gian - thời gian còn lại
+                    let elapsedSeconds = TOTAL_TIME_PER_PASSAGE - remainingSeconds;
+                    if (elapsedSeconds < 0) elapsedSeconds = 0;
+
+                    passages.push({
+                        ...data,
+                        passageId: p,
+                        elapsedSeconds,
+                        elapsedTime: formatTime(elapsedSeconds)
+                    });
+
+                    totalCorrect += data.correctCount || 0;
+                    totalQuestions += data.totalQuestions || (PASSAGE_QUESTIONS[p].end - PASSAGE_QUESTIONS[p].start + 1);
+ totalElapsedSeconds += elapsedSeconds;
+                } else {
+                    passages.push(null);
+                }
+            }
+
+            if (!hasAnyData) {
+                totalQuestions = 40; // mặc định
+            }
+
+            return {
+                passages,
+                totalCorrect,
+                totalQuestions,
+                totalElapsedSeconds,
+                hasAnyData
+            };
+        }
+
+        // ==================== HIỂN THỊ CARD PASSAGE ====================
+        function renderPassageCards(data) {
+            const container = document.getElementById('passageCards');
+            let html = '';
+
+            for (let p = 1; p <= 3; p++) {
+                const passage = data.passages[p-1];
+                const name = PASSAGE_NAMES[p];
+                
+                if (passage) {
+                    const correctPercent = passage.totalQuestions > 0 
+                        ? Math.round((passage.correctCount / passage.totalQuestions) * 100) 
+                        : 0;
+                    const displayTime = passage.elapsedTime || '00:00';
+                    
+                    html += `
+                        <div class="passage-card">
+                            <h3>Passage ${p}: ${name}</h3>
+                            <div class="stats">
+                                <span class="stat-label">Số câu đúng:</span>
+                                <span class="stat-value">${passage.correctCount}/${passage.totalQuestions}</span>
+                            </div>
+                            <div class="stats">
+                                <span class="stat-label">Tỷ lệ:</span>
+                                <span class="stat-value">${correctPercent}%</span>
+                            </div>
+                            <div class="stats">
+                                <span class="stat-label">Thời gian đã làm:</span>
+                                <span class="stat-value">${displayTime}</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <span class="correct-badge">${passage.correctCount} đúng</span>
+                                <span class="time-badge">${displayTime}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="passage-card">
+                            <h3>Passage ${p}: ${name}</h3>
+                            <div class="no-data">
+                                Chưa có dữ liệu<br>
+                                <small style="font-size: 12px;">Hãy làm bài và nộp để lưu kết quả</small>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        // ==================== HIỂN THỊ CHI TIẾT ĐÁP ÁN ====================
+        function renderAnswerDetails(data) {
+            for (let p = 1; p <= 3; p++) {
+                const passage = data.passages[p-1];
+                const tbody = document.getElementById(`passage${p}Body`);
+                const nameSpan = document.getElementById(`passage${p}Name`);
+                if (nameSpan) nameSpan.textContent = PASSAGE_NAMES[p];
+
+                if (passage && passage.details && passage.details.length > 0) {
+                    let html = '';
+                    const sortedDetails = [...passage.details].sort((a, b) => a.question - b.question);
+                    
+                    sortedDetails.forEach(detail => {
+                        const isCorrect = detail.isCorrect;
+                        const rowClass = isCorrect ? 'correct' : 'incorrect';
+                        const resultText = isCorrect ? 'Đúng' : 'Sai';
+                        
+                        html += `<tr>
+                            <td><strong>${detail.question}</strong></td>
+                            <td>${detail.user || '(trống)'}</td>
+                            <td>${detail.correct}</td>
+                            <td class="${rowClass}">${resultText}</td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px;">Chưa có dữ liệu chi tiết cho passage này</td></tr>`;
+                }
+            }
+        }
+
+        // ==================== CẬP NHẬT GIAO DIỆN ====================
+        function refreshData() {
+            const data = loadAllData();
+            
+            // Cập nhật tổng quan
+            document.getElementById('totalCorrect').textContent = `${data.totalCorrect}/${data.totalQuestions}`;
+            
+            const percent = data.totalQuestions > 0 
+                ? Math.round((data.totalCorrect / data.totalQuestions) * 100) 
+                : 0;
+            document.getElementById('totalPercent').textContent = percent + '%';
+            
+            // Tổng thời gian đã làm
+            const totalTimeFormatted = formatTime(data.totalElapsedSeconds);
+            document.getElementById('totalTime').textContent = totalTimeFormatted;
+            
+            // Band
+            const band = calculateBandScore(data.totalCorrect);
+            document.getElementById('overallBand').textContent = band.toFixed(1);
+            
+            // Thời gian cập nhật
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('vi-VN');
+            
+            // Hiển thị lựa chọn
+            document.getElementById('selectedDisplay').textContent = `Vol ${currentVol} - Test ${currentTest}`;
+            
+            // Render cards và bảng chi tiết
+            renderPassageCards(data);
+            renderAnswerDetails(data);
+        }
+
+        // ==================== XỬ LÝ DROPDOWN ====================
+        function populateVolTest() {
+            const volSelect = document.getElementById('volSelect');
+            const testSelect = document.getElementById('testSelect');
+
+            // Vol từ 1 đến 7
+            for (let v = 1; v <= 7; v++) {
+                const option = document.createElement('option');
+                option.value = v;
+                option.textContent = `Vol ${v}`;
+                volSelect.appendChild(option);
+            }
+
+            // Test từ 1 đến 10
+            for (let t = 1; t <= 10; t++) {
+                const option = document.createElement('option');
+                option.value = t;
+                option.textContent = `Test ${t}`;
+                testSelect.appendChild(option);
+            }
+
+            // Đọc lựa chọn cuối cùng từ localStorage (nếu có)
+            const savedVol = localStorage.getItem('dashboard_last_vol');
+            const savedTest = localStorage.getItem('dashboard_last_test');
+            if (savedVol && savedVol >= 1 && savedVol <= 7) {
+                currentVol = parseInt(savedVol);
+            }
+            if (savedTest && savedTest >= 1 && savedTest <= 10) {
+                currentTest = parseInt(savedTest);
+            }
+
+            volSelect.value = currentVol;
+            testSelect.value = currentTest;
+
+            // Lắng nghe sự kiện thay đổi
+            volSelect.addEventListener('change', function() {
+                currentVol = parseInt(this.value);
+                localStorage.setItem('dashboard_last_vol', currentVol);
+                refreshData();
+            });
+
+            testSelect.addEventListener('change', function() {
+                currentTest = parseInt(this.value);
+                localStorage.setItem('dashboard_last_test', currentTest);
+                refreshData();
+            });
+        }
+
+        // ==================== XÓA DỮ LIỆU ====================
+        function clearCurrentTest() {
+            if (confirm(`Bạn có chắc muốn xóa toàn bộ dữ liệu của Vol ${currentVol} - Test ${currentTest}?`)) {
+                for (let p = 1; p <= 3; p++) {
+                    const key = getStorageKey(p);
+                    localStorage.removeItem(key);
+                }
+                refreshData();
+                alert('Đã xóa dữ liệu test hiện tại!');
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Bạn có chắc muốn xóa TẤT CẢ dữ liệu của mọi Vol và Test?')) {
+                // Xoá tất cả keys bắt đầu bằng "ielts_vol"
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('ielts_vol')) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                refreshData();
+                alert('Đã xóa tất cả dữ liệu!');
+            }
+        }
+
+        // ==================== CHUYỂN TAB ====================
+        function showTab(tabNumber) {
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab${tabNumber}`).classList.add('active');
+            document.querySelectorAll('.tab-btn')[tabNumber - 1].classList.add('active');
+        }
+
+        // ==================== KHỞI TẠO ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            populateVolTest();
+            refreshData();
+            
+            // Tự động refresh mỗi 5 giây
+            setInterval(refreshData, 5000);
+        });
+
+        // Export functions ra global để dùng trong onclick
+        window.refreshData = refreshData;
+        window.clearCurrentTest = clearCurrentTest;
+        window.clearAllData = clearAllData;
+        window.showTab = showTab;
+    </script>
+</body>
+</html>
