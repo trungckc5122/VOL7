@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vol 7 Test 4 - Song ngữ Anh Việt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1600px;
+            background: #ecf0f1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        /* Reading mode */
+        .app-container.reading-mode {
+            background: #f8f5e6;
+        }
+        .app-container.reading-mode .col-content {
+            background: #fffaf0;
+        }
+        .app-container.reading-mode .col-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+        .app-container.reading-mode .status-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f2a44 100%);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .brand h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #e6b422;
+        }
+
+        .passage-selector {
+            display: flex;
+            gap: 10px;
+            background: #1a2f44;
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #e6b422;
+        }
+
+        .passage-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .passage-btn:hover {
+            background: #2d4b77;
+        }
+
+        .passage-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: 0.3s;
+            border: 1px solid #e6b422;
+        }
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+            margin-left: 15px;
+        }
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Main area with resizable columns */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background: #bdc3c7;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
+        }
+
+        .column.en-column {
+            width: 50%;
+        }
+
+        .column.vi-column {
+            width: 50%;
+        }
+
+        .col-header {
+            background: #d2cbbc;
+            padding: 10px 18px;
+            font-weight: 700;
+            color: #1e3a5f;
+            border-bottom: 2px solid #b0aa9a;
+            font-size: 1rem;
+        }
+
+        .col-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            line-height: 1.8;
+            font-size: 16px;
+            background: #fffcf5;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Font size classes */
+        .col-content.font-small {
+            font-size: 14px;
+        }
+        .col-content.font-medium {
+            font-size: 16px;
+        }
+        .col-content.font-large {
+            font-size: 18px;
+        }
+
+        /* Typography */
+        .col-content h1, .col-content h2 {
+            font-size: 1.9rem;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        .col-content h3 {
+            font-size: 1.4rem;
+            color: #2d4b77;
+            margin: 25px 0 15px;
+        }
+        .col-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+        .col-content em {
+            color: #5d3a1a;
+            font-style: italic;
+        }
+        .col-content strong {
+            color: #1e3a5f;
+        }
+        .col-content .paragraph-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-right: 8px;
+        }
+
+        /* Right-click menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+            min-width: 160px;
+        }
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Highlight colors */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+        }
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+        }
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+        }
+
+        /* Status bar (timer removed) */
+        .status-bar {
+            background: #d2cbbc;
+            padding: 8px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            border-top: 1px solid #b0aa9a;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 4px 16px;
+            border: none;
+            border-radius: 30px;
+            background: #1e3a5f;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #2d4b77;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #1e3a5f;
+            color: #1e3a5f;
+        }
+        .btn-outline:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="brand">
+            <h1>IELTS Vol 7 · Test 4</h1>
+        </div>
+        <div class="passage-selector" id="passageSelector">
+            <button class="passage-btn active" data-passage="1">Passage 1</button>
+            <button class="passage-btn" data-passage="2">Passage 2</button>
+            <button class="passage-btn" data-passage="3">Passage 3</button>
+        </div>
+        <div class="header-controls">
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+           
+        </div>
+    </div>
+
+    <!-- Main resizable columns -->
+    <div class="main-area" id="mainArea">
+        <!-- Cột gốc -->
+        <div class="column en-column" id="enColumn">
+            <div class="col-header">Bản gốc</div>
+            <div class="col-content font-medium" id="enContent"></div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+        <!-- Cột dịch -->
+        <div class="column vi-column" id="viColumn">
+            <div class="col-header">Bản dịch</div>
+            <div class="col-content font-medium" id="viContent"></div>
+        </div>
+    </div>
+
+    <!-- Status bar (no timer) -->
+    <div class="status-bar">
+        <span>Bôi đen văn bản → nhấp chuột phải để highlight màu</span>
+        <button class="btn btn-outline" id="resetHighlightBtn">Xóa tất cả highlight</button>
+        <button class="btn btn-outline" id="syncScrollBtn" style="background: #e6b422; color: #1e3a5f; border: 1px solid #1e3a5f;">Đồng bộ cuộn: BẬT</button>
+    </div>
+
+    <!-- Right-click menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đoạn chọn</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DỮ LIỆU PASSAGE 1,2,3 (Vol 7 Test 4)
+        const passages = {
+            1: {
+                en: [
+                    "<h1>Rubber</h1>",
+                    "<p><em>T and W Musgrove discuss the origins and early uses of rubber</em></p>",
+                    "<p>The plants that produce rubber are spread right across the globe, and grow in many different habitats. One might think it likely, therefore, that humankind has known about rubber for thousands of years. Yet, unlike other crops of economic importance, rubber led a relatively anonymous life until the last 150 years or so. The Indians of South America appear to be the first people to have understood the properties of rubber, and the Aztecs of what is now Mexico were the first to be recorded using the substance; a wall painting dating back to the sixth century depicts a scene of a tributary offering of crude rubber. With the arrival of Columbus in the Americas and the resulting Spanish influx, further evidence starts to appear concerning the Native American use of rubber. Antonio de Herrera y Tordesillas describes a ritual game played with a rubber ball at the court of the Aztec Emperor Montezuma II, and the Mayan and Toltec people are known to have taken part in similar activities. Rubber was also used to make raincoats, shoes, jars, torches and musical instruments, all of which must have been made from the indigenous Castilla elastica, as the Para plant now favoured for rubber cultivation does not grow in the Mexican region.</p>",
+                    "<p>The first description of latex (liquid rubber) extraction is made by Juan de Torquemada, who noted that if a receptacle was not at hand the Native Americans would place the latex on their bodies to allow it to solidify. However, no real interest in rubber was shown by any European until Charles de la Condamine, a French mathematician, published an account of his journey to South America in 1735. The journey was undertaken on behalf of the Paris Academy of Sciences to measure an arc of the meridian line on the equator, but the journey home was to turn out to be more significant than the true purpose of the trip. Condamine explored Brazil and Peru and discovered how the local people used one single piece of coagulated latex to make boots. The boots were impervious to water and, when smoked, looked like real leather. In 1747 the first description of the rubber tree and latex tapping was made by a military engineer and amateur botanist, François Fresneau, who was posted to French Guiana. The publications of Condamine and Fresneau created considerable excitement among French scientists, and an attempt was made to discover a solvent that could turn the crude rubber into a substance for commercial exploitation.</p>",
+                    "<p>In 1818 a British medical student named James Syme first used rubber to make waterproof cloth. Another early use of the substance was as an eraser of pencil marks, hence the name 'rubber'. This was complemented by balloons, rubber bands, braces, boots for the army and other ideas that met with varying degrees of success. In 1820 Thomas Hancock, an English manufacturer of rubber goods such as driving belts, industrial rollers and rubber hoses, invented a machine he called the 'pookie', which chewed up waste strips for re-use. It was discovered that the masticated rubber was more malleable, while maintaining much of its elasticity. In Scotland at the same time Charles Mackintosh had discovered a way of using rubber as waterproofing material, by a process he patented in 1823. Hancock and Mackintosh joined forces in 1834, and three years later Hancock invented a machine for spreading rubber onto material.</p>",
+                    "<p>Despite their beneficial qualities, such as waterproofing, rubber goods were still not particularly popular as they had some major flaws, including the fact that they dissolved malodorously. They also became pliant when warm and rigid when cold. Then in 1839 the American Charles Goodyear discovered that it was possible to stabilise rubber by mixing it with sulphur while exposing it to heat - a process he called vulcanisation - and the full versatility of this extraordinary substance became apparent.</p>",
+                    "<p>Rubber goods could now be manufactured which had all the beneficial qualities of the material, such as durability, elasticity and variability, but which were not sticky, soluble or governed by the vagaries of the weather. The economic potential of rubber was now clearly evident. It played an important role in the Industrial Revolution, being employed in the steam engines found in factories, mills, mines and railways. It made a triumphant entrance as a new and innovative material at the Great Exhibition of 1851, where shoes, airbeds, furniture and clothing made out of newly improved rubber were proudly displayed.</p>",
+                    "<p>One of the most important rubber inventions was made in 1888, when an Irishman called John Boyd Dunlop produced the first pneumatic tyre. Solid rubber tyres had been used for the previous 18 years, but Dunlop's new design, which he updated in 1890, immediately became popular. In 1895 Dunlop's tyres were first used in motor cars, and with the mass production of cars just over the horizon the rubber industry had never looked healthier. The import levels of rubber over the nineteenth century bear witness to its irrepressible rise. In 1830 Britain had imported just 211 kg of crude rubber. This had risen to 10,000 kg in 1857, and by 1874 levels were just under six times as much again.</p>"
+                ],
+                vi: [
+                    "<h1>Cao su</h1>",
+                    "<p><em>T và W Musgrove thảo luận về nguồn gốc và những ứng dụng ban đầu của cao su</em></p>",
+                    "<p>Các loại thực vật sản xuất cao su phân bố rộng khắp toàn cầu và phát triển ở nhiều môi trường sống khác nhau. Do đó, người ta có thể nghĩ rằng loài người đã biết đến cao su từ hàng nghìn năm trước. Tuy nhiên, không giống như các loại cây trồng có tầm quan trọng kinh tế khác, cao su ít được biết đến cho đến khoảng 150 năm trở lại đây. Người da đỏ ở Nam Mỹ dường như là những người đầu tiên hiểu được các đặc tính của cao su, và người Aztec ở khu vực ngày nay là Mexico là những người đầu tiên được ghi nhận sử dụng chất liệu này; một bức tranh tường có niên đại từ thế kỷ thứ sáu mô tả cảnh dâng cống phẩm bằng cao su thô. Với sự xuất hiện của Columbus tại châu Mỹ và dòng người Tây Ban Nha đổ vào sau đó, ngày càng có nhiều bằng chứng về việc người bản địa châu Mỹ sử dụng cao su. Antonio de Herrera y Tordesillas mô tả một trò chơi nghi lễ được chơi bằng bóng cao su tại triều đình của Hoàng đế Aztec Montezuma II, và người Maya cũng như Toltec được biết là đã tham gia vào các hoạt động tương tự. Cao su cũng được dùng để làm áo mưa, giày dép, bình, đuốc và nhạc cụ, tất cả những thứ này hẳn phải được làm từ loại Castilla elastica bản địa, vì cây Para hiện được ưa chuộng để trồng cao su không mọc ở khu vực Mexico.</p>",
+                    "<p>Mô tả đầu tiên về việc chiết xuất mủ cao su (cao su lỏng) được thực hiện bởi Juan de Torquemada, người đã ghi chú rằng nếu không có vật chứa trong tay, người bản địa châu Mỹ sẽ bôi mủ lên cơ thể để nó đông đặc lại. Tuy nhiên, không một người châu Âu nào thực sự quan tâm đến cao su cho đến khi Charles de la Condamine, một nhà toán học người Pháp, công bố bản tường thuật về chuyến đi của ông đến Nam Mỹ vào năm 1735. Chuyến đi được thực hiện thay mặt cho Viện Hàn lâm Khoa học Paris để đo một cung của đường kinh tuyến tại xích đạo, nhưng hành trình trở về lại trở nên quan trọng hơn mục đích thực sự của chuyến đi. Condamine đã khám phá Brazil và Peru và phát hiện ra cách người dân địa phương sử dụng một mảnh mủ đông đặc duy nhất để làm ủng. Đôi ủng không thấm nước và khi được hun khói, trông giống như da thật. Năm 1747, mô tả đầu tiên về cây cao su và việc khai thác mủ được thực hiện bởi một kỹ sư quân sự kiêm nhà thực vật học nghiệp dư, François Fresneau, người được biệt phái đến Guiana thuộc Pháp. Các ấn phẩm của Condamine và Fresneau đã tạo ra sự phấn khích đáng kể trong giới khoa học Pháp, và một nỗ lực đã được thực hiện để tìm ra dung môi có thể biến cao su thô thành chất liệu phục vụ khai thác thương mại.</p>",
+                    "<p>Năm 1818, một sinh viên y khoa người Anh tên James Syme lần đầu tiên sử dụng cao su để làm vải không thấm nước. Một ứng dụng ban đầu khác của chất liệu này là làm tẩy xóa dấu bút chì, do đó có tên gọi 'rubber' (tẩy). Tiếp theo đó là bóng bay, dây chun, dây đeo, ủng cho quân đội và những ý tưởng khác với mức độ thành công khác nhau. Năm 1820, Thomas Hancock, một nhà sản xuất đồ cao su người Anh như dây curoa, con lăn công nghiệp và ống cao su, đã phát minh ra một cỗ máy mà ông gọi là 'pookie', có thể nghiền nát các dải phế liệu để tái sử dụng. Người ta phát hiện ra rằng cao su được nhào trộn trở nên dễ uốn hơn trong khi vẫn giữ được phần lớn độ đàn hồi. Cùng thời điểm đó ở Scotland, Charles Mackintosh đã tìm ra cách sử dụng cao su làm vật liệu chống thấm nước, bằng một quy trình mà ông được cấp bằng sáng chế vào năm 1823. Hancock và Mackintosh hợp tác vào năm 1834, và ba năm sau Hancock phát minh ra máy tráng cao su lên vải.</p>",
+                    "<p>Mặc dù có những đặc tính có lợi như khả năng chống thấm nước, các sản phẩm cao su vẫn chưa thực sự phổ biến vì chúng có một số nhược điểm lớn, bao gồm cả việc chúng tan ra và bốc mùi khó chịu. Chúng cũng trở nên mềm dẻo khi ấm và cứng lại khi lạnh. Sau đó, vào năm 1839, người Mỹ Charles Goodyear phát hiện ra rằng có thể ổn định cao su bằng cách trộn nó với lưu huỳnh đồng thời tiếp xúc với nhiệt - một quy trình ông gọi là lưu hóa - và tính linh hoạt đầy đủ của chất liệu đặc biệt này trở nên rõ ràng.</p>",
+                    "<p>Giờ đây, có thể sản xuất các sản phẩm cao su có tất cả các phẩm chất có lợi của vật liệu, chẳng hạn như độ bền, tính đàn hồi và đa dạng, nhưng không bị dính, không hòa tan hoặc bị ảnh hưởng bởi sự thất thường của thời tiết. Tiềm năng kinh tế của cao su giờ đây đã trở nên rõ ràng. Nó đóng một vai trò quan trọng trong cuộc Cách mạng Công nghiệp, được sử dụng trong các động cơ hơi nước tại các nhà máy, xưởng, hầm mỏ và đường sắt. Nó đã có một màn ra mắt đầy thắng lợi như một vật liệu mới và sáng tạo tại Triển lãm Lớn năm 1851, nơi giày dép, nệm hơi, đồ nội thất và quần áo làm từ cao su mới được cải tiến đã được tự hào trưng bày.</p>",
+                    "<p>Một trong những phát minh cao su quan trọng nhất được thực hiện vào năm 1888, khi một người Ireland tên John Boyd Dunlop sản xuất ra chiếc lốp hơi đầu tiên. Lốp cao su đặc đã được sử dụng trong 18 năm trước đó, nhưng thiết kế mới của Dunlop, mà ông cập nhật vào năm 1890, ngay lập tức trở nên phổ biến. Năm 1895, lốp xe Dunlop lần đầu tiên được sử dụng trên ô tô, và với sự ra đời của sản xuất hàng loạt ô tô, ngành công nghiệp cao su chưa bao giờ khỏe mạnh hơn. Mức độ nhập khẩu cao su trong suốt thế kỷ 19 minh chứng cho sự gia tăng không thể ngăn cản của nó. Năm 1830, nước Anh chỉ nhập khẩu 211 kg cao su thô. Con số này đã tăng lên 10.000 kg vào năm 1857, và đến năm 1874, mức nhập khẩu cao gần gấp sáu lần.</p>"
+                ]
+            },
+            2: {
+                en: [
+                    "<h1>The Myth of the Eight-hour Sleep</h1>",
+                    "<p><strong>A</strong><br>We often worry about lying awake in the middle of the night - but it could be good for you. Indications from both science and history suggest that the eight-hour sleep may not be a natural or inborn pattern for humans. In the early 1990s, psychiatrist Thomas Wehr conducted research which implies that Wehr kept a group of people in a darkened room for 14 hours a day for a month. It took some time for their sleep to regulate, but by the fourth week the subjects had settled into a very distinct sleeping pattern. Firstly, they slept four hours, then woke for one or two hours before falling into a second four-hour sleep. Though sleep scientists were impressed by the implications of the study, the idea that we must sleep for eight consecutive hours persists amongst the general public.</p>",
+                    "<p><strong>B</strong><br>In 2001, historian Roger Ekirch of Virginia Tech University in the US published a paper drawn from 16 years of research, revealing historical evidence that humans used to sleep in two distinct periods of time each night. Ekirch's research found more than 500 references to a segmented sleeping pattern - in diaries, court recorders, medical books and literature, from the ancient Greeks to tribes in Nigeria. Much like Wehr's findings, these references describe a first sleep which began not long following sunset. Then there was a waking period of one or two hours and after that a second sleep. During the waking period, people could be quite active. They sometimes got up and moved around the house, although most people stayed in bed, and perhaps read or wrote if they had enough money for candles. In many historic accounts, Ekirch found that people used the time that they were awake between periods of sleep to think about and attempt to analyse their dreams. In his book, Evening's Empire, historian Craig Koslofsky suggested an explanation for this divided sleep pattern in Europe. 'Associations with the night before the 17th century were not good,' he writes. He goes on to explain that the streets of cities and towns at night were often populated by thieves or worse. The streets at night consequently scared many people. Even the wealthy, who could afford to light their way, had better things to spend their money on. There was no prestige or social value with going out or staying up late at night.</p>",
+                    "<p><strong>C</strong><br>Ekirch found that references to the first and second sleep started to disappear during the late 17th century. The pattern began to alter first among the urban upper classes changing amongst the rest of Western society. By the 1920s, the idea of a first and second sleep had receded entirely from our social consciousness. Ekirch attributes the initial shift to improvements in street and home lighting. As the night became a time for all kinds of activity, the length of time people used for rest declined. In 1667, Paris became the first city in the world to light its streets, using wax candles in glass lamps. It was followed by another French city, Lille, in the same year and by Amsterdam in Holland two years later, where a much more efficient oil-powered lamp was developed. London didn't light its streets until 1584, but by the end of the 17th century, more than 50 of Europe's major towns and cities were lit at night. Coffee houses emerged as a fashionable phenomenon and many were open virtually around the clock. Going out at night became commonplace, and spending hours lying in bed was considered a waste of time. 'People were becoming increasingly time-conscious and sensitive to efficiency, certainly before the 19th century,' says Ekirch. But the Industrial Revolution intensified that attitude considerably. Strong evidence of this shifting attitude is contained in a medical journal from 1829 which urged parents to force their children out of the pattern of first and second sleep.</p>",
+                    "<p><strong>D</strong><br>Today, most people seem to have adapted quite well to the eight-hour sleep, but Ekirch believes many sleeping problems may have roots in the human body's natural preference for divided sleep, as well as in difficulties caused by extended exposure to artificial light in the modern world. This could be the cause of a condition called sleep maintenance insomnia, where people wake during the night and have trouble getting back to sleep. The condition first appears in literature at the end of the 19th century, at the same time as accounts of interrupted sleep disappear.</p>",
+                    "<p><strong>E</strong><br>Sleep psychologist, Gregg Jacobs, says that the idea that we must sleep for an extended period of time could be changing. If it makes people who wake up in the night anxious, as this anxiety can itself discourage sleep and is likely to affect waking life too. Jacobs suggests that the waking period between sleeping, when people simply rested and relaxed, could have played an important part in the human capacity to regulate stress naturally. Russell Foster, a professor of circadian (body clock) neuroscience at Oxford University in the UK, shares this point of view. 'Over 30% of the medical problems that doctors are faced with stem directly or indirectly from sleep. But sleep has been ignored in medical training, and there are very few countries where sleep is studied,' Foster says. He feels this needs to change.</p>"
+                ],
+                vi: [
+                    "<h1>Niềm tin sai lầm về giấc ngủ tám tiếng</h1>",
+                    "<p><strong>A</strong><br>Chúng ta thường lo lắng về việc nằm thức giữa đêm - nhưng điều đó có thể tốt cho bạn. Những dấu hiệu từ cả khoa học và lịch sử cho thấy giấc ngủ tám tiếng có thể không phải là một khuôn mẫu tự nhiên hay bẩm sinh đối với con người. Vào đầu những năm 1990, bác sĩ tâm thần Thomas Wehr đã tiến hành nghiên cứu cho thấy Wehr đã giữ một nhóm người trong phòng tối 14 giờ mỗi ngày trong một tháng. Phải mất một thời gian giấc ngủ của họ mới ổn định, nhưng đến tuần thứ tư, các đối tượng đã hình thành một kiểu ngủ rất rõ ràng. Đầu tiên, họ ngủ bốn giờ, sau đó thức dậy một hoặc hai giờ trước khi chìm vào giấc ngủ bốn giờ thứ hai. Mặc dù các nhà khoa học về giấc ngủ đã rất ấn tượng với những hàm ý của nghiên cứu, nhưng ý tưởng rằng chúng ta phải ngủ liên tục tám tiếng vẫn tồn tại trong công chúng.</p>",
+                    "<p><strong>B</strong><br>Năm 2001, nhà sử học Roger Ekirch của Đại học Virginia Tech ở Hoa Kỳ đã công bố một bài báo dựa trên 16 năm nghiên cứu, tiết lộ bằng chứng lịch sử rằng con người từng ngủ thành hai khoảng thời gian riêng biệt mỗi đêm. Nghiên cứu của Ekirch đã tìm thấy hơn 500 tài liệu tham khảo về kiểu ngủ phân đoạn - trong nhật ký, hồ sơ tòa án, sách y khoa và văn học, từ người Hy Lạp cổ đại đến các bộ lạc ở Nigeria. Giống như phát hiện của Wehr, những tài liệu này mô tả một giấc ngủ đầu tiên bắt đầu không lâu sau khi mặt trời lặn. Sau đó là khoảng thời gian thức dậy từ một đến hai giờ và sau đó là giấc ngủ thứ hai. Trong khoảng thời gian thức dậy, mọi người có thể khá năng động. Đôi khi họ đứng dậy và đi lại trong nhà, mặc dù hầu hết mọi người vẫn ở trên giường, và có thể đọc hoặc viết nếu họ có đủ tiền mua nến. Trong nhiều tài liệu lịch sử, Ekirch nhận thấy rằng mọi người đã dùng thời gian thức giữa các giấc ngủ để suy nghĩ và cố gắng phân tích những giấc mơ của họ. Trong cuốn sách của mình, Đế chế của màn đêm, nhà sử học Craig Koslofsky đã đề xuất một lời giải thích cho kiểu ngủ phân chia này ở châu Âu. 'Những liên tưởng về màn đêm trước thế kỷ 17 không tốt đẹp,' ông viết. Ông giải thích thêm rằng đường phố của các thành phố và thị trấn vào ban đêm thường có đầy những kẻ trộm cắp hoặc tệ hơn. Do đó, đường phố về đêm khiến nhiều người sợ hãi. Ngay cả những người giàu có, những người có thể chi trả cho việc thắp sáng đường đi, cũng có những thứ tốt hơn để tiêu tiền. Không có uy tín hay giá trị xã hội nào trong việc ra ngoài hoặc thức khuya.</p>",
+                    "<p><strong>C</strong><br>Ekirch nhận thấy rằng các tài liệu đề cập đến giấc ngủ thứ nhất và thứ hai bắt đầu biến mất vào cuối thế kỷ 17. Khuôn mẫu này bắt đầu thay đổi trước tiên ở tầng lớp thượng lưu thành thị, sau đó lan rộng ra phần còn lại của xã hội phương Tây. Đến những năm 1920, ý tưởng về giấc ngủ thứ nhất và thứ hai đã hoàn toàn biến mất khỏi ý thức xã hội của chúng ta. Ekirch cho rằng sự thay đổi ban đầu là do những cải tiến trong chiếu sáng đường phố và nhà ở. Khi màn đêm trở thành thời gian cho mọi loại hoạt động, khoảng thời gian mọi người dùng để nghỉ ngơi đã giảm xuống. Năm 1667, Paris trở thành thành phố đầu tiên trên thế giới thắp sáng đường phố, sử dụng nến sáp trong đèn thủy tinh. Nó được tiếp nối bởi một thành phố khác của Pháp, Lille, cùng năm đó và Amsterdam ở Hà Lan hai năm sau đó, nơi đã phát triển một loại đèn chạy bằng dầu hiệu quả hơn nhiều. London không thắp sáng đường phố cho đến năm 1584, nhưng vào cuối thế kỷ 17, hơn 50 thị trấn và thành phố lớn của châu Âu đã được thắp sáng vào ban đêm. Các quán cà phê nổi lên như một hiện tượng thời thượng và nhiều quán mở cửa hầu như suốt ngày đêm. Ra ngoài vào ban đêm trở nên phổ biến, và dành hàng giờ nằm trên giường được coi là lãng phí thời gian. 'Mọi người ngày càng có ý thức về thời gian và nhạy cảm với hiệu quả, chắc chắn là trước thế kỷ 19,' Ekirch nói. Nhưng cuộc Cách mạng Công nghiệp đã củng cố đáng kể thái độ đó. Bằng chứng mạnh mẽ cho sự thay đổi thái độ này nằm trong một tạp chí y khoa năm 1829, trong đó khuyến khích cha mẹ buộc con cái họ từ bỏ kiểu ngủ thứ nhất và thứ hai.</p>",
+                    "<p><strong>D</strong><br>Ngày nay, hầu hết mọi người dường như đã thích nghi khá tốt với giấc ngủ tám tiếng, nhưng Ekirch tin rằng nhiều vấn đề về giấc ngủ có thể bắt nguồn từ sở thích tự nhiên của cơ thể con người đối với giấc ngủ phân chia, cũng như những khó khăn do tiếp xúc lâu với ánh sáng nhân tạo trong thế giới hiện đại. Đây có thể là nguyên nhân của một tình trạng gọi là chứng mất ngủ duy trì giấc ngủ, khi mọi người thức dậy vào ban đêm và khó ngủ trở lại. Tình trạng này lần đầu tiên xuất hiện trong văn học vào cuối thế kỷ 19, cùng thời điểm mà các tài liệu về giấc ngủ bị gián đoạn biến mất.</p>",
+                    "<p><strong>E</strong><br>Nhà tâm lý học giấc ngủ, Gregg Jacobs, nói rằng ý tưởng chúng ta phải ngủ trong một khoảng thời gian dài có thể đang thay đổi. Nếu nó khiến những người thức dậy vào ban đêm lo lắng, thì sự lo lắng này tự nó có thể cản trở giấc ngủ và có khả năng ảnh hưởng đến cuộc sống khi thức. Jacobs gợi ý rằng khoảng thời gian thức giữa các giấc ngủ, khi mọi người chỉ đơn giản nghỉ ngơi và thư giãn, có thể đã đóng một vai trò quan trọng trong khả năng điều chỉnh căng thẳng tự nhiên của con người. Russell Foster, giáo sư khoa học thần kinh về nhịp sinh học (đồng hồ sinh học) tại Đại học Oxford ở Anh, chia sẻ quan điểm này. 'Hơn 30% các vấn đề y tế mà các bác sĩ phải đối mặt bắt nguồn trực tiếp hoặc gián tiếp từ giấc ngủ. Nhưng giấc ngủ đã bị bỏ qua trong đào tạo y khoa, và rất ít quốc gia nghiên cứu về giấc ngủ,' Foster nói. Ông cảm thấy điều này cần phải thay đổi.</p>"
+                ]
+            },
+            3: {
+                en: [
+                    "<h1>Living Dunes</h1>",
+                    "<p><strong>A</strong><br>Armies of giant sand dunes are advancing across the world's deserts, engulfing anything that crosses their path. They are tens of metres tall and hundreds of metres long. Fortunately, they aren't going very fast. Even the smallest, speediest dunes only travel about 100 metres over the course of a year, while the bigger ones, which weigh something in the order of 10,000 tonnes, barely move one metre in that time. However, their insidious creep can have serious consequences if there is an oil installation or a railway line in their path.</p>",
+                    "<p><strong>B</strong><br>About 47% of the world's land mass, including Antarctica, most of Australia and large areas of Africa, is classified as arid or semi-arid desert. Only around 20% of that is sand-covered, however, and over half of that is classified as linear sand dunes. These form in a long curving wave, as a result of wind blowing strongly from several quarters, flipping them from side to side. Although linear dunes are static, sand blowing off them can cause problems for desert villages, burying crops and buildings.</p>",
+                    "<p><strong>C</strong><br>Moving dunes make up just a small percentage of the rest, but they are of the most interest to scientists. They are known as 'barchans': heavy, crescent-shaped sand piles with a ridged crest and two elongated arms, one curving away to either side. 'Barchan dunes only tend to form where you have one-directional winds on the edge of sandy deserts near coastal areas,' says Giles Wiggs, a geomorphologist at Oxford University, who has been studying the formation and movement of sand dunes for more than a decade.</p>",
+                    "<p><strong>D</strong><br>But even with strong winds, how can entire barchans move while retaining their form? That question was first answered in the mid-20th century by British explorer Ralph Alger Bagnold, and his answer hinges on the fact that dunes aren't solid, but granular. Bagnold figured out how barchan dunes are able to move grain by grain. Imagine a single grain of sand being blown up the back of a dune by the wind and deposited on the top. More grains follow the same pattern, until the accumulated weight of piled-up sand finally pushes the top down the dune face. The grain tumbles, then stops on the face until subsequent mini-avalanches bury it. Eventually, it reappears at the back of the dune, ready to repeat the process. As this happens to every grain of sand in the dune, the whole thing creeps in the direction of the prevailing wind.</p>",
+                    "<p><strong>E</strong><br>The relationship between the wind and barchan dunes is complex. As a dune grows, it modifies the speed and course of the wind, which in turn alters how that dune and its neighbours evolve. 'Interestingly, the dune can regulate its own shape, and maintain it as it moves,' says Dr Stéphane Douady, a physicist at Ecole Normale Supérieure (ENS) in France. 'Even when two dunes collide, they quickly take on their distinctive shapes again. It's like a living organism.'</p>",
+                    "<p><strong>F</strong><br>Douady and his colleagues have also been studying an even odder phenomenon than moving dunes: some barchans actually sing. Local legends attributed the sounds to dangerous spirits which were trying to trap unwary travellers. Douady is more pragmatic. 'It's a strong booming noise with a low frequency,' he explains, making a noise like a foghorn to demonstrate. 'It can last for a long time - up to several minutes. It's a very loud sound and you don't understand where it's coming from when you first hear it.' There are about 50 dunes distributed across 35 deserts around the world that are known to sing. Douady says the sound is caused by the way sand avalanches down the faces of particular dunes. Rather than tumbling randomly, the sand grains flow in synchrony and set each other vibrating like the membrane on a gigantic loudspeaker. The synchronisation causes the air to move in and out between the grains, creating a powerful sound wave.</p>",
+                    "<p><strong>G</strong><br>What really surprised the scientists, however, was that they were able to take samples of the singing sand back to France and replicate the sound at ENS, proving that it's the sand, not the dune shape, that causes the sound. Their studies show the grains are a uniform shape, well-rounded from years of striking each other, and that the variations in size affect the tone. Crucially, the grains are coated with a special veneer, which Douady calls 'desert glaze', made from a precise combination of minerals from surrounding rocks including iron, aluminium, manganese, silicon and calcium. The team found that after a month or so, the veneer wore off and the grains lost their 'voice'. 'We managed to reproduce the desert glaze and then the grains started to sing again,' says Douady. 'We tried putting the coating onto different grains, but they weren't round enough and it didn't work.' But some American colleagues made some artificial grains and managed to make them sing, after covering them in desert glaze. Douady has now made recordings of dunesong from all over the world which are to be made into a CD.</p>"
+                ],
+                vi: [
+                    "<h1>Những đụn cát sống</h1>",
+                    "<p><strong>A</strong><br>Những đội quân đụn cát khổng lồ đang tiến qua các sa mạc trên thế giới, nuốt chửng bất cứ thứ gì cản đường chúng. Chúng cao hàng chục mét và dài hàng trăm mét. May mắn thay, chúng không di chuyển quá nhanh. Ngay cả những đụn cát nhỏ nhất, nhanh nhất cũng chỉ di chuyển khoảng 100 mét trong một năm, trong khi những đụn lớn hơn, nặng cỡ 10.000 tấn, hầu như không di chuyển được một mét trong thời gian đó. Tuy nhiên, sự di chuyển âm thầm của chúng có thể gây ra hậu quả nghiêm trọng nếu có một công trình dầu khí hoặc đường ray xe lửa nằm trên đường đi của chúng.</p>",
+                    "<p><strong>B</strong><br>Khoảng 47% diện tích đất liền trên thế giới, bao gồm Nam Cực, hầu hết Australia và các khu vực rộng lớn của châu Phi, được phân loại là sa mạc khô cằn hoặc bán khô hạn. Tuy nhiên, chỉ khoảng 20% trong số đó được bao phủ bởi cát, và hơn một nửa diện tích đó được phân loại là đụn cát tuyến tính. Chúng hình thành dưới dạng một đường cong dài, do gió thổi mạnh từ nhiều hướng, khiến chúng bị lật từ bên này sang bên kia. Mặc dù các đụn cát tuyến tính là tĩnh, nhưng cát thổi từ chúng có thể gây ra vấn đề cho các ngôi làng trong sa mạc, vùi lấp mùa màng và các tòa nhà.</p>",
+                    "<p><strong>C</strong><br>Các đụn cát di động chỉ chiếm một tỷ lệ nhỏ trong phần còn lại, nhưng chúng lại được các nhà khoa học quan tâm nhất. Chúng được gọi là 'barchans': những đống cát nặng, hình lưỡi liềm với đỉnh có gờ và hai nhánh kéo dài, mỗi nhánh cong về một phía. 'Các đụn cát barchan chỉ có xu hướng hình thành ở nơi có gió một hướng ở rìa các sa mạc cát gần các khu vực ven biển,' Giles Wiggs, một nhà địa mạo học tại Đại học Oxford, người đã nghiên cứu sự hình thành và di chuyển của các đụn cát hơn một thập kỷ, cho biết.</p>",
+                    "<p><strong>D</strong><br>Nhưng ngay cả với gió mạnh, làm thế nào toàn bộ các đụn cát barchan có thể di chuyển trong khi vẫn giữ được hình dạng của chúng? Câu hỏi đó lần đầu tiên được trả lời vào giữa thế kỷ 20 bởi nhà thám hiểm người Anh Ralph Alger Bagnold, và câu trả lời của ông xoay quanh thực tế rằng các đụn cát không phải là khối rắn mà là dạng hạt. Bagnold đã tìm ra cách các đụn cát barchan có thể di chuyển từng hạt một. Hãy tưởng tượng một hạt cát bị gió thổi lên lưng đụn cát và lắng đọng trên đỉnh. Nhiều hạt tiếp theo cũng theo cùng một khuôn mẫu, cho đến khi trọng lượng tích tụ của cát chất đống cuối cùng đẩy phần đỉnh xuống mặt đụn cát. Hạt cát lăn xuống, sau đó dừng lại trên mặt đụn cho đến khi các trận lở đất nhỏ tiếp theo vùi lấp nó. Cuối cùng, nó xuất hiện trở lại ở phía sau của đụn cát, sẵn sàng lặp lại quá trình. Khi điều này xảy ra với mọi hạt cát trong đụn cát, toàn bộ khối cát di chuyển chậm chạp theo hướng của gió thịnh hành.</p>",
+                    "<p><strong>E</strong><br>Mối quan hệ giữa gió và các đụn cát barchan rất phức tạp. Khi một đụn cát lớn lên, nó làm thay đổi tốc độ và hướng đi của gió, từ đó làm thay đổi cách đụn cát đó và các đụn cát lân cận phát triển. 'Điều thú vị là, đụn cát có thể tự điều chỉnh hình dạng và duy trì nó khi di chuyển,' Tiến sĩ Stéphane Douady, một nhà vật lý tại École Normale Supérieure (ENS) ở Pháp, nói. 'Ngay cả khi hai đụn cát va chạm, chúng nhanh chóng lấy lại hình dạng đặc trưng của mình. Nó giống như một sinh vật sống.'</p>",
+                    "<p><strong>F</strong><br>Douady và các đồng nghiệp của ông cũng đang nghiên cứu một hiện tượng thậm chí còn kỳ lạ hơn các đụn cát di chuyển: một số đụn cát barchan thực sự biết hát. Các truyền thuyết địa phương cho rằng âm thanh này là do những linh hồn nguy hiểm đang cố gài bẫy những du khách không cảnh giác. Douady thực dụng hơn. 'Đó là một tiếng ồn ào mạnh mẽ với tần số thấp,' ông giải thích, tạo ra một tiếng động như tiếng còi sương mù để minh họa. 'Nó có thể kéo dài trong một thời gian dài - lên đến vài phút. Đó là một âm thanh rất lớn và bạn không hiểu nó đến từ đâu khi lần đầu tiên nghe thấy.' Có khoảng 50 đụn cát phân bố trên 35 sa mạc trên khắp thế giới được biết là biết hát. Douady nói rằng âm thanh được tạo ra bởi cách cát lở xuống các mặt của những đụn cát cụ thể. Thay vì lăn xuống một cách ngẫu nhiên, các hạt cát chảy đồng bộ và khiến nhau rung động giống như màng của một loa phóng thanh khổng lồ. Sự đồng bộ hóa khiến không khí di chuyển vào và ra giữa các hạt, tạo ra một sóng âm thanh mạnh mẽ.</p>",
+                    "<p><strong>G</strong><br>Tuy nhiên, điều thực sự khiến các nhà khoa học ngạc nhiên là họ đã có thể mang các mẫu cát hát trở về Pháp và tái tạo âm thanh tại ENS, chứng minh rằng chính cát, chứ không phải hình dạng đụn cát, tạo ra âm thanh. Các nghiên cứu của họ cho thấy các hạt có hình dạng đồng nhất, được làm tròn sau nhiều năm va chạm vào nhau, và sự khác biệt về kích thước ảnh hưởng đến âm sắc. Quan trọng là, các hạt được phủ một lớp men đặc biệt, mà Douady gọi là 'men sa mạc', được tạo thành từ sự kết hợp chính xác của các khoáng chất từ đá xung quanh bao gồm sắt, nhôm, mangan, silic và canxi. Nhóm nghiên cứu phát hiện ra rằng sau khoảng một tháng, lớp men này bị mòn đi và các hạt mất đi 'giọng hát' của chúng. 'Chúng tôi đã cố gắng tái tạo men sa mạc và sau đó các hạt bắt đầu hát trở lại,' Douady nói. 'Chúng tôi đã thử phủ lớp phủ lên các hạt khác, nhưng chúng không đủ tròn và nó không hoạt động.' Nhưng một số đồng nghiệp người Mỹ đã tạo ra các hạt nhân tạo và cố gắng làm cho chúng hát, sau khi phủ chúng bằng men sa mạc. Douady hiện đã thực hiện các bản ghi âm tiếng hát của đụn cát từ khắp nơi trên thế giới và chúng sẽ được làm thành một đĩa CD.</p>"
+                ]
+            }
+        };
+
+        // Variables
+        let currentPassage = 1;
+        let readingMode = false;
+        
+        // DOM elements
+        const enDiv = document.getElementById('enContent');
+        const viDiv = document.getElementById('viContent');
+        const appContainer = document.getElementById('appContainer');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        const readingModeToggle = document.getElementById('readingModeToggle');
+
+        // Load passage
+        function loadPassage(id) {
+            const p = passages[id];
+            if (!p) return;
+            
+            let enHtml = '';
+            p.en.forEach(para => {
+                enHtml += para;
+            });
+            enDiv.innerHTML = enHtml;
+
+            let viHtml = '';
+            p.vi.forEach(para => {
+                viHtml += para;
+            });
+            viDiv.innerHTML = viHtml;
+        }
+
+        loadPassage(1);
+
+        // Passage selector
+        document.querySelectorAll('.passage-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const id = parseInt(btn.getAttribute('data-passage'), 10);
+                currentPassage = id;
+                loadPassage(id);
+            });
+        });
+
+        // Reading mode toggle
+        readingModeToggle.addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                appContainer.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                appContainer.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // Font size controls
+        document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+            
+            const contents = document.querySelectorAll('.col-content');
+            contents.forEach(el => {
+                el.classList.remove('font-small', 'font-medium', 'font-large');
+                el.classList.add(`font-${size}`);
+            });
+        }
+
+        // Resize columns
+        const resizer = document.getElementById('resizer');
+        const enColumn = document.getElementById('enColumn');
+        const viColumn = document.getElementById('viColumn');
+        const mainArea = document.getElementById('mainArea');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', () => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const rect = mainArea.getBoundingClientRect();
+            let leftWidth = e.clientX - rect.left - 4;
+            if (leftWidth < 200) leftWidth = 200;
+            if (leftWidth > rect.width - 200) leftWidth = rect.width - 200;
+            enColumn.style.width = leftWidth + 'px';
+            viColumn.style.width = (rect.width - leftWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // Right-click highlight
+        const contextMenu = document.getElementById('contextMenu');
+        let selectedRange = null;
+
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target;
+            if (target.closest('.col-content')) {
+                e.preventDefault();
+                const selection = window.getSelection();
+                if (selection.toString().trim()) {
+                    selectedRange = selection.getRangeAt(0);
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = e.pageX + 'px';
+                    contextMenu.style.top = e.pageY + 'px';
+                }
+            }
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            try {
+                const range = selectedRange.cloneRange();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) {
+                alert('Không thể highlight vùng này.');
+            }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // Reset all highlights
+        document.getElementById('resetHighlightBtn').addEventListener('click', () => {
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                const parent = h.parentNode;
+                while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                parent.removeChild(h);
+            });
+        });
+
+        // Đồng bộ cuộn có bật/tắt
+        const enContent = document.getElementById('enContent');
+        const viContent = document.getElementById('viContent');
+        const syncBtn = document.getElementById('syncScrollBtn');
+
+        let syncEnabled = true;
+        let isSyncing = false;
+
+        syncBtn.addEventListener('click', () => {
+            syncEnabled = !syncEnabled;
+            if (syncEnabled) {
+                syncBtn.style.background = '#e6b422';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: BẬT';
+            } else {
+                syncBtn.style.background = 'transparent';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: TẮT';
+            }
+        });
+
+        function syncScroll(source, target) {
+            if (!syncEnabled || isSyncing) return;
+            isSyncing = true;
+            
+            const sourceScrollRatio = source.scrollTop / (source.scrollHeight - source.clientHeight);
+            target.scrollTop = sourceScrollRatio * (target.scrollHeight - target.clientHeight);
+            
+            isSyncing = false;
+        }
+
+        enContent.addEventListener('scroll', () => syncScroll(enContent, viContent));
+        viContent.addEventListener('scroll', () => syncScroll(viContent, enContent));
+    })();
+</script>
+</body>
+</html>
