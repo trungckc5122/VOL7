@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vol 7 - Reading Test 4 - Passage 2 - The Myth of the Eight-hour Sleep</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: #1a1a2a; display: flex; justify-content: center; min-height: 100vh; }
+        .test-wrapper {
+            width: 100%; max-width: 1600px; background: #f5f3ee; display: flex; flex-direction: column; height: 100vh;
+        }
+        .test-wrapper.reading-mode { background: #f8f5e6; }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        .ielts-header {
+            background: #1e3a5f; color: white; padding: 8px 20px; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 3px solid #e6b422;
+        }
+        .brand { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .ielts-logo { background: #e6b422; color: #1e3a5f; font-weight: 800; font-size: 24px; padding: 4px 18px; border-radius: 40px; }
+        .candidate { background: #2d4b77; padding: 4px 16px; border-radius: 30px; font-size: 14px; }
+        .question-types { background: #0f2a44; padding: 4px 16px; border-radius: 30px; font-size: 13px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 6px 20px; border-radius: 40px; font-size: 22px; font-family: monospace; border: 1px solid #e6b422; }
+
+        .reading-mode-toggle {
+            display: flex; align-items: center; gap: 8px; background: #2d4b77; padding: 4px 12px; border-radius: 30px; cursor: pointer;
+        }
+        .toggle-switch {
+            width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422;
+        }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s;
+        }
+        .toggle-switch.active::after { left: 22px; }
+
+        .font-controls {
+            display: flex; gap: 5px; background: #2d4b77; padding: 3px; border-radius: 30px;
+        }
+        .font-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer;
+        }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        .question-nav {
+            background: #d2cbbc; padding: 6px 20px; border-bottom: 2px solid #b0aa9a; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
+        }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn {
+            width: 32px; height: 32px; border-radius: 6px; border: 2px solid #1e3a5f; background: white; color: #1e3a5f;
+            font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; }
+        .reading-panel { width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden; }
+        .questions-panel { width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden; }
+        .resizer { width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s; }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header { background: #d2cbbc; padding: 8px 15px; font-weight: 600; color: #1e3a5f; border-bottom: 1px solid #b0aa9a; display: flex; justify-content: space-between; }
+        .reading-text { flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px; }
+        .reading-text p { margin-bottom: 15px; }
+        .questions-list { flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px; }
+
+        .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
+
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; }
+        .dynamic-highlight { background-color: #f9e79f; display: inline; border-radius: 3px; padding: 0 2px; animation: highlightFadeIn 0.5s ease; }
+        @keyframes highlightFadeIn { from { background-color: #fff; } to { background-color: #f9e79f; } }
+        .keyword-highlight { text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline; border-radius: 3px; padding: 0 2px; }
+        .question-highlight { background-color: #fef9e7; border-left: 4px solid #f1c40f; padding-left: 10px; }
+
+        .context-menu {
+            position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px;
+        }
+        .context-menu div { padding: 8px 20px; cursor: pointer; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+
+        .heading-bank {
+            background: #e6d9c8; border-radius: 12px; padding: 15px; margin: 15px 0 25px; display: flex; flex-wrap: wrap; gap: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 2px solid #b0aa9a;
+        }
+        .heading-item {
+            background: #1e3a5f; color: white; padding: 8px 15px; border-radius: 30px; font-size: 14px;
+            cursor: grab; user-select: none; display: inline-block; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .heading-item.dragging { opacity: 0.5; }
+        .heading-item.hidden { display: none; }
+        .drop-row { display: flex; align-items: center; margin: 10px 0; padding: 8px; background: #f0ebe0; border-radius: 8px; border: 1px solid #b0aa9a; }
+        .drop-label { font-weight: 700; color: #1e3a5f; width: 140px; }
+        .drop-slot { flex: 1; min-height: 30px; background: white; border: 2px dashed #9a8c7a; border-radius: 6px; padding: 5px 12px; display: flex; align-items: center; gap: 10px; }
+        .slot-content { flex: 1; font-weight: 500; }
+        .remove-chip { color: #f44336; cursor: pointer; font-weight: bold; font-size: 18px; padding: 0 5px; }
+
+        .question-wrapper { display: inline-flex; align-items: center; gap: 8px; position: relative; }
+        .letter-input {
+            width: 45px; text-align: center; text-transform: lowercase; font-weight: bold; border: none;
+            border-bottom: 2px solid #bdc3c7; background: #fafafa; padding: 2px 5px; font-size: 1em;
+            transition: 0.2s; outline: none; border-radius: 4px 4px 0 0; margin: 0 5px;
+            font-family: 'Times New Roman', serif;
+        }
+        .letter-input.correct { border-bottom-color: #27ae60 !important; background-color: #e8f8f5 !important; color: #1e8449 !important; }
+        .letter-input.incorrect-marked { border-bottom-color: #e74c3c !important; background-color: #fdedec !important; }
+        .correct-answer-badge {
+            display: inline-block; background-color: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px;
+            font-size: 12px; margin-left: 8px; font-weight: bold; vertical-align: middle; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .eye-icon { display: none; margin-left: 5px; cursor: pointer; font-size: 18px; opacity: 0.7; transition: 0.2s; }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+
+        .bottom-bar {
+            background: #d2cbbc; padding: 10px 20px; display: flex; gap: 15px; border-top: 1px solid #b0aa9a; align-items: center; flex-wrap: wrap;
+        }
+        .btn {
+            padding: 6px 20px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s;
+        }
+        .btn-primary { background: #1e3a5f; color: white; } .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; opacity: 0.6; }
+        .btn-success { background: #4CAF50; color: white; } .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { background: #a5d6a7; cursor: not-allowed; opacity: 0.6; pointer-events: none; }
+        .btn-danger { background: #f44336; color: white; } .btn-danger:hover { background: #d32f2f; }
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; }
+
+        .explanation-panel {
+            background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px;
+            border-radius: 8px; display: none; z-index: 100;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; color: #666; } .close-btn:hover { color: #1e3a5f; }
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
+
+        .question-item { margin-bottom: 15px; padding: 10px; border-left: 3px solid transparent; transition: 0.2s; scroll-margin-top: 20px; }
+        .question-item.highlight-question { border-left: 3px solid #f1c40f; background-color: #fef9e7; }
+
+        .reading-text .paragraph-drop-zone {
+            background: #e8e0d5; border: 2px solid #b0aa9a; margin-bottom: 20px; padding: 5px 10px;
+            border-radius: 8px; display: flex; align-items: center; gap: 10px;
+        }
+        .reading-text .paragraph-label { font-weight: 700; color: #1e3a5f; min-width: 30px; }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 4 - Passage 2</div>
+            <div class="question-types">Headings • Matching • Summary</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- Question Navigator -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 14-26:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main Resizable Area -->
+    <div class="main-area" id="mainArea">
+        <!-- Reading Panel -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header"><span>READING PASSAGE 2: The Myth of the Eight-hour Sleep</span></div>
+            <div class="reading-text font-medium" id="readingContent">
+                <!-- Paragraph A -->
+                <div class="paragraph-drop-zone" data-paragraph="14"><span class="paragraph-label">A:</span><div class="drop-slot" id="drop14"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div></div>
+                <p><strong>A</strong><br>We often worry about lying awake in the middle of the night - but it could be good for you. Indications from both science and history suggest that the eight-hour sleep may not be a natural or inborn pattern for humans. In the early 1990s, psychiatrist Thomas Wehr conducted research which implies that Wehr kept a group of people in a darkened room for 14 hours a day for a month. It took some time for their sleep to regulate, but by the fourth week the subjects had settled into a very distinct sleeping pattern. Firstly, they slept four hours, then woke for one or two hours before falling into a second four-hour sleep. Though sleep scientists were impressed by the implications of the study, the idea that we must sleep for eight consecutive hours persists amongst the general public.</p>
+
+                <!-- Paragraph B -->
+                <div class="paragraph-drop-zone" data-paragraph="15"><span class="paragraph-label">B:</span><div class="drop-slot" id="drop15"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div></div>
+                <p><strong>B</strong><br>In 2001, historian Roger Ekirch of Virginia Tech University in the US published a paper drawn from 16 years of research, revealing historical evidence that humans used to sleep in two distinct periods of time each night. Ekirch’s research found more than 500 references to a segmented sleeping pattern - in diaries, court recorders, medical books and literature, from the ancient Greeks to tribes in Nigeria. Much like Wehr’s findings, these references describe a first sleep which began not long following sunset. Then there was a waking period of one or two hours and after that a second sleep. During the waking period, people could be quite active. They sometimes got up and moved around the house, although most people stayed in bed, and perhaps read or wrote if they had enough money for candles. In many historic accounts, Ekirch found that people used the time that they were awake between periods of sleep to think about and attempt to analyse their dreams. In his book, Evening’s Empire, historian Craig Koslofsky suggested an explanation for this divided sleep pattern in Europe. ‘Associations with the night before the 17th century were not good,’ he writes. He goes on to explain that the streets of cities and towns at night were often populated by thieves or worse. The streets at night consequently scared many people. Even the wealthy, who could afford to light their way, had better things to spend their money on. There was no prestige or social value with going out or staying up late at night.</p>
+
+                <!-- Paragraph C -->
+                <div class="paragraph-drop-zone" data-paragraph="16"><span class="paragraph-label">C:</span><div class="drop-slot" id="drop16"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div></div>
+                <p><strong>C</strong><br>Ekirch found that references to the first and second sleep started to disappear during the late 17th century. The pattern began to alter first among the urban upper classes changing amongst the rest of Western society. By the 1920s, the idea of a first and second sleep had receded entirely from our social consciousness. Ekirch attributes the initial shift to improvements in street and home lighting. As the night became a time for all kinds of activity, the length of time people used for rest declined. In 1667, Paris became the first city in the world to light its streets, using wax candles in glass lamps. It was followed by another French city, Lille, in the same year and by Amsterdam in Holland two years later, where a much more efficient oil-powered lamp was developed. London didn’t light its streets until 1584, but by the end of the 17th century, more than 50 of Europe’s major towns and cities were lit at night. Coffee houses emerged as a fashionable phenomenon and many were open virtually around the clock. Going out at night became commonplace, and spending hours lying in bed was considered a waste of time. ‘People were becoming increasingly time-conscious and sensitive to efficiency, certainly before the 19th century,’ says Ekirch. But the Industrial Revolution intensified that attitude considerably. Strong evidence of this shifting attitude is contained in a medical journal from 1829 which urged parents to force their children out of the pattern of first and second sleep.</p>
+
+                <!-- Paragraph D -->
+                <div class="paragraph-drop-zone" data-paragraph="17"><span class="paragraph-label">D:</span><div class="drop-slot" id="drop17"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div></div>
+                <p><strong>D</strong><br>Today, most people seem to have adapted quite well to the eight-hour sleep, but Ekirch believes many sleeping problems may have roots in the human body’s natural preference for divided sleep, as well as in difficulties caused by extended exposure to artificial light in the modern world. This could be the cause of a condition called sleep maintenance insomnia, where people wake during the night and have trouble getting back to sleep. The condition first appears in literature at the end of the 19th century, at the same time as accounts of interrupted sleep disappear.</p>
+
+                <!-- Paragraph E -->
+                <div class="paragraph-drop-zone" data-paragraph="18"><span class="paragraph-label">E:</span><div class="drop-slot" id="drop18"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div></div>
+                <p><strong>E</strong><br>Sleep psychologist, Gregg Jacobs, says that the idea that we must sleep for an extended period of time could be changing. If it makes people who wake up in the night anxious, as this anxiety can itself discourage sleep and is likely to affect waking life too. Jacobs suggests that the waking period between sleeping, when people simply rested and relaxed, could have played an important part in the human capacity to regulate stress naturally. Russell Foster, a professor of circadian (body clock) neuroscience at Oxford University in the UK, shares this point of view. ‘Over 30% of the medical problems that doctors are faced with stem directly or indirectly from sleep. But sleep has been ignored in medical training, and there are very few countries where sleep is studied,’ Foster says. He feels this needs to change.</p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions Panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header"><span>QUESTIONS 14-26</span><span class="answer-badge" id="answeredCount">0/13 answered</span></div>
+            <div class="questions-list font-medium" id="questionsContent">
+                <!-- Headings 14-18 -->
+                <h3>Questions 14-18</h3>
+                <p><em>Reading Passage 2 has five sections. Choose the correct heading for each section from the list of headings below.</em></p>
+                <div class="heading-bank" id="headingBank">
+                    <div class="heading-item" draggable="true" data-value="i">i Historical reasons why interrupted sleep became uncommon</div>
+                    <div class="heading-item" draggable="true" data-value="ii">ii Brain structures involved in sleep patterns</div>
+                    <div class="heading-item" draggable="true" data-value="iii">iii Potential health issues related to sleep</div>
+                    <div class="heading-item" draggable="true" data-value="iv">iv Famous cases in literature of sleep</div>
+                    <div class="heading-item" draggable="true" data-value="v">v An analysis of old documents to discover deep patterns</div>
+                    <div class="heading-item" draggable="true" data-value="vi">vi Biological and environmental factors preventing people from falling asleep again</div>
+                    <div class="heading-item" draggable="true" data-value="vii">vii Scientific evidence that divided sleep is a natural phenomenon</div>
+                </div>
+                <div class="drop-area">
+                    <div class="drop-row" data-paragraph="14" id="drop-row-14"><span class="drop-label">14 Paragraph A</span><div class="drop-slot" id="displayDrop14"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div><span class="eye-icon" data-question="14">👁️</span></div>
+                    <div class="drop-row" data-paragraph="15" id="drop-row-15"><span class="drop-label">15 Paragraph B</span><div class="drop-slot" id="displayDrop15"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div><span class="eye-icon" data-question="15">👁️</span></div>
+                    <div class="drop-row" data-paragraph="16" id="drop-row-16"><span class="drop-label">16 Paragraph C</span><div class="drop-slot" id="displayDrop16"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div><span class="eye-icon" data-question="16">👁️</span></div>
+                    <div class="drop-row" data-paragraph="17" id="drop-row-17"><span class="drop-label">17 Paragraph D</span><div class="drop-slot" id="displayDrop17"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div><span class="eye-icon" data-question="17">👁️</span></div>
+                    <div class="drop-row" data-paragraph="18" id="drop-row-18"><span class="drop-label">18 Paragraph E</span><div class="drop-slot" id="displayDrop18"><span class="slot-content"></span><span class="remove-chip" style="display:none;">✕</span></div><span class="eye-icon" data-question="18">👁️</span></div>
+                </div>
+
+                <!-- Matching 19-23 -->
+                <h3 style="margin-top:40px;">Questions 19-23</h3>
+                <p><em>Look at the following statements and match with the correct researcher A-E.</em></p>
+                <div style="background:#f0ebe0; padding:10px; border-radius:8px; margin:10px 0;">
+                    <p><strong>A</strong> Thomas Wehr &nbsp;&nbsp; <strong>B</strong> Roger Ekirch &nbsp;&nbsp; <strong>C</strong> Craig Koslofsky &nbsp;&nbsp; <strong>D</strong> Gregg Jacobs &nbsp;&nbsp; <strong>E</strong> Russell Foster</p>
+                </div>
+                <ol style="list-style-type:none; padding-left:0;">
+                    <li class="question-item" id="q19-item">19. <span>In certain historical periods, the threat of criminal danger led to segmented sleep.</span> <span class="question-wrapper"><input class="letter-input" id="q19" data-answer="C" placeholder="A-E" maxlength="1" style="width:40px;"> <span class="eye-icon" data-question="19">👁️</span></span></li>
+                    <li class="question-item" id="q20-item">20. <span>Physicians should learn more about treating people with sleeping difficulties.</span> <span class="question-wrapper"><input class="letter-input" id="q20" data-answer="E" placeholder="A-E" maxlength="1" style="width:40px;"> <span class="eye-icon" data-question="20">👁️</span></span></li>
+                    <li class="question-item" id="q21-item">21. <span>Historically, when people experienced interrupted sleep, they used the waking period at night for different activities.</span> <span class="question-wrapper"><input class="letter-input" id="q21" data-answer="B" placeholder="A-E" maxlength="1" style="width:40px;"> <span class="eye-icon" data-question="21">👁️</span></span></li>
+                    <li class="question-item" id="q22-item">22. <span>Technological changes in Europe made people more likely to sleep throughout the night.</span> <span class="question-wrapper"><input class="letter-input" id="q22" data-answer="B" placeholder="A-E" maxlength="1" style="width:40px;"> <span class="eye-icon" data-question="22">👁️</span></span></li>
+                    <li class="question-item" id="q23-item">23. <span>The belief that humans should have a long continuous sleep can be psychologically harmful.</span> <span class="question-wrapper"><input class="letter-input" id="q23" data-answer="D" placeholder="A-E" maxlength="1" style="width:40px;"> <span class="eye-icon" data-question="23">👁️</span></span></li>
+                </ol>
+
+                <!-- Summary completion 24-26 (ONE WORD ONLY) - layout giống hệt Test4 Passage1 -->
+                <h3 style="margin-top:40px;">Questions 24-26</h3>
+                <p><em>Complete the summary below. Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                <div style="background: #f9f7f0; padding: 20px; border-radius: 8px; margin: 15px 0;">
+                    <p><strong>Historical patterns of interrupted sleep</strong></p>
+                    <p>Historical evidence seems to show that humans had common sleep patterns which were quite unlike today's eight hours of unbroken sleep each night. People habitually went to bed early, soon after <span class="question-wrapper">24 <input class="letter-input" id="q24" data-answer="sunset" placeholder=" " style="width:100px;"> <span class="eye-icon" data-question="24">👁️</span></span>, slept for a while, then woke up for a few hours of activity or perhaps to consider, for example, the meaning of <span class="question-wrapper">25 <input class="letter-input" id="q25" data-answer="dreams" placeholder=" " style="width:100px;"> <span class="eye-icon" data-question="25">👁️</span></span>. There was little else to do at home in the dark, since what little means of lighting they had, such as using candles, was costly. In 16th-century Europe, people tended to stay at home at night because they feared <span class="question-wrapper">26 <input class="letter-input" id="q26" data-answer="thieves" placeholder=" " style="width:100px;"> <span class="eye-icon" data-question="26">👁️</span></span> in large cities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- Explanation Panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header"><span id="explanationTitle">Giải thích</span><span class="close-btn" id="closeExplanation">✕ Đóng</span></div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
+    </div>
+</div>
+
+<script>
+    // ==================== GLOBAL VARIABLES ====================
+    let examSubmitted = false;
+    let explanationMode = false;
+    let startTime = Date.now();
+    let readingMode = false;
+    let timerRunning = true;
+    let timeLeft = 3600;
+    const timerEl = document.getElementById('timerDisplay');
+    let timerInterval;
+    let selectedRange = null;
+
+    // ANSWER KEY based on explanation file (Test 4 Explanation.docx)
+    const answerKey = {
+        q14: 'vii', q15: 'v', q16: 'i', q17: 'vi', q18: 'iii',
+        q19: 'C', q20: 'E', q21: 'B', q22: 'B', q23: 'D',
+        q24: 'sunset', q25: 'dreams', q26: 'thieves'
+    };
+
+    // ==================== LOCATIONS WITH KEYWORDS (copied from explanation) ====================
+    const answerLocations = {
+        q14: { text: "In the early 1990s, psychiatrist Thomas Wehr conducted research which implies that Wehr kept a group of people in a darkened room for 14 hours a day for a month. It took some time for their sleep to regulate, but by the fourth week the subjects had settled into a very distinct sleeping pattern. Firstly, they slept four hours, then woke for one or two hours before falling into a second four-hour sleep.", keywords: ["Thomas Wehr", "darkened room", "four hours", "second four-hour"] },
+        q15: { text: "Ekirch’s research found more than 500 references to a segmented sleeping pattern - in diaries, court recorders, medical books and literature, from the ancient Greeks to tribes in Nigeria.", keywords: ["500 references", "diaries", "court recorders", "literature"] },
+        q16: { text: "Ekirch attributes the initial shift to improvements in street and home lighting. As the night became a time for all kinds of activity, the length of time people used for rest declined.", keywords: ["improvements in street and home lighting", "shift", "declined"] },
+        q17: { text: "Ekirch believes many sleeping problems may have roots in the human body’s natural preference for divided sleep, as well as in difficulties caused by extended exposure to artificial light in the modern world. This could be the cause of a condition called sleep maintenance insomnia, where people wake during the night and have trouble getting back to sleep.", keywords: ["sleep maintenance insomnia", "trouble getting back to sleep"] },
+        q18: { text: "makes people who wake up in the night anxious, as this anxiety can itself discourage sleep and is likely to affect waking life too. Jacobs suggests that the waking period between sleeping, when people simply rested and relaxed, could have played an important part in the human capacity to regulate stress naturally. Russell Foster, a professor of circadian (body clock) neuroscience at Oxford University in the UK, shares this point of view. ‘Over 30% of the medical problems that doctors are faced with stem directly or indirectly from sleep", keywords: ["medical problems", "stress", "health issues"] },
+        q19: { text: "Craig Koslofsky suggested an explanation for this divided sleep pattern in Europe. ‘Associations with the night before the 17th century were not good,’ he writes. He goes on to explain that the streets of cities and towns at night were often populated by thieves or worse.", keywords: ["thieves", "scared", "criminal danger"] },
+        q20: { text: "‘Over 30% of the medical problems that doctors are faced with stem directly or indirectly from sleep. But sleep has been ignored in medical training, and there are very few countries where sleep is studied,’ Foster says. He feels this needs to change", keywords: ["medical training", "needs to change"] },
+        q21: { text: "During the waking period, people could be quite active. They sometimes got up and moved around the house, although most people stayed in bed, and perhaps read or wrote if they had enough money for candles. In many historic accounts, Ekirch found that people used the time that they were awake between periods of sleep to think about and attempt to analyse their dreams.", keywords: ["waking period", "active", "read or wrote", "analyse their dreams"] },
+        q22: { text: "In 1667, Paris became the first city in the world to light its streets, using wax candles in glass lamps. It was followed by another French city, Lille, in the same year and by Amsterdam in Holland two years later, where a much more efficient oil-powered lamp was developed. London didn’t light its streets until 1584, but by the end of the 17th century, more than 50 of Europe’s major towns and cities were lit at night. Coffee houses emerged as a fashionable phenomenon and many were open virtually around the clock. Going out at night became commonplace, and spending hours lying in bed was considered a waste of time. ‘People were becoming increasingly time-conscious and sensitive to efficiency, certainly before the 19th century,’ says Ekirch. But the Industrial Revolution intensified that attitude considerably. Strong evidence of this shifting attitude is contained in a medical journal from 1829 which urged parents to force their children out of the pattern of first and second sleep", keywords: ["improvements in street and home lighting", "lit at night", "increasingly time-conscious and sensitive to efficiency", "shifting attitude", "force their children out of the pattern of first and second sleep"] },
+        q23: { text: "Sleep psychologist, Gregg Jacobs, says that the idea that we must sleep for an extended period of time could be changing. If it makes people who wake up in the night anxious, as this anxiety can itself discourage sleep and is likely to affect waking life too.", keywords: ["anxious", "anxiety", "discourage sleep"] },
+        q24: { text: "first sleep which began not long following sunset", keywords: ["sunset"] },
+        q25: { text: "In many historic accounts, Ekirch found that people used the time that they were awake between periods of sleep to think about and attempt to analyse their dreams.", keywords: ["dreams"] },
+        q26: { text: "He goes on to explain that the streets of cities and towns at night were often populated by thieves or worse.", keywords: ["thieves"] }
+    };
+
+    // ==================== EXPLANATIONS from file ====================
+    const explanations = {
+        q14: "<strong>Đáp án: vii (Scientific evidence that divided sleep is a natural phenomenon)</strong><br><br><strong>Giải thích:</strong> Đoạn A mô tả thí nghiệm của Thomas Wehr (darkened room) chứng minh giấc ngủ tự nhiên là 4+4, có bằng chứng khoa học.",
+        q15: "<strong>Đáp án: v (An analysis of old documents to discover deep patterns)</strong><br><br><strong>Giải thích:</strong> Ekirch phân tích hơn 500 tài liệu lịch sử (diaries, court records, literature) để phát hiện kiểu ngủ hai đoạn.",
+        q16: "<strong>Đáp án: i (Historical reasons why interrupted sleep became uncommon)</strong><br><br><strong>Giải thích:</strong> Đoạn C nêu lý do lịch sử: ánh sáng đường phố, quán cà phê, công nghiệp hóa khiến ngủ liền mạch phổ biến.",
+        q17: "<strong>Đáp án: vi (Biological and environmental factors preventing people from falling asleep again)</strong><br><br><strong>Giải thích:</strong> Ekirch liên hệ 'sleep maintenance insomnia' với preference for divided sleep và ánh sáng nhân tạo.",
+        q18: "<strong>Đáp án: iii (Potential health issues related to sleep)</strong><br><br><strong>Giải thích:</strong> Jacobs nói về stress, Foster nói 30% vấn đề y tế liên quan giấc ngủ → vấn đề sức khỏe.",
+        q19: "<strong>Đáp án: C (Craig Koslofsky)</strong><br><br><strong>Giải thích:</strong> Koslofsky giải thích đường phố đầy trộm cướp (thieves) khiến người dân sợ hãi, liên quan đến giấc ngủ phân đoạn.",
+        q20: "<strong>Đáp án: E (Russell Foster)</strong><br><br><strong>Giải thích:</strong> Foster nói giấc ngủ bị bỏ qua trong đào tạo y khoa và cần thay đổi.",
+        q21: "<strong>Đáp án: B (Roger Ekirch)</strong><br><br><strong>Giải thích:</strong> Ekirch tìm thấy bằng chứng lịch sử về việc dùng thời gian thức giữa đêm để đọc, viết, phân tích giấc mơ.",
+        q22: "<strong>Đáp án: B (Roger Ekirch)</strong><br><br><strong>Giải thích:</strong> Ekirch cho rằng cải thiện ánh sáng đường phố và nhà ở đã thay đổi kiểu ngủ.",
+        q23: "<strong>Đáp án: D (Gregg Jacobs)</strong><br><br><strong>Giải thích:</strong> Jacobs nói lo lắng vì thức giấc giữa đêm có thể gây hại tâm lý.",
+        q24: "<strong>Đáp án: sunset</strong><br><br><strong>Giải thích:</strong> 'first sleep which began not long following sunset'.",
+        q25: "<strong>Đáp án: dreams</strong><br><br><strong>Giải thích:</strong> 'people used the time ... to think about and attempt to analyse their dreams'.",
+        q26: "<strong>Đáp án: thieves</strong><br><br><strong>Giải thích:</strong> 'streets ... were often populated by thieves or worse'."
+    };
+
+    // ==================== TIMER ====================
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (!examSubmitted && timerRunning && timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60), secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }
+        }, 1000);
+    }
+
+    // ==================== READING MODE TOGGLE ====================
+    const testWrapper = document.getElementById('testWrapper');
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    document.getElementById('readingModeToggle').addEventListener('click', () => {
+        readingMode = !readingMode;
+        testWrapper.classList.toggle('reading-mode');
+        toggleSwitch.classList.toggle('active');
+    });
+
+    // ==================== FONT SIZE CONTROLS ====================
+    document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+    document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+    document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+    function setFontSize(size) {
+        document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+        document.getElementById('readingContent').className = `reading-text font-${size}`;
+        document.getElementById('questionsContent').className = `questions-list font-${size}`;
+    }
+
+    // ==================== RESIZE COLUMNS ====================
+    const readingPanel = document.getElementById('readingPanel'), questionsPanel = document.getElementById('questionsPanel'), resizer = document.getElementById('resizer');
+    let isResizing = false;
+    resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'col-resize'; });
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('mainArea'), rect = mainArea.getBoundingClientRect();
+        let w = e.clientX - rect.left - 4;
+        w = Math.max(250, Math.min(rect.width - 250, w));
+        readingPanel.style.width = w + 'px';
+        questionsPanel.style.width = (rect.width - w - 8) + 'px';
+    });
+    document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = 'default'; });
+
+    // ==================== NAVIGATION BUTTONS ====================
+    function createNavButtons() {
+        const nav = document.getElementById('navButtons');
+        nav.innerHTML = '';
+        for (let i = 14; i <= 26; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn unanswered';
+            btn.textContent = i;
+            btn.setAttribute('data-question', i);
+            btn.addEventListener('click', function() {
+                const q = this.getAttribute('data-question');
+                scrollToQuestion(q);
+                document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+                this.classList.add('active');
+            });
+            nav.appendChild(btn);
+        }
+    }
+    function scrollToQuestion(q) {
+        if (q <= 18) {
+            const row = document.getElementById(`drop-row-${q}`);
+            if (row) { row.scrollIntoView({behavior:'smooth', block:'center'}); row.classList.add('question-highlight'); setTimeout(()=>row.classList.remove('question-highlight'),1500); }
+        } else {
+            const item = document.getElementById(`q${q}-item`) || document.getElementById(`q${q}`)?.closest('.question-item');
+            if (item) { item.scrollIntoView({behavior:'smooth', block:'center'}); item.classList.add('question-highlight'); setTimeout(()=>item.classList.remove('question-highlight'),1500); }
+        }
+    }
+
+    // ==================== GET USER ANSWER ====================
+    function getUserAnswer(q) {
+        if (q <= 18) {
+            const slot = document.getElementById(`displayDrop${q}`);
+            return slot ? slot.getAttribute('data-selected') : null;
+        } else {
+            const input = document.getElementById(`q${q}`);
+            return input ? input.value.trim().toLowerCase() || null : null;
+        }
+    }
+
+    // ==================== UPDATE ANSWER COUNT ====================
+    function updateAnswerCount() {
+        let ans = 0;
+        for (let i=14; i<=26; i++) if (getUserAnswer(i)) ans++;
+        document.getElementById('answeredCount').textContent = `${ans}/13 answered`;
+        document.getElementById('progressDisplay').textContent = `Đã làm: ${ans}/13`;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            let q = btn.getAttribute('data-question');
+            btn.classList.remove('answered','unanswered');
+            btn.classList.add(getUserAnswer(q) ? 'answered' : 'unanswered');
+        });
+    }
+
+    // ==================== DRAG & DROP HEADINGS ====================
+    const headings = document.querySelectorAll('.heading-item');
+    let draggedItem = null;
+    headings.forEach(h => {
+        h.addEventListener('dragstart', e => { draggedItem = h; h.classList.add('dragging'); e.dataTransfer.setData('text/plain', h.getAttribute('data-value')); });
+        h.addEventListener('dragend', () => h.classList.remove('dragging'));
+    });
+    document.querySelectorAll('.drop-slot').forEach(slot => {
+        slot.addEventListener('dragover', e=>e.preventDefault());
+        slot.addEventListener('drop', e => {
+            e.preventDefault();
+            if (!draggedItem) return;
+            const val = draggedItem.getAttribute('data-value');
+            const txt = draggedItem.textContent;
+            const q = slot.id.replace(/\D/g,'');
+            const readingSlot = document.getElementById(`drop${q}`), displaySlot = document.getElementById(`displayDrop${q}`);
+            [readingSlot, displaySlot].forEach(s => {
+                if (s) {
+                    const old = s.querySelector('.slot-content').textContent;
+                    if (old) [...headings].find(h=>h.textContent===old)?.classList.remove('hidden');
+                    s.querySelector('.slot-content').textContent = txt;
+                    s.setAttribute('data-selected', val);
+                    s.querySelector('.remove-chip').style.display = 'inline';
+                }
+            });
+            draggedItem.classList.add('hidden');
+            updateAnswerCount();
+        });
+    });
+    document.querySelectorAll('.remove-chip').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const slot = this.closest('.drop-slot');
+            const txt = slot.querySelector('.slot-content').textContent;
+            const q = slot.id.replace(/\D/g,'');
+            const readingSlot = document.getElementById(`drop${q}`), displaySlot = document.getElementById(`displayDrop${q}`);
+            [readingSlot, displaySlot].forEach(s => {
+                if (s) { s.querySelector('.slot-content').textContent=''; s.removeAttribute('data-selected'); s.querySelector('.remove-chip').style.display='none'; }
+            });
+            [...headings].find(h=>h.textContent===txt)?.classList.remove('hidden');
+            updateAnswerCount();
+        });
+    });
+    document.querySelectorAll('.letter-input').forEach(inp => inp.addEventListener('input', updateAnswerCount));
+
+    // ==================== HELPER: FIND NODE AND OFFSET (copy từ code Lean Production) ====================
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) {
+                return { node, offset: targetPos - currentPos.value };
+            }
+            currentPos.value += len;
+        } else {
+            for (let child of node.childNodes) {
+                const result = findNodeAndOffset(child, targetPos, currentPos);
+                if (result) return result;
+            }
+        }
+        return null;
+    }
+
+    // ==================== CLEAR HIGHLIGHTS ====================
+    function clearAllHighlights() {
+        document.querySelectorAll('.dynamic-highlight, .keyword-highlight').forEach(el => {
+            const p = el.parentNode;
+            while (el.firstChild) p.insertBefore(el.firstChild, el);
+            p.removeChild(el);
+        });
+        document.querySelectorAll('.question-highlight').forEach(el => el.classList.remove('question-highlight'));
+        document.querySelectorAll('.eye-icon.active').forEach(ic => ic.classList.remove('active'));
+    }
+
+    // ==================== HIGHLIGHT ANSWER LOCATION (copy từ code Lean Production) ====================
+    function highlightAnswerLocation(questionNum) {
+        clearAllHighlights();
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
+
+        // Highlight câu hỏi
+        if (questionNum <= 18) {
+            const dropRow = document.getElementById(`drop-row-${questionNum}`);
+            if (dropRow) { dropRow.classList.add('question-highlight'); setTimeout(()=>dropRow.scrollIntoView({behavior:'smooth', block:'center'}),100); }
+        } else {
+            const element = document.getElementById(`q${questionNum}-item`) || document.getElementById(`q${questionNum}`)?.closest('.question-item');
+            if (element) { element.classList.add('question-highlight'); setTimeout(()=>element.scrollIntoView({behavior:'smooth', block:'center'}),100); }
+        }
+        const currentEyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (currentEyeIcon) currentEyeIcon.classList.add('active');
+
+        // Highlight trong bài đọc
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
+        for (let p of paragraphs) {
+            if (loc.text && p.textContent.includes(loc.text)) {
+                try {
+                    const text = p.textContent;
+                    const startIdx = text.indexOf(loc.text);
+                    let currentPos = {value: 0};
+                    const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                    currentPos = {value: 0};
+                    const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                    if (startNodeInfo && endNodeInfo) {
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                        range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                        const span = document.createElement('span'); span.className = 'dynamic-highlight';
+                        range.surroundContents(span);
+                        setTimeout(() => {
+                            if (loc.keywords && loc.keywords.length) {
+                                let html = span.innerHTML;
+                                loc.keywords.forEach(kw => {
+                                    try {
+                                        const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                        const regex = new RegExp(`(${escaped})`, 'gi');
+                                        html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
+                                    } catch (e) {}
+                                });
+                                span.innerHTML = html;
+                            }
+                        }, 50);
+                        setTimeout(() => span.scrollIntoView({behavior:'smooth', block:'center'}), 300);
+                        return true;
+                    }
+                } catch (e) { console.log('Lỗi highlight:', e); }
+                break;
+            }
+        }
+        // fallback
+        for (let p of paragraphs) {
+            for (let kw of loc.keywords) {
+                if (p.textContent.includes(kw)) {
+                    try { p.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // ==================== SHOW EXPLANATION ====================
+    function showExplanation(questionNum) {
+        if (!explanationMode && !examSubmitted) return;
+        highlightAnswerLocation(questionNum);
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+        let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+        if (examSubmitted) {
+            const user = getUserAnswer(questionNum);
+            const correct = answerKey[`q${questionNum}`];
+            const isCorrect = user && user.toString().toLowerCase().trim() === correct.toString().toLowerCase().trim();
+            html += `<div class="answer-feedback ${isCorrect?'correct':'incorrect'}" style="margin-top:10px;padding:10px;"><strong>Câu trả lời của bạn:</strong> ${user||'(chưa có)'}<br>`;
+            if (!isCorrect && correct) html += `<strong>Đáp án đúng:</strong> ${correct}`;
+            else if (isCorrect) html += `<strong>✅ Đúng!</strong>`;
+            html += `</div>`;
+        }
+        document.getElementById('explanationText').innerHTML = html;
+        if (explanationMode && examSubmitted) {
+            document.querySelectorAll('.correct-answer-badge').forEach(b=>b.remove());
+            if (questionNum <= 18) {
+                const row = document.getElementById(`drop-row-${questionNum}`);
+                if (row) {
+                    const cor = answerKey[`q${questionNum}`];
+                    const slot = row.querySelector('.slot-content');
+                    if (slot && !slot.querySelector('.correct-answer-badge')) {
+                        const b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=cor; slot.appendChild(b);
+                    }
+                }
+            } else {
+                const inp = document.getElementById(`q${questionNum}`);
+                if (inp) {
+                    const cor = answerKey[`q${questionNum}`];
+                    const b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=cor;
+                    inp.parentNode.appendChild(b);
+                }
+            }
+        }
+    }
+
+    // ==================== SETUP EYE ICONS ====================
+    document.querySelectorAll('.eye-icon').forEach(ic => ic.addEventListener('click', e => { e.stopPropagation(); showExplanation(ic.getAttribute('data-question')); }));
+    document.getElementById('closeExplanation').addEventListener('click', ()=>{ document.getElementById('explanationPanel').classList.remove('show'); clearAllHighlights(); });
+
+    // ==================== MARK ANSWERS ====================
+    function markAnswers() {
+        for (let i=14; i<=18; i++) {
+            let slot = document.getElementById(`displayDrop${i}`);
+            if (!slot) continue;
+            let sel = slot.getAttribute('data-selected');
+            let cor = answerKey[`q${i}`];
+            slot.style.border = sel ? (sel===cor ? '3px solid #4CAF50' : '3px solid #f44336') : '3px solid #f44336';
+            let old = slot.querySelector('.correct-answer-badge');
+            if (old) old.remove();
+            if (!sel || sel!==cor) {
+                let b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=cor;
+                slot.querySelector('.slot-content').appendChild(b);
+            }
+        }
+        for (let i=19; i<=26; i++) {
+            let inp = document.getElementById(`q${i}`);
+            if (!inp) continue;
+            let ans = inp.value.trim().toLowerCase();
+            let cor = answerKey[`q${i}`].toLowerCase();
+            inp.classList.remove('correct','incorrect-marked');
+            let wrapper = inp.closest('.question-wrapper');
+            wrapper?.querySelector('.correct-answer-badge')?.remove();
+            if (ans) {
+                if (ans===cor) inp.classList.add('correct');
+                else { inp.classList.add('incorrect-marked'); let b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=answerKey[`q${i}`]; wrapper?.appendChild(b); }
+            } else { inp.classList.add('incorrect-marked'); let b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=answerKey[`q${i}`]; wrapper?.appendChild(b); }
+        }
+    }
+
+    // ==================== CALCULATE RESULTS ====================
+    function calcResults() {
+        let correct = 0;
+        for (let i=14; i<=26; i++) {
+            let u = getUserAnswer(i);
+            let c = answerKey[`q${i}`];
+            if (u && (i<=18 ? u===c : u.toLowerCase()===c.toLowerCase())) correct++;
+        }
+        let total=13, pct=Math.round(correct/total*100);
+        let taken = Math.floor((Date.now()-startTime)/1000);
+        let m=Math.floor(taken/60), s=taken%60;
+        return {correct, total, pct, time:`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`};
+    }
+
+    // ==================== SUBMIT ====================
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (examSubmitted) return;
+        let un = [];
+        for (let i=14; i<=26; i++) if (!getUserAnswer(i)) un.push(i);
+        if (un.length && !confirm(`Bạn còn ${un.length} câu chưa làm. Nộp bài?`)) return;
+        examSubmitted = true;
+        timerRunning = false;
+        clearInterval(timerInterval);
+        markAnswers();
+        let res = calcResults();
+        document.getElementById('resultStats').style.display = 'inline-block';
+        document.getElementById('resultStats').textContent = `Kết quả: ${res.correct}/${res.total} (${res.pct}%) - Thời gian: ${res.time}`;
+        document.getElementById('explainBtn').disabled = false;
+        document.getElementById('submitBtn').disabled = true; document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = 'KẾT QUẢ';
+        document.getElementById('explanationText').innerHTML = `<h4>Đã nộp bài</h4><p>Đúng: ${res.correct}/${res.total} (${res.pct}%)</p><p>Thời gian: ${res.time}</p><p>Nhấn 'Xem giải thích' và 👁️ để xem chi tiết.</p>`;
+    });
+
+    // ==================== EXPLAIN MODE ====================
+    document.getElementById('explainBtn').addEventListener('click', function() {
+        if (!examSubmitted) return;
+        explanationMode = true;
+        document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'inline-block');
+        this.disabled = true; this.textContent = 'Đang xem giải thích';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // ==================== RESET ====================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (!confirm('Reset tất cả?')) return;
+        examSubmitted = false; explanationMode = false; startTime = Date.now(); timeLeft = 3600;
+        for (let i=14; i<=18; i++) {
+            ['drop','displayDrop'].forEach(prefix => {
+                let s = document.getElementById(prefix+i);
+                if (s) { s.querySelector('.slot-content').textContent=''; s.removeAttribute('data-selected'); s.querySelector('.remove-chip').style.display='none'; s.style.border=''; }
+            });
+        }
+        headings.forEach(h=>h.classList.remove('hidden'));
+        for (let i=19; i<=26; i++) {
+            let inp = document.getElementById(`q${i}`);
+            if (inp) { inp.value=''; inp.classList.remove('correct','incorrect-marked'); inp.closest('.question-wrapper')?.querySelector('.correct-answer-badge')?.remove(); }
+        }
+        document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'none');
+        document.getElementById('submitBtn').disabled = false; document.getElementById('submitBtn').textContent = 'Nộp bài';
+        document.getElementById('explainBtn').disabled = true; document.getElementById('explainBtn').textContent = 'Xem giải thích';
+        document.getElementById('resultStats').style.display = 'none';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+        updateAnswerCount();
+    });
+
+    // ==================== RIGHT-CLICK HIGHLIGHT ====================
+    const contextMenu = document.getElementById('contextMenu');
+    document.getElementById('readingContent').addEventListener('contextmenu', e => {
+        e.preventDefault(); let s = window.getSelection(); if (!s.toString().trim()) return;
+        selectedRange = s.getRangeAt(0); contextMenu.style.display = 'block'; contextMenu.style.left = e.pageX + 'px'; contextMenu.style.top = e.pageY + 'px';
+    });
+    document.getElementById('questionsContent').addEventListener('contextmenu', e => {
+        e.preventDefault(); let s = window.getSelection(); if (!s.toString().trim()) return;
+        selectedRange = s.getRangeAt(0); contextMenu.style.display = 'block'; contextMenu.style.left = e.pageX + 'px'; contextMenu.style.top = e.pageY + 'px';
+    });
+    document.addEventListener('click', ()=>contextMenu.style.display='none');
+    window.applyHighlight = (c) => { if(selectedRange){ let sp=document.createElement('span'); sp.className='highlight-'+c; try{ selectedRange.surroundContents(sp); }catch(e){ alert('Không highlight được đoạn này.'); } contextMenu.style.display='none'; selectedRange=null; }};
+    window.removeHighlight = () => { if(selectedRange){ let r=selectedRange.cloneRange(); document.querySelectorAll('.highlight-yellow,.highlight-green,.highlight-pink').forEach(h=>{ if(r.intersectsNode(h)){ let p=h.parentNode; while(h.firstChild)p.insertBefore(h.firstChild,h); p.removeChild(h); }}); window.getSelection().removeAllRanges(); contextMenu.style.display='none'; selectedRange=null; }};
+
+    // ==================== AUTO-RESIZE INPUTS (giữ nguyên từ code Lean Production) ====================
+    function autoResizeInput(input) {
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden'; tempSpan.style.position = 'absolute'; tempSpan.style.whiteSpace = 'pre';
+        tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily;
+        tempSpan.style.fontSize = window.getComputedStyle(input).fontSize;
+        tempSpan.style.fontWeight = window.getComputedStyle(input).fontWeight;
+        tempSpan.style.padding = window.getComputedStyle(input).padding;
+        tempSpan.style.border = window.getComputedStyle(input).border;
+        document.body.appendChild(tempSpan);
+        function updateWidth() {
+            let value = input.value || ' ';
+            tempSpan.textContent = value;
+            let width = tempSpan.offsetWidth + 20;
+            input.style.width = Math.max(60, Math.min(300, width)) + 'px';
+        }
+        updateWidth();
+        input.addEventListener('input', updateWidth);
+        input.addEventListener('change', updateWidth);
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['q19','q20','q21','q22','q23','q24','q25','q26'].map(id=>document.getElementById(id));
+        inputs.forEach(input => { if (input) autoResizeInput(input); });
+    });
+
+    // ==================== INIT ====================
+    createNavButtons();
+    updateAnswerCount();
+    document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+    startTimer();
+</script>
+<!-- ==================== THÊM PHẦN NÀY VÀO CUỐI FILE ==================== -->
+<script>
+// ==================== THÊM 2 DÒNG NÀY ====================
+// Khai báo vol và test hiện tại
+let currentVol = 7;   // Vol hiện tại (1-7)
+let currentTest = 4;  // Test hiện tại (1-10)
+
+// Hàm lưu dữ liệu vào localStorage với key động
+function saveToDashboard() {
+    // Kiểm tra xem đã nộp bài chưa
+    if (!examSubmitted) return;
+    
+    // Thu thập dữ liệu từ passage 2
+    const passageData = {
+        passageId: 2,
+        name: 'The Myth of the Eight-hour Sleep',
+        totalQuestions: 13,
+        correctCount: 0,
+        timeSpent: document.getElementById('timerDisplay').textContent,
+        details: []
+    };
+    
+    // Đếm số câu đúng và thu thập chi tiết
+    let correctCount = 0;
+    
+    // Câu 14-18 (headings)
+    for (let i = 14; i <= 18; i++) {
+        const slot = document.getElementById(`displayDrop${i}`);
+        const selected = slot ? slot.getAttribute('data-selected') : null;
+        const correctAnswer = answerKey[`q${i}`];
+        const isCorrect = selected === correctAnswer;
+        
+        if (isCorrect) correctCount++;
+        
+        passageData.details.push({
+            question: i,
+            user: selected || '(trống)',
+            correct: correctAnswer,
+            isCorrect: isCorrect
+        });
+    }
+    
+    // Câu 19-23 (matching researchers)
+    for (let i = 19; i <= 23; i++) {
+        const input = document.getElementById(`q${i}`);
+        if (input) {
+            const userAnswer = input.value.trim().toUpperCase();
+            const correctAnswer = answerKey[`q${i}`];
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    // Câu 24-26 (summary completion)
+    for (let i = 24; i <= 26; i++) {
+        const input = document.getElementById(`q${i}`);
+        if (input) {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = answerKey[`q${i}`].toLowerCase();
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: answerKey[`q${i}`],
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    passageData.correctCount = correctCount;
+    
+    // Tạo key động dựa trên vol và test
+    const key = `ielts_vol${currentVol}_test${currentTest}_passage_2`;
+    localStorage.setItem(key, JSON.stringify(passageData));
+    
+    console.log(`Đã lưu dữ liệu passage 2 vào dashboard với key: ${key}`);
+}
+
+// Ghi đè sự kiện nộp bài để lưu dữ liệu sau khi submit
+const originalSubmitHandler = document.getElementById('submitBtn').onclick;
+document.getElementById('submitBtn').onclick = function() {
+    // Gọi hàm submit gốc
+    if (typeof originalSubmitHandler === 'function') {
+        originalSubmitHandler.call(this);
+    }
+    // Lưu dữ liệu sau khi submit
+    setTimeout(saveToDashboard, 500);
+};
+
+console.log('Passage 2 đã sẵn sàng để lưu dữ liệu vào dashboard với vol/test động');
+</script>
+<!-- ==================== KẾT THÚC PHẦN THÊM ==================== -->
+</body>
+</html>

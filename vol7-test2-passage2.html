@@ -1847,5 +1847,123 @@
         });
     });
 </script>
+<!-- ==================== THÊM PHẦN NÀY VÀO CUỐI FILE ==================== -->
+<script>
+// ==================== THÊM 2 DÒNG NÀY ====================
+// Khai báo vol và test hiện tại
+let currentVol = 7;   // Vol hiện tại (1-7)
+let currentTest = 2;  // Test hiện tại (1-10)
+
+// Hàm lưu dữ liệu vào localStorage với key động
+function saveToDashboard() {
+    // Kiểm tra xem đã nộp bài chưa
+    if (!examSubmitted) return;
+    
+    // Thu thập dữ liệu từ passage 2
+    const passageData = {
+        passageId: 2,
+        name: 'Playing with science',
+        totalQuestions: 13,
+        correctCount: 0,
+        timeSpent: document.getElementById('timerDisplay').textContent,
+        details: []
+    };
+    
+    // Đếm số câu đúng và thu thập chi tiết
+    let correctCount = 0;
+    
+    // Câu 14-20 (matching paragraphs)
+    for (let i = 14; i <= 20; i++) {
+        const input = document.getElementById(`q${i}`);
+        if (input) {
+            const userAnswer = input.value.trim().toUpperCase();
+            const correctAnswer = answerKey[`q${i}`];
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    // Câu 21 (MCQ)
+    const selected21 = document.querySelector('input[name="q21"]:checked');
+    const userAnswer21 = selected21 ? selected21.value : null;
+    const correctAnswer21 = answerKey.q21;
+    // Câu 21 có thể chọn A hoặc C đều đúng
+    const isCorrect21 = userAnswer21 && (userAnswer21 === 'A' || userAnswer21 === 'C');
+    
+    if (isCorrect21) correctCount++;
+    
+    passageData.details.push({
+        question: 21,
+        user: userAnswer21 || '(trống)',
+        correct: 'A hoặc C',
+        isCorrect: isCorrect21
+    });
+    
+    // Câu 22 (MCQ)
+    const selected22 = document.querySelector('input[name="q22"]:checked');
+    const userAnswer22 = selected22 ? selected22.value : null;
+    const correctAnswer22 = answerKey.q22;
+    // Câu 22 có thể chọn A hoặc C đều đúng
+    const isCorrect22 = userAnswer22 && (userAnswer22 === 'A' || userAnswer22 === 'C');
+    
+    if (isCorrect22) correctCount++;
+    
+    passageData.details.push({
+        question: 22,
+        user: userAnswer22 || '(trống)',
+        correct: 'A hoặc C',
+        isCorrect: isCorrect22
+    });
+    
+    // Câu 23-26 (summary)
+    for (let i = 23; i <= 26; i++) {
+        const input = document.getElementById(`q${i}`);
+        if (input) {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = answerKey[`q${i}`].toLowerCase();
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: answerKey[`q${i}`],
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    passageData.correctCount = correctCount;
+    
+    // Tạo key động dựa trên vol và test
+    const key = `ielts_vol${currentVol}_test${currentTest}_passage_2`;
+    localStorage.setItem(key, JSON.stringify(passageData));
+    
+    console.log(`Đã lưu dữ liệu passage 2 vào dashboard với key: ${key}`);
+}
+
+// Ghi đè sự kiện nộp bài để lưu dữ liệu sau khi submit
+const originalSubmitHandler = document.getElementById('submitBtn').onclick;
+document.getElementById('submitBtn').onclick = function() {
+    // Gọi hàm submit gốc
+    if (typeof originalSubmitHandler === 'function') {
+        originalSubmitHandler.call(this);
+    }
+    // Lưu dữ liệu sau khi submit
+    setTimeout(saveToDashboard, 500);
+};
+
+console.log('Passage 2 đã sẵn sàng để lưu dữ liệu vào dashboard với vol/test động');
+</script>
+<!-- ==================== KẾT THÚC PHẦN THÊM ==================== -->
 </body>
 </html>

@@ -1833,5 +1833,123 @@
     
     startTimer();
 </script>
+<!-- ==================== THÊM PHẦN NÀY VÀO CUỐI FILE ==================== -->
+<script>
+// ==================== THÊM 2 DÒNG NÀY ====================
+// Khai báo vol và test hiện tại
+let currentVol = 7;   // Vol hiện tại (1-7)
+let currentTest = 1;  // Test hiện tại (1-10)
+
+// Hàm lưu dữ liệu vào localStorage với key động
+function saveToDashboard() {
+    // Kiểm tra xem đã nộp bài chưa
+    if (!examSubmitted) return;
+    
+    // Thu thập dữ liệu từ passage 3
+    const passageData = {
+        passageId: 3,
+        name: 'Neanderthal Technology',
+        totalQuestions: 14,
+        correctCount: 0,
+        timeSpent: document.getElementById('timerDisplay').textContent,
+        details: []
+    };
+    
+    // Đếm số câu đúng và thu thập chi tiết
+    let correctCount = 0;
+    
+    // Câu 27-31 (headings)
+    for (let i = 27; i <= 31; i++) {
+        const slot = document.getElementById(`drop${i}`);
+        const selected = slot ? slot.getAttribute('data-selected') : null;
+        const correctAnswer = answerKey[`q${i}`];
+        const isCorrect = selected === correctAnswer;
+        
+        if (isCorrect) correctCount++;
+        
+        passageData.details.push({
+            question: i,
+            user: selected || '(trống)',
+            correct: correctAnswer,
+            isCorrect: isCorrect
+        });
+    }
+    
+    // Câu 32-36 (matching)
+    for (let i = 32; i <= 36; i++) {
+        const select = document.getElementById(`q${i}`);
+        if (select) {
+            const userAnswer = select.value;
+            const correctAnswer = answerKey[`q${i}`];
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    // Câu 37-39 (summary)
+    for (let i = 37; i <= 39; i++) {
+        const input = document.getElementById(`q${i}`);
+        if (input) {
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = answerKey[`q${i}`];
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
+        }
+    }
+    
+    // Câu 40 (MCQ)
+    const selected40 = document.querySelector(`input[name="q40"]:checked`);
+    const userAnswer40 = selected40 ? selected40.value : null;
+    const correctAnswer40 = answerKey.q40;
+    const isCorrect40 = userAnswer40 === correctAnswer40;
+    
+    if (isCorrect40) correctCount++;
+    
+    passageData.details.push({
+        question: 40,
+        user: userAnswer40 || '(trống)',
+        correct: correctAnswer40,
+        isCorrect: isCorrect40
+    });
+    
+    passageData.correctCount = correctCount;
+    
+    // Tạo key động dựa trên vol và test
+    const key = `ielts_vol${currentVol}_test${currentTest}_passage_3`;
+    localStorage.setItem(key, JSON.stringify(passageData));
+    
+    console.log(`Đã lưu dữ liệu passage 3 vào dashboard với key: ${key}`);
+}
+
+// Ghi đè sự kiện nộp bài để lưu dữ liệu sau khi submit
+const originalSubmitHandler = document.getElementById('submitBtn').onclick;
+document.getElementById('submitBtn').onclick = function() {
+    // Gọi hàm submit gốc
+    if (typeof originalSubmitHandler === 'function') {
+        originalSubmitHandler.call(this);
+    }
+    // Lưu dữ liệu sau khi submit
+    setTimeout(saveToDashboard, 500);
+};
+
+console.log('Passage 3 đã sẵn sàng để lưu dữ liệu vào dashboard với vol/test động');
+</script>
+<!-- ==================== KẾT THÚC PHẦN THÊM ==================== -->
 </body>
 </html>
