@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOL 7 - Reading Test 5 - Passage 1 - Reef fish study</title>
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        /* Header */
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+        }
+        .candidate { background: #2d4b77; padding: 4px 16px; border-radius: 30px; font-size: 14px; }
+        .question-types { background: #0f2a44; padding: 4px 16px; border-radius: 30px; font-size: 13px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 6px 20px; border-radius: 40px; font-size: 22px; font-family: monospace; border: 1px solid #e6b422; }
+
+        /* Reading Mode Toggle */
+        .reading-mode-toggle {
+            display: flex; align-items: center; gap: 8px; background: #2d4b77; padding: 4px 12px; border-radius: 30px; cursor: pointer;
+        }
+        .toggle-switch {
+            width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422;
+        }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s;
+        }
+        .toggle-switch.active::after { left: 22px; }
+
+        /* Font Controls */
+        .font-controls {
+            display: flex; gap: 5px; background: #2d4b77; padding: 3px; border-radius: 30px;
+        }
+        .font-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        /* Question Navigator */
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn {
+            width: 32px; height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        /* Main Resizable Area */
+        .main-area {
+            display: flex; flex: 1; overflow: hidden;
+        }
+        .reading-panel {
+            width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .questions-panel {
+            width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .resizer {
+            width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s;
+        }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+        }
+        .reading-text {
+            flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px;
+        }
+        .reading-text p {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .questions-list {
+            flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px;
+            position: relative;
+        }
+
+        .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
+
+        /* Highlight colors */
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; display: inline; }
+        
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+            animation: highlightFadeIn 0.5s ease;
+        }
+        
+        @keyframes highlightFadeIn {
+            from { background-color: #fff; }
+            to { background-color: #f9e79f; }
+        }
+        
+        .keyword-highlight {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+            background-color: #fff3cd;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+        
+        .question-highlight { 
+            background-color: #fef9e7; 
+            border-left: 4px solid #f1c40f; 
+            padding-left: 10px; 
+        }
+
+        .context-menu {
+            position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px;
+        }
+        .context-menu div { padding: 8px 20px; cursor: pointer; transition: 0.2s; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+
+        .note-box {
+            background: #f0ebe0; border-left: 4px solid #e6b422; padding: 12px 15px; margin: 15px 0; font-style: italic;
+        }
+        
+        .questions-list p, .questions-list h3, .questions-list h4, .questions-list h5, .questions-list h6, 
+        .questions-list ul, .questions-list ol, .questions-list li {
+            margin-bottom: 12px;
+        }
+        
+        .questions-list h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+        
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+        }
+        
+        .questions-list li {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .tf-group { margin: 5px 0 15px 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .tf-option { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .tf-option.correct .tf-text { color: #4CAF50; font-weight: bold; }
+        .tf-option.incorrect .tf-text { color: #f44336; font-weight: bold; }
+
+        .question-wrapper { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 8px;
+            position: relative;
+        }
+        .question-number { font-weight: bold; color: #1e3a5f; margin-right: 5px; min-width: 25px; }
+
+        .fill-input {
+            padding: 5px 10px;
+            border: 1px solid #9a8c7a;
+            border-radius: 5px;
+            width: 140px;
+            font-size: 14px;
+            margin: 0 5px;
+            background: white;
+        }
+        .fill-input.correct {
+            border: 2px solid #4CAF50;
+            background-color: #e8f5e8;
+        }
+        .fill-input.incorrect {
+            border: 2px solid #f44336;
+            background-color: #ffebee;
+        }
+        
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: bold;
+            vertical-align: middle;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .eye-icon {
+            display: none;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #1e3a5f; color: white; }
+        .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; opacity: 0.6; }
+        
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { 
+            background: #a5d6a7; 
+            cursor: not-allowed; 
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .btn-danger { background: #f44336; color: white; }
+        .btn-danger:hover { background: #d32f2f; }
+        
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; }
+
+        .explanation-panel {
+            background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none;
+            z-index: 100;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; color: #666; }
+        .close-btn:hover { color: #1e3a5f; }
+
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+        .question-item.highlight-question {
+            border-left: 3px solid #f1c40f;
+            background-color: #fef9e7;
+        }
+        
+        /* Flow chart styling */
+        .flow-chart {
+            background: #f0ebe0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #b0aa9a;
+        }
+        .flow-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            gap: 15px;
+        }
+        .flow-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            min-width: 80px;
+        }
+        .flow-content {
+            flex: 1;
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #9a8c7a;
+        }
+        .flow-arrow {
+            font-size: 24px;
+            color: #e6b422;
+            margin: 0 10px;
+            text-align: center;
+        }
+        
+        /* Notes section */
+        .notes-section {
+            background: #f9f7f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #1e3a5f;
+        }
+        .notes-item {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        
+        .bold-text {
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 5 - Passage 1</div>
+            <div class="question-types">T/F/NG • Flow-chart • Notes</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- Question Navigator -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 1-13:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main Resizable Area -->
+    <div class="main-area" id="mainArea">
+        <!-- Reading Panel -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header">
+                <span>READING PASSAGE 1: Reef fish study</span>
+            </div>
+            <div class="reading-text font-medium" id="readingContent">
+                <h1>Reef fish study</h1>
+                <p><em>Tom Holmes examines the relationship between size and survival in fish on Australia's Great Barrier Reef</em></p>
+                
+                <p>It is a widely held belief among those who study animals that larger size conveys some form of advantage throughout life. The idea that certain body characteristics may influence a prey's ability to survive when being attacked by a predator has received considerable attention in the past, and has been applied to a wide range of both animals and habitats. Body size, weight, growth rate, overall condition, sensory development and escape speed have all been linked to survival. Of these, body size has received the most attention from researchers, which has subsequently led to the development of a number of theories on how this characteristic may influence the predator-prey relationship. One of the most popular of these is known as the 'bigger is better' hypothesis. This theory predicts that larger body size should increase an individual's ability to escape from a predator due to the characteristics associated with this, such as overall strength and visual development. Bigger is thought to be better, but is this always the case?</p>
+                
+                <p>Compared with other habitats and ecosystems, not a great deal is known about predator-prey relationships within tropical reef communities. What we do know is largely limited to predator identity and, to some extent, to what these predators eat. But what drives these interactions and how does body size influence the outcome? How would fish populations respond to the removal of certain predators from a reef fish community? It is precisely these questions that have led our research team to Lizard Island, in the northern sector of the Great Barrier Reef. We want to examine the predator-prey relationship during the 'early juvenile' or larval phase of tropical fish, and determine whether a predator's choice of prey is influenced by factors such as the prey's size, weight and swimming speed, as these characteristics vary from individual to individual at the beginning of the juvenile stage.</p>
+                
+                <p>Most coral reef fish have a life cycle consisting of an open ocean larval phase followed by a juvenile to adult phase near the reef. The transition between the two stages is marked by rapid and dramatic changes in the body of the fish, and a sudden move from the open ocean to coral reef habitats. This point is commonly known as 'settlement'. Not surprisingly, it is also characterised by increased levels of mortality in the first 48 hours following settlement, as individuals are forced to adapt to life not only on the reef but also with a previously unknown set of predators.</p>
+                
+                <p>However, studying the interactions between predators and prey during this phase is no easy task. On the northern Great Barrier Reef, coral reef fish settlement usually occurs within 2-3 days of a new moon during the warmer summer months. These short windows of opportunity, combined with the difficulties associated with working underwater, transporting fish and adapting them to the laboratory, often make research a daunting task. These obstacles are overcome using a combination of innovative techniques, long working hours and a measure of sheer persistence. We collect the larval fish immediately prior to settlement using purpose-built traps that use artificial light to attract and contain fish of this life stage only. These fish are subsequently transported to an aquarium, along with predatory fish, before being used in a series of aquarium and field-based trials.</p>
+                
+                <p>According to the 'bigger is better' hypothesis, being larger at the time of settlement should result in an increased chance of surviving an attack by a predator during the period immediately following settlement. However, our initial research shows that this is not always true. There may be several reasons for this.</p>
+                
+                <p>Communities of reef-based predators can differ considerably over quite small distances. Species that are abundant in one location may be particularly rare in a similar habitat just 100 metres away. In the same way that different predators prefer different types of prey, so too do they prefer different sizes of prey. This relationship is driven by physical characteristics of predators, such as mouth size, and behavioural differences between different predator species. As a result, the predator community into which a reef fish settles may very well determine which individuals survive.</p>
+                
+                <p>So why don't larger individuals survive more often than smaller fish over this period? The answer may well lie in an alternative hypothesis known as 'optimal foraging theory'. According to this theory, being either very large or very small in size should assist prey to escape during a predatory encounter. The theory predicts that a predator should prefer those individuals that provide the greatest energy return. This is generally a trade-off between the potential energy intake from eating a fish and the amount of energy required to catch it. Larger prey provide a higher energy return but smaller prey generally require less energy to catch. This usually results in a preference for medium-sized prey.</p>
+                
+                <p>At the time of settlement, juvenile reef fish vary in the characteristics that can help them survive a predatory attack. However, these characteristics are not strongly associated with body size. For example, larger individuals are not necessarily faster. This means that they may be easier to catch than smaller prey. If this is the case then, according to the optimal foraging theory, predators should prefer larger prey because of their greater energy return. Consequently, larger prey individuals may be targeted by some predators at the time of settlement. Our research hopes to show that larger size may, in fact, be a distinct disadvantage during certain life stages.</p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions Panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header">
+                <span>QUESTIONS 1-13</span>
+                <span class="answer-badge" id="answeredCount">0/13 answered</span>
+            </div>
+            <div class="questions-list font-medium" id="questionsContent">
+                
+                <!-- Questions 1-4: True/False/Not Given -->
+                <h3>Questions 1-4</h3>
+                <p><em>Do the following statements agree with the information given in Reading Passage 1?</em></p>
+                <p>In boxes 1-4 on your answer sheet, write</p>
+                
+                <div class="note-box">
+                    <p><strong>TRUE</strong> if the statement agrees with the information</p>
+                    <p><strong>FALSE</strong> if the statement contradicts the information</p>
+                    <p><strong>NOT GIVEN</strong> if there is no information on this</p>
+                </div>
+
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li style="margin-bottom: 20px;" class="question-item" id="q1-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">1.</span>
+                            <span class="tf-statement">Research to date has concentrated on the importance of escape speed in surviving an attack by a predator.</span>
+                            <span class="eye-icon" data-question="1">👁️</span>
+                        </div>
+                        <div class="tf-group" id="q1-group">
+                            <label class="tf-option"><input type="radio" name="q1" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q1" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q1" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q2-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">2.</span>
+                            <span class="tf-statement">According to the 'bigger is better' hypothesis, larger animals have better eyesight.</span>
+                            <span class="eye-icon" data-question="2">👁️</span>
+                        </div>
+                        <div class="tf-group" id="q2-group">
+                            <label class="tf-option"><input type="radio" name="q2" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q2" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q2" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q3-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">3.</span>
+                            <span class="tf-statement">Early-juvenile reef fish share similar characteristics.</span>
+                            <span class="eye-icon" data-question="3">👁️</span>
+                        </div>
+                        <div class="tf-group" id="q3-group">
+                            <label class="tf-option"><input type="radio" name="q3" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q3" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q3" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q4-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">4.</span>
+                            <span class="tf-statement">Fully developed reef fish have a slower swimming speed than juveniles.</span>
+                            <span class="eye-icon" data-question="4">👁️</span>
+                        </div>
+                        <div class="tf-group" id="q4-group">
+                            <label class="tf-option"><input type="radio" name="q4" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q4" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q4" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- Questions 5-7: Flow chart -->
+                <h3 style="margin-top: 30px;">Questions 5-7</h3>
+                <p><em>Complete the flow chart below.</em></p>
+                <p><em>Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
+                
+                <div class="flow-chart">
+                    <div class="flow-row">
+                        <span class="flow-label">Phase 1:</span>
+                        <div class="flow-content">Larval stage – takes place in the <span class="bold-text">5</span> <input class="fill-input" id="q5" data-answer="open ocean" placeholder=" " style="width:120px;"><span class="eye-icon" data-question="5">👁️</span></div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-row">
+                        <span class="flow-label">Phase 2:</span>
+                        <div class="flow-content">Juvenile stage – takes place close to the <span class="bold-text">6</span> <input class="fill-input" id="q6" data-answer="reef" placeholder=" " style="width:80px;"><span class="eye-icon" data-question="6">👁️</span></div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-row">
+                        <span class="flow-label">Result:</span>
+                        <div class="flow-content">Mortality rates are high – first 48 hours: increased <span class="bold-text">7</span> <input class="fill-input" id="q7" data-answer="mortality" placeholder=" " style="width:100px;"><span class="eye-icon" data-question="7">👁️</span></div>
+                    </div>
+                </div>
+
+                <!-- Questions 8-13: Notes completion -->
+                <h3 style="margin-top: 30px;">Questions 8-13</h3>
+                <p><em>Complete the notes below.</em></p>
+                <p><em>Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</em></p>
+                
+                <div class="notes-section">
+                    <h4 style="color:#1e3a5f; margin-bottom:15px;">Lizard Island study</h4>
+                    
+                    <p><strong>Aim</strong></p>
+                    <p>- to study the relationship between predator and prey in juvenile reef fish</p>
+                    
+                    <p><strong>Problems</strong></p>
+                    <p>i) time-change of habitat takes place in summer and is linked to the <span class="bold-text">8</span> <input class="fill-input" id="q8" data-answer="moon" placeholder=" " style="width:80px;"><span class="eye-icon" data-question="8">👁️</span></p>
+                    <p>ii) working conditions</p>
+                    <p>iii) adaptation-difficult to move and settle fish into the <span class="bold-text">9</span> <input class="fill-input" id="q9" data-answer="laboratory" placeholder=" " style="width:120px;"><span class="eye-icon" data-question="9">👁️</span></p>
+                    
+                    <p><strong>Method</strong></p>
+                    <p>- larval fish are drawn into a special trap with the aid of <span class="bold-text">10</span> <input class="fill-input" id="q10" data-answer="artificial light" placeholder=" " style="width:140px;"><span class="eye-icon" data-question="10">👁️</span></p>
+                    <p>- <span class="bold-text">11</span> <input class="fill-input" id="q11" data-answer="predatory fish" placeholder=" " style="width:140px;"><span class="eye-icon" data-question="11">👁️</span> are also collected</p>
+                    <p>- both undergo trials</p>
+                    
+                    <p><strong>Possible reasons why 'bigger' is not always 'better'</strong></p>
+                    <p>- the number and type of predatory fish on the reef can vary from place to place</p>
+                    <p>- physical features (e.g. <span class="bold-text">12</span> <input class="fill-input" id="q12" data-answer="mouth size" placeholder=" " style="width:100px;"><span class="eye-icon" data-question="12">👁️</span>) affect which prey a predator can eat</p>
+                    <p>- optimal foraging theory suggests that the most common choice of prey should be <span class="bold-text">13</span> <input class="fill-input" id="q13" data-answer="medium" placeholder=" " style="width:100px;"><span class="eye-icon" data-question="13">👁️</span> in size</p>
+                    <p>- large juvenile fish may swim slowly and so may be targeted more often</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- Explanation Panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header">
+            <span id="explanationTitle">Giải thích</span>
+            <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+        </div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
+    </div>
+</div>
+
+<script>
+    // ==================== GLOBAL VARIABLES ====================
+    let examSubmitted = false;
+    let explanationMode = false;
+    let startTime = Date.now();
+    let readingMode = false;
+    let timerRunning = true;
+    let timeLeft = 3600;
+    const timerEl = document.getElementById('timerDisplay');
+    let timerInterval;
+    let selectedRange = null;
+    let currentVol = 7;
+    let currentTest = 5;
+
+    // ANSWER KEY - Based on TEST 5 Explanation.docx
+    const answerKey = {
+        q1: 'FALSE', q2: 'TRUE', q3: 'FALSE', q4: 'NOT GIVEN',
+        q5: 'open ocean', q6: 'reef', q7: 'mortality',
+        q8: 'moon', q9: 'laboratory', q10: 'artificial light', q11: 'predatory fish',
+        q12: 'mouth size', q13: 'medium'
+    };
+
+    // ==================== LOCATIONS WITH KEYWORDS (UPDATED - COMPLETE PASSAGE) ====================
+    const answerLocations = {
+        q1: { 
+            text: "Body size, weight, growth rate, overall condition, sensory development and escape speed have all been linked to survival. Of these, body size has received the most attention from researchers",
+            keywords: ["body size", "most attention"] 
+        },
+        q2: { 
+            text: "This theory predicts that larger body size should increase an individual's ability to escape from a predator due to the characteristics associated with this, such as overall strength and visual development",
+            keywords: ["visual development"] 
+        },
+        q3: { 
+            text: "We want to examine the predator-prey relationship during the 'early juvenile' or larval phase of tropical fish, and determine whether a predator's choice of prey is influenced by factors such as the prey's size, weight and swimming speed, as these characteristics vary from individual to individual at the beginning of the juvenile stage",
+            keywords: ["vary", "individual to individual"] 
+        },
+        q4: { 
+            text: "Not mentioned in the passage",
+            keywords: [] 
+        },
+        q5: { 
+            text: "Most coral reef fish have a life cycle consisting of an open ocean larval phase followed by a juvenile to adult phase near the reef",
+            keywords: ["open ocean", "larval phase"] 
+        },
+        q6: { 
+            text: "juvenile to adult phase near the reef",
+            keywords: ["near the reef"] 
+        },
+        q7: { 
+            text: "it is also characterised by increased levels of mortality in the first 48 hours following settlement",
+            keywords: ["mortality", "first 48 hours"] 
+        },
+        q8: { 
+            text: "coral reef fish settlement usually occurs within 2-3 days of a new moon during the warmer summer months",
+            keywords: ["new moon", "settlement", "summer"] 
+        },
+        q9: { 
+            text: "the difficulties associated with working underwater, transporting fish and adapting them to the laboratory",
+            keywords: ["adapting", "laboratory"] 
+        },
+        q10: { 
+            text: "We collect the larval fish immediately prior to settlement using purpose-built traps that use artificial light to attract and contain fish of this life stage only",
+            keywords: ["artificial light", "traps"] 
+        },
+        q11: { 
+            text: "These fish are subsequently transported to an aquarium, along with predatory fish",
+            keywords: ["predatory fish"] 
+        },
+        q12: { 
+            text: "This relationship is driven by physical characteristics of predators, such as mouth size, and behavioural differences between different predator species",
+            keywords: ["mouth size"] 
+        },
+        q13: { 
+            text: "This usually results in a preference for medium-sized prey",
+            keywords: ["medium-sized prey"] 
+        }
+    };
+
+    // ==================== EXPLANATIONS ====================
+    const explanations = {
+        q1: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn 1: 'Body size, weight, growth rate, overall condition, sensory development and escape speed have all been linked to survival. Of these, body size has received the most attention from researchers.' Nghiên cứu tập trung vào kích thước cơ thể, không phải tốc độ thoát thân.",
+        q2: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> Đoạn 1: 'due to the characteristics associated with this, such as overall strength and visual development.' Phát triển thị giác (visual development) chính là thị lực tốt hơn.",
+        q3: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn 2: 'as these characteristics vary from individual to individual at the beginning of the juvenile stage.' Đặc điểm khác nhau giữa các cá thể, không giống nhau.",
+        q4: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Không có thông tin so sánh tốc độ bơi giữa cá trưởng thành và cá con.",
+        q5: "<strong>Đáp án: open ocean</strong><br><br><strong>Giải thích:</strong> Đoạn 3: 'Most coral reef fish have a life cycle consisting of an open ocean larval phase' – giai đoạn ấu trùng diễn ra ở đại dương mở.",
+        q6: "<strong>Đáp án: reef</strong><br><br><strong>Giải thích:</strong> Đoạn 3: 'juvenile to adult phase near the reef' – giai đoạn con non ở gần rạn san hô.",
+        q7: "<strong>Đáp án: mortality</strong><br><br><strong>Giải thích:</strong> Đoạn 3: 'increased levels of mortality in the first 48 hours following settlement' – tỷ lệ tử vong cao trong 48 giờ đầu.",
+        q8: "<strong>Đáp án: moon</strong><br><br><strong>Giải thích:</strong> Đoạn 4: 'coral reef fish settlement usually occurs within 2-3 days of a new moon' – thời điểm định cư liên quan đến mặt trăng mới.",
+        q9: "<strong>Đáp án: laboratory</strong><br><br><strong>Giải thích:</strong> Đoạn 4: 'adapting them to the laboratory' – khó thích nghi với phòng thí nghiệm.",
+        q10: "<strong>Đáp án: artificial light</strong><br><br><strong>Giải thích:</strong> Đoạn 4: 'purpose-built traps that use artificial light to attract' – bẫy dùng ánh sáng nhân tạo.",
+        q11: "<strong>Đáp án: predatory fish</strong><br><br><strong>Giải thích:</strong> Đoạn 4: 'along with predatory fish' – cá săn mồi cũng được thu thập.",
+        q12: "<strong>Đáp án: mouth size</strong><br><br><strong>Giải thích:</strong> Đoạn 6: 'physical characteristics of predators, such as mouth size' – kích thước miệng ảnh hưởng đến con mồi.",
+        q13: "<strong>Đáp án: medium</strong><br><br><strong>Giải thích:</strong> Đoạn 7: 'This usually results in a preference for medium-sized prey' – con mồi kích thước trung bình được ưa thích nhất."
+    };
+
+    // ==================== TIMER ====================
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (!examSubmitted && timerRunning && timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    // ==================== READING MODE TOGGLE ====================
+    const testWrapper = document.getElementById('testWrapper');
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    
+    document.getElementById('readingModeToggle').addEventListener('click', () => {
+        readingMode = !readingMode;
+        if (readingMode) {
+            testWrapper.classList.add('reading-mode');
+            toggleSwitch.classList.add('active');
+        } else {
+            testWrapper.classList.remove('reading-mode');
+            toggleSwitch.classList.remove('active');
+        }
+    });
+
+    // ==================== FONT SIZE CONTROLS ====================
+    document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+    document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+    document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+    function setFontSize(size) {
+        document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+        document.getElementById('readingContent').className = `reading-text font-${size}`;
+        document.getElementById('questionsContent').className = `questions-list font-${size}`;
+    }
+
+    // ==================== RESIZE COLUMNS ====================
+    const readingPanel = document.getElementById('readingPanel');
+    const questionsPanel = document.getElementById('questionsPanel');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', () => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('mainArea');
+        const rect = mainArea.getBoundingClientRect();
+        let readingWidth = e.clientX - rect.left - 4;
+        if (readingWidth < 250) readingWidth = 250;
+        if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+        readingPanel.style.width = readingWidth + 'px';
+        questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+    });
+
+    // ==================== NAVIGATION BUTTONS ====================
+    function createNavButtons() {
+        const navContainer = document.getElementById('navButtons');
+        navContainer.innerHTML = '';
+        for (let i = 1; i <= 13; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn unanswered';
+            btn.textContent = i;
+            btn.setAttribute('data-question', i);
+            btn.addEventListener('click', function() {
+                const qNum = this.getAttribute('data-question');
+                scrollToQuestion(qNum);
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+            navContainer.appendChild(btn);
+        }
+    }
+
+    function scrollToQuestion(questionNum) {
+        if (questionNum <= 4) {
+            const element = document.getElementById(`q${questionNum}-item`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('question-highlight');
+                setTimeout(() => element.classList.remove('question-highlight'), 1500);
+            }
+        } else {
+            const element = document.getElementById(`q${questionNum}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const wrapper = element.closest('.question-wrapper') || element.parentNode;
+                wrapper.classList.add('question-highlight');
+                setTimeout(() => wrapper.classList.remove('question-highlight'), 1500);
+            }
+        }
+    }
+
+    function updateNavButtons() {
+        for (let i = 1; i <= 13; i++) {
+            const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+            if (!btn) continue;
+            let isAnswered = !!getUserAnswer(i);
+            btn.classList.remove('answered', 'unanswered');
+            btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+        }
+    }
+
+    // ==================== GET USER ANSWER ====================
+    function getUserAnswer(q) {
+        if (q <= 4) {
+            const selected = document.querySelector(`input[name="q${q}"]:checked`);
+            return selected ? selected.value : null;
+        } else {
+            let input = document.getElementById(`q${q}`);
+            return input ? input.value.trim().toLowerCase() || null : null;
+        }
+    }
+
+    // ==================== UPDATE ANSWER COUNT ====================
+    function updateAnswerCount() {
+        let answered = 0;
+        for (let i = 1; i <= 13; i++) {
+            if (getUserAnswer(i)) answered++;
+        }
+        document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+        document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+        updateNavButtons();
+    }
+
+    // Auto update
+    document.querySelectorAll('input[type="radio"]').forEach(el => {
+        el.addEventListener('change', updateAnswerCount);
+    });
+    
+    document.querySelectorAll('.fill-input').forEach(el => {
+        el.addEventListener('input', updateAnswerCount);
+    });
+
+    // ==================== HELPER: FIND NODE AND OFFSET ====================
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) {
+                return { node, offset: targetPos - currentPos.value };
+            }
+            currentPos.value += len;
+        } else {
+            for (let child of node.childNodes) {
+                const result = findNodeAndOffset(child, targetPos, currentPos);
+                if (result) return result;
+            }
+        }
+        return null;
+    }
+
+    // ==================== CLEAR ALL HIGHLIGHTS ====================
+    function clearAllHighlights() {
+        document.querySelectorAll('.dynamic-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        
+        document.querySelectorAll('.keyword-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        
+        document.querySelectorAll('.question-highlight').forEach(el => {
+            el.classList.remove('question-highlight');
+        });
+        
+        document.querySelectorAll('.eye-icon.active').forEach(el => {
+            el.classList.remove('active');
+        });
+    }
+
+    // ==================== HIGHLIGHT ANSWER LOCATION ====================
+    function highlightAnswerLocation(questionNum) {
+        clearAllHighlights();
+        
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
+        
+        if (questionNum <= 4) {
+            const element = document.getElementById(`q${questionNum}-item`);
+            if (element) {
+                element.classList.add('question-highlight');
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        } else {
+            const element = document.getElementById(`q${questionNum}`);
+            if (element) {
+                const wrapper = element.closest('.question-wrapper') || element.parentNode;
+                wrapper.classList.add('question-highlight');
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+        
+        const currentEyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (currentEyeIcon) currentEyeIcon.classList.add('active');
+        
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
+        
+        for (let p of paragraphs) {
+            if (loc.text && p.textContent.includes(loc.text)) {
+                try {
+                    const text = p.textContent;
+                    const startIdx = text.indexOf(loc.text);
+                    
+                    let currentPos = {value: 0};
+                    const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                    
+                    currentPos = {value: 0};
+                    const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                    
+                    if (startNodeInfo && endNodeInfo) {
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                        range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        setTimeout(() => {
+                            const highlightSpan = document.querySelector('.dynamic-highlight');
+                            if (highlightSpan && loc.keywords && loc.keywords.length > 0) {
+                                let html = highlightSpan.innerHTML;
+                                loc.keywords.forEach(keyword => {
+                                    try {
+                                        const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                        const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+                                        html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
+                                    } catch (e) {}
+                                });
+                                highlightSpan.innerHTML = html;
+                            }
+                        }, 50);
+                        
+                        setTimeout(() => {
+                            const highlighted = document.querySelector('.dynamic-highlight');
+                            if (highlighted) {
+                                highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 300);
+                        
+                        return true;
+                    }
+                } catch (e) {
+                    console.log('Lỗi highlight:', e);
+                }
+                break;
+            }
+        }
+        
+        for (let p of paragraphs) {
+            for (let keyword of loc.keywords) {
+                if (p.textContent.includes(keyword)) {
+                    try {
+                        const range = document.createRange();
+                        range.selectNodeContents(p);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        setTimeout(() => {
+                            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                        
+                        return true;
+                    } catch (e) {}
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    // ==================== SHOW EXPLANATION ====================
+    function showExplanation(questionNum) {
+        if (!explanationMode && !examSubmitted) return;
+        
+        highlightAnswerLocation(questionNum);
+        
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+        
+        let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+        
+        if (examSubmitted) {
+            const userAnswer = getUserAnswer(questionNum);
+            const correct = answerKey[`q${questionNum}`];
+            const isCorrect = userAnswer && userAnswer.toString().toLowerCase().trim() === correct.toString().toLowerCase().trim();
+            
+            html += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
+            html += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+            if (!isCorrect && correct) {
+                html += `<strong>Đáp án đúng:</strong> ${correct}`;
+            } else if (isCorrect) {
+                html += `<strong>✅ Đúng!</strong>`;
+            }
+            html += `</div>`;
+        }
+        
+        document.getElementById('explanationText').innerHTML = html;
+        
+        if (explanationMode && examSubmitted) {
+            document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+            
+            if (questionNum <= 4) {
+                const questionItem = document.getElementById(`q${questionNum}-item`);
+                if (questionItem) {
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = correctAnswer;
+                    questionItem.querySelector('.question-wrapper').appendChild(badge);
+                }
+            } else {
+                const currentInput = document.getElementById(`q${questionNum}`);
+                if (currentInput) {
+                    const correctAnswer = answerKey[`q${questionNum}`];
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = correctAnswer;
+                    currentInput.parentNode.appendChild(badge);
+                }
+            }
+        }
+    }
+
+    // ==================== SETUP EYE ICONS ====================
+    function setupEyeIcons() {
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                const questionNum = this.getAttribute('data-question');
+                showExplanation(questionNum);
+            });
+        });
+    }
+
+    document.getElementById('closeExplanation').addEventListener('click', () => {
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // ==================== MARK ANSWERS ====================
+    function markAnswers() {
+        for (let i = 1; i <= 4; i++) {
+            const group = document.getElementById(`q${i}-group`);
+            if (!group) continue;
+            
+            const options = group.querySelectorAll('.tf-option');
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const correctAnswer = answerKey[`q${i}`];
+            
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+                const radio = option.querySelector('input[type="radio"]');
+                
+                if (radio.value === correctAnswer) {
+                    option.classList.add('correct');
+                }
+                
+                if (selected && radio.value === selected.value && radio.value !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            if (!selected) {
+                options.forEach(option => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    if (radio.value === correctAnswer) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        for (let i = 5; i <= 13; i++) {
+            const input = document.getElementById(`q${i}`);
+            if (input) {
+                const userAnswer = input.value.trim().toLowerCase();
+                const correct = answerKey[`q${i}`].toLowerCase();
+                input.classList.remove('correct', 'incorrect');
+                
+                const wrapper = input.closest('.question-wrapper') || input.parentNode;
+                const oldBadge = wrapper.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                
+                if (userAnswer) {
+                    if (userAnswer === correct) {
+                        input.classList.add('correct');
+                    } else {
+                        input.classList.add('incorrect');
+                        
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = answerKey[`q${i}`];
+                        wrapper.appendChild(badge);
+                    }
+                } else {
+                    input.classList.add('incorrect');
+                    
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${i}`];
+                    wrapper.appendChild(badge);
+                }
+            }
+        }
+    }
+
+    // ==================== CALCULATE RESULTS ====================
+    function calculateResults() {
+        let correct = 0;
+        let total = 13;
+        
+        for (let i = 1; i <= 4; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selected && selected.value === answerKey[`q${i}`]) correct++;
+        }
+        
+        for (let i = 5; i <= 13; i++) {
+            const input = document.getElementById(`q${i}`);
+            if (input) {
+                const userAnswer = input.value.trim().toLowerCase();
+                if (userAnswer === answerKey[`q${i}`].toLowerCase()) correct++;
+            }
+        }
+        
+        const percentage = Math.round(correct / total * 100);
+        const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(timeTaken / 60);
+        const seconds = timeTaken % 60;
+        
+        return {
+            correct,
+            total,
+            percentage,
+            timeString: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        };
+    }
+
+    // ==================== SUBMIT ====================
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (examSubmitted) return;
+        
+        let unanswered = [];
+        for (let i = 1; i <= 13; i++) {
+            if (!getUserAnswer(i)) unanswered.push(i);
+        }
+        
+        if (unanswered.length > 0) {
+            const confirmSubmit = confirm(`Bạn còn ${unanswered.length} câu chưa làm. Bạn có chắc muốn nộp bài?`);
+            if (!confirmSubmit) return;
+        }
+        
+        examSubmitted = true;
+        timerRunning = false;
+        clearInterval(timerInterval);
+        
+        markAnswers();
+        
+        const results = calculateResults();
+        
+        const resultStats = document.getElementById('resultStats');
+        resultStats.style.display = 'inline-block';
+        resultStats.textContent = `Kết quả: ${results.correct}/${results.total} (${results.percentage}%) - Thời gian: ${results.timeString}`;
+        
+        document.getElementById('explainBtn').disabled = false;
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+        
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
+        document.getElementById('explanationText').innerHTML = `
+            <h4>Kết quả bài làm:</h4>
+            <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
+            <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
+            <p><strong>Thời gian làm bài:</strong> ${results.timeString}</p>
+            <p>Nhấn "Xem giải thích" và click vào 👁️ để xem chi tiết từng câu.</p>
+        `;
+        
+        saveToDashboard();
+    });
+
+    // ==================== SAVE TO DASHBOARD ====================
+    function saveToDashboard() {
+        if (!examSubmitted) return;
+        
+        const passageData = {
+            passageId: 1,
+            name: 'Reef fish study',
+            totalQuestions: 13,
+            correctCount: 0,
+            timeSpent: document.getElementById('timerDisplay').textContent,
+            details: []
+        };
+        
+        let correctCount = 0;
+        
+        for (let i = 1; i <= 4; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userAnswer = selected ? selected.value : null;
+            const correctAnswer = answerKey[`q${i}`];
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) correctCount++;
+            
+            passageData.details.push({
+                question: i,
+                user: userAnswer || '(trống)',
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
+        }
+        
+        for (let i = 5; i <= 13; i++) {
+            const input = document.getElementById(`q${i}`);
+            if (input) {
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswer = answerKey[`q${i}`].toLowerCase();
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+                
+                passageData.details.push({
+                    question: i,
+                    user: userAnswer || '(trống)',
+                    correct: correctAnswer,
+                    isCorrect: isCorrect
+                });
+            }
+        }
+        
+        passageData.correctCount = correctCount;
+        
+        const key = `ielts_vol${currentVol}_test${currentTest}_passage_1`;
+        localStorage.setItem(key, JSON.stringify(passageData));
+        
+        console.log(`Đã lưu dữ liệu passage 1 vào dashboard với key: ${key}`);
+    }
+
+    // ==================== EXPLAIN ====================
+    document.getElementById('explainBtn').addEventListener('click', function() {
+        if (!examSubmitted) return;
+        
+        explanationMode = true;
+        
+        document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+        
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.style.display = 'inline-block';
+        });
+        
+        this.disabled = true;
+        this.textContent = 'Đang xem giải thích';
+        
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // ==================== RESET ====================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('Bạn có chắc muốn reset tất cả?')) {
+            examSubmitted = false;
+            explanationMode = false;
+            timerRunning = true;
+            timeLeft = 3600;
+            startTime = Date.now();
+            
+            for (let i = 1; i <= 4; i++) {
+                const radios = document.querySelectorAll(`input[name="q${i}"]`);
+                radios.forEach(radio => radio.checked = false);
+                
+                const group = document.getElementById(`q${i}-group`);
+                if (group) {
+                    group.querySelectorAll('.tf-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                }
+            }
+            
+            for (let i = 5; i <= 13; i++) {
+                const input = document.getElementById(`q${i}`);
+                if (input) {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                    input.style.width = '';
+                    const wrapper = input.closest('.question-wrapper') || input.parentNode;
+                    const badge = wrapper.querySelector('.correct-answer-badge');
+                    if (badge) badge.remove();
+                }
+            }
+            
+            document.querySelectorAll('.eye-icon').forEach(icon => {
+                icon.style.display = 'none';
+            });
+            
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Nộp bài';
+            
+            document.getElementById('explainBtn').disabled = true;
+            document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            
+            document.getElementById('resultStats').style.display = 'none';
+            document.getElementById('explanationPanel').classList.remove('show');
+            
+            clearAllHighlights();
+            
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(el => {
+                const parent = el.parentNode;
+                if (parent) {
+                    while (el.firstChild) {
+                        parent.insertBefore(el.firstChild, el);
+                    }
+                    parent.removeChild(el);
+                }
+            });
+            
+            updateAnswerCount();
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        }
+    });
+
+    // ==================== RIGHT-CLICK HIGHLIGHT ====================
+    const contextMenu = document.getElementById('contextMenu');
+    
+    document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection.toString().trim() === '') return;
+        selectedRange = selection.getRangeAt(0);
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+    });
+
+    document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection.toString().trim() === '') return;
+        selectedRange = selection.getRangeAt(0);
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+    });
+
+    document.addEventListener('click', () => {
+        contextMenu.style.display = 'none';
+    });
+
+    window.applyHighlight = (color) => {
+        if (!selectedRange) return;
+        try {
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            const range = selectedRange.cloneRange();
+            window.getSelection().removeAllRanges();
+            const contents = range.extractContents();
+            span.appendChild(contents);
+            range.insertNode(span);
+        } catch (e) {
+            alert('Không thể highlight đoạn này');
+        }
+        contextMenu.style.display = 'none';
+        selectedRange = null;
+    };
+
+    window.removeHighlight = () => {
+        if (!selectedRange) return;
+        try {
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) {
+                        parent.insertBefore(h.firstChild, h);
+                    }
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+        } catch (e) {}
+        contextMenu.style.display = 'none';
+        selectedRange = null;
+    };
+
+    // ==================== AUTO-RESIZE INPUTS ====================
+    function autoResizeInput(input) {
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.whiteSpace = 'pre';
+        tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily;
+        tempSpan.style.fontSize = window.getComputedStyle(input).fontSize;
+        tempSpan.style.fontWeight = window.getComputedStyle(input).fontWeight;
+        tempSpan.style.padding = window.getComputedStyle(input).padding;
+        tempSpan.style.border = window.getComputedStyle(input).border;
+        document.body.appendChild(tempSpan);
+        
+        function updateWidth() {
+            let value = input.value || ' ';
+            tempSpan.textContent = value;
+            let width = tempSpan.offsetWidth + 20;
+            input.style.width = Math.max(80, Math.min(300, width)) + 'px';
+        }
+        
+        updateWidth();
+        input.addEventListener('input', updateWidth);
+        input.addEventListener('change', updateWidth);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'q11', 'q12', 'q13'].map(id => document.getElementById(id));
+        inputs.forEach(input => {
+            if (input) autoResizeInput(input);
+        });
+    });
+
+    // ==================== INIT ====================
+    createNavButtons();
+    updateAnswerCount();
+    setupEyeIcons();
+    
+    document.querySelectorAll('.eye-icon').forEach(icon => {
+        icon.style.display = 'none';
+    });
+    
+    startTimer();
+</script>
+</body>
+</html>
