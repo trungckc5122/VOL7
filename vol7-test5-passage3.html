@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOL 7 - Reading Test 5 - Passage 3 - Saving the Skink</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .test-wrapper.reading-mode {
+            background: #f8f5e6;
+        }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+        }
+        .candidate { background: #2d4b77; padding: 4px 16px; border-radius: 30px; font-size: 14px; }
+        .question-types { background: #0f2a44; padding: 4px 16px; border-radius: 30px; font-size: 13px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 6px 20px; border-radius: 40px; font-size: 22px; font-family: monospace; border: 1px solid #e6b422; }
+
+        .reading-mode-toggle {
+            display: flex; align-items: center; gap: 8px; background: #2d4b77; padding: 4px 12px; border-radius: 30px; cursor: pointer;
+        }
+        .toggle-switch {
+            width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422;
+        }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s;
+        }
+        .toggle-switch.active::after { left: 22px; }
+
+        .font-controls {
+            display: flex; gap: 5px; background: #2d4b77; padding: 3px; border-radius: 30px;
+        }
+        .font-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn {
+            width: 32px; height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        .main-area {
+            display: flex; flex: 1; overflow: hidden;
+        }
+        .reading-panel {
+            width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .questions-panel {
+            width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .resizer {
+            width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s;
+        }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+        }
+        .reading-text {
+            flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px;
+        }
+        .reading-text p {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .questions-list {
+            flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px;
+            position: relative;
+        }
+
+        .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
+
+        /* Highlight colors */
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; display: inline; }
+        
+        .dynamic-highlight {
+            background-color: #f9e79f;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+            animation: highlightFadeIn 0.5s ease;
+        }
+        
+        @keyframes highlightFadeIn {
+            from { background-color: #fff; }
+            to { background-color: #f9e79f; }
+        }
+        
+        .keyword-highlight {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+            background-color: #fff3cd;
+            display: inline;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+        
+        .question-highlight { 
+            background-color: #fef9e7; 
+            border-left: 4px solid #f1c40f; 
+            padding-left: 10px; 
+        }
+
+        .context-menu {
+            position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px;
+        }
+        .context-menu div { padding: 8px 20px; cursor: pointer; transition: 0.2s; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+
+        .note-box {
+            background: #f0ebe0; border-left: 4px solid #e6b422; padding: 12px 15px; margin: 15px 0; font-style: italic;
+        }
+        
+        .questions-list p, .questions-list h3, .questions-list h4, .questions-list h5, .questions-list h6, 
+        .questions-list ul, .questions-list ol, .questions-list li {
+            margin-bottom: 12px;
+        }
+        
+        .questions-list h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 5px;
+        }
+        
+        .questions-list ul, .questions-list ol {
+            margin: 10px 0 20px 30px;
+        }
+        
+        .questions-list li {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .yes-no-group { margin: 5px 0 15px 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .yn-option { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .yn-option.correct .yn-text { color: #4CAF50; font-weight: bold; }
+        .yn-option.incorrect .yn-text { color: #f44336; font-weight: bold; }
+
+        .question-wrapper { 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 8px;
+            position: relative;
+        }
+        .question-number { font-weight: bold; color: #1e3a5f; margin-right: 5px; min-width: 25px; }
+
+        .letter-input {
+            width: 60px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            border: none;
+            border-bottom: 2px solid #bdc3c7;
+            background: #fafafa;
+            padding: 2px 5px;
+            font-size: 1em;
+            transition: 0.2s;
+            outline: none;
+            border-radius: 4px 4px 0 0;
+            margin: 0 5px;
+        }
+        .letter-input.correct {
+            border-bottom-color: #27ae60 !important;
+            background-color: #e8f8f5 !important;
+            color: #1e8449 !important;
+        }
+        .letter-input.incorrect-marked {
+            border-bottom-color: #e74c3c !important;
+            background-color: #fdedec !important;
+        }
+        
+        .correct-answer-badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: bold;
+            vertical-align: middle;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .eye-icon {
+            display: none;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #1e3a5f; color: white; }
+        .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; opacity: 0.6; }
+        
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { 
+            background: #a5d6a7; 
+            cursor: not-allowed; 
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .btn-danger { background: #f44336; color: white; }
+        .btn-danger:hover { background: #d32f2f; }
+        
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; }
+
+        .explanation-panel {
+            background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none;
+            z-index: 100;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; color: #666; }
+        .close-btn:hover { color: #1e3a5f; }
+
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+        .question-item.highlight-question {
+            border-left: 3px solid #f1c40f;
+            background-color: #fef9e7;
+        }
+
+        .list-words {
+            background: #f0ebe0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px dashed #1e3a5f;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .word-item {
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #1e3a5f;
+            font-weight: 500;
+            color: #1e3a5f;
+            font-size: 14px;
+        }
+
+        .summary-text {
+            background: #f9f7f0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a5f;
+            margin: 20px 0;
+            line-height: 2.2;
+        }
+
+        .mcq-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            transition: all 0.2s;
+            scroll-margin-top: 20px;
+        }
+        
+        .mcq-options {
+            margin-left: 35px;
+            margin-top: 5px;
+        }
+        
+        .mcq-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+        
+        .mcq-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .mcq-option.correct .option-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .mcq-option.incorrect .option-text {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 5 - Passage 3</div>
+            <div class="question-types">Summary • Y/N/NG • MCQ</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- Question Navigator -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 27-40:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main Resizable Area -->
+    <div class="main-area" id="mainArea">
+        <!-- Reading Panel -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header">
+                <span>READING PASSAGE 3: Saving the Skink</span>
+            </div>
+            <div class="reading-text font-medium" id="readingContent">
+                <h1>Saving the Skink</h1>
+                <p><em>What can be done to save the skink, one of New Zealand’s most endangered lizards?</em></p>
+                
+                <p><strong>A</strong> New Zealand’s reptiles come in three forms: the tuatara, the geckos and the skinks. With their gleaming scales, long bodies and often surprisingly short limbs, skinks are instantly recognisable. There are more than 90 species, half of which still await formal description. Identification depends on where specimens are found, and such minutiae as the number of scales on their toes. Two of the largest species of skink - the grand and the Otago - are found only in Otago, in New Zealand’s South Island. Skinks, being reptiles, need to regulate their temperature, and lie on sunny rocks to absorb heat. However, the grand and Otago are the only kinds that do not hibernate through winter; when snow can fall even in summer in Otago, there is no point in them lying dormant for extended periods. Like all other New Zealand reptiles except tuatara and the egg-laying Suter’s skink, they give birth to tiny baby lizards. Today, the Otago and grand skinks are lucky to reach five years of age in the wild, although in zoos or research centres they can live beyond thirty.</p>
+                
+                <p><strong>B</strong> Unfortunately, extinction may loom for these reptiles. With any decline in New Zealand fauna, predation is always suspected, so the efforts of the Department of Conservation (DOC) have focused on controlling specific pests. An example was a six-year project to control the feral cats on the Otago Skink Reserve, launched in the 1990s. Despite the capture of hundreds of cats, skinks showed no signs of recovery; indeed, there were further declines. The trapping programme also revealed rats and hedgehogs to be predators.</p>
+                
+                <p><strong>C</strong> Parasite infections are also thought to be on the rise. Although no direct health implications have been detected the trend is a concern, as it may signal a subtle deterioration in the skinks’ living environment. Infection with mites is suspected of inhibiting reproduction among captive animals.</p>
+                
+                <p><strong>D</strong> Another potential threat is habitat loss. Eight hundred years ago, Otago was covered in forest. However, extensive burning produced a wide open tussock country. The skinks’ response to this change isn’t known, nor what their habitat was in the earlier environment, with its predominance of shrubs and trees. Furthermore, recent intensive farming has led to poor soil. Even if we had the answer to the eradication of predators, we haven’t a clue to the habitat we should be recreating for the skinks, or if where they persist is best for conservation.</p>
+                
+                <p><strong>E</strong> It is also puzzling that grands and Otagos are disappearing more rapidly than other species in the same region. The explanation likely lies in their delayed sexual maturity. Taking five years before you can breed is a handicap, since there is little likelihood of surviving that long. If survivors have only two offspring annually, they do little to remedy the situation. The commoner skinks mature earlier and produce more offspring, thereby doing more to counter predator pressure. Not that there is room for complacency concerning these species. As more is learned about the size of skink populations, it becomes clear that even common species may be facing a doubtful future.</p>
+                
+                <p><strong>F</strong> So far, DOC’s efforts to eliminate specific predators have not resulted in a recovery of skink numbers. The prediction that less than six years is all the Otagos and grands have left is supported by data from surveys conducted outside the protected area between 1984 and 2002. These show that more than 50 per cent of sub-populations of both skinks have died out over the past years. Populations in other regions are believed to be smaller, although access issues on some properties limit knowledge. No more than five years remain in which to turn things around - a close call considering it will be at least three before detectable response in the populations can be expected owing to their low breeding rate.</p>
+                
+                <p><strong>G</strong> DOC’s recovery-programme team has recently embarked upon an experiment to extend nearly two kilometres of mammal-proof fencing around a population of Otagos and grands in the Macraes Flat reserve. Choosing a site was difficult, as with a limited budget and the high cost of the fencing it had to be small. It also had to include vacant space and resources for a growing population. An added complication was that grands and Otagos have subtly different environmental preferences, both of which need catering for.</p>
+                
+                <p><strong>H</strong> Because of the danger of imminent extinction, the team has also had to develop emergency captive-management techniques. Specially permitted breeders, who have had some success in breeding the Otago in captivity, are now developing techniques to breed grands. Captive management, however, is a last resort. The priority is to manage and protect skinks in the wild.</p>
+                
+                <p><strong>I</strong> Getting the public to understand the plight of these creatures is essential. Without public support, their chances are slim. Conservation is as much driven by public opinion as it is by political decisions. In New Zealand, the situation is more pressing than just about anywhere else on the planet because many of its native birds and lizards have simply not evolved to defend themselves against species introduced in the last few hundred years. In the once-isolated islands that form New Zealand, ecosystem collapse didn’t happen 5,000 years ago or even 500 years ago; it’s happening now.</p>
+                
+                <p><strong>J</strong> Fortunately, DOC no longer faces these problems alone. The challenge has been taken up by a group of conservationists representing business, science and agriculture. Central Otago Ecological Trust (COET) aims to establish a refuge for the reintroduction of native species. It has identified suitable habitat and, with the generous support of a local farmer with grazing land there, has begun the construction of a mammal-proof fence to protect a 24-hectare area. The recovery programme and COET provide hope that skinks might once again flourish.</p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions Panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header">
+                <span>QUESTIONS 27-40</span>
+                <span class="answer-badge" id="answeredCount">0/14 answered</span>
+            </div>
+            <div class="questions-list font-medium" id="questionsContent">
+                
+                <!-- Questions 27-31: Summary with letters A-K -->
+                <h3>Questions 27-31</h3>
+                <p><em>Complete the summary using the list of words, A-K, below.</em></p>
+                <p><em>Write the correct letter, A-K, in boxes 27-31 on your answer sheet.</em></p>
+                
+                <div class="list-words">
+                    <span class="word-item">A eggs</span>
+                    <span class="word-item">B location</span>
+                    <span class="word-item">C hooded eyes</span>
+                    <span class="word-item">D the wild</span>
+                    <span class="word-item">E body heat</span>
+                    <span class="word-item">F winter sleep</span>
+                    <span class="word-item">G captivity</span>
+                    <span class="word-item">H live young</span>
+                    <span class="word-item">I digestive process</span>
+                    <span class="word-item">J small legs</span>
+                    <span class="word-item">K warmer areas</span>
+                </div>
+                
+                <div class="summary-text">
+                    <p><strong>Characteristics of New Zealand skinks</strong></p>
+                    <p>There are three kinds of reptiles in New Zealand: the tuatara, the gecko and the skink. Skinks are easily distinguished from these other natives by their shiny scales and 
+                    <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;"><input type="text" class="letter-input" id="q27" maxlength="1" placeholder="A-K" data-answer="J" style="width:60px;"> <span class="eye-icon" data-question="27" style="display:none;">👁️</span></span>. 
+                    In common with other reptiles, the grand and Otago species of skink have cold blood and therefore 
+                    <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;"><input type="text" class="letter-input" id="q28" maxlength="1" placeholder="A-K" data-answer="E" style="width:60px;"> <span class="eye-icon" data-question="28" style="display:none;">👁️</span></span> 
+                    must be externally controlled. They are unique in that they do not require a long 
+                    <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;"><input type="text" class="letter-input" id="q29" maxlength="1" placeholder="A-K" data-answer="F" style="width:60px;"> <span class="eye-icon" data-question="29" style="display:none;">👁️</span></span>. 
+                    Many species are yet to be identified, and identification depends primarily on their 
+                    <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;"><input type="text" class="letter-input" id="q30" maxlength="1" placeholder="A-K" data-answer="B" style="width:60px;"> <span class="eye-icon" data-question="30" style="display:none;">👁️</span></span> 
+                    and extremely small physical differences. In 
+                    <span class="question-wrapper" style="display: inline-flex; align-items: center; margin: 0 5px;"><input type="text" class="letter-input" id="q31" maxlength="1" placeholder="A-K" data-answer="G" style="width:60px;"> <span class="eye-icon" data-question="31" style="display:none;">👁️</span></span>, 
+                    skinks may potentially live for about 30 years.</p>
+                </div>
+
+                <!-- Questions 32-36: Yes/No/Not Given -->
+                <h3 style="margin-top: 30px;">Questions 32-36</h3>
+                <p><em>Do the following statements agree with the views of the writer?</em></p>
+                <p>In boxes 32-36 on your answer sheet, write</p>
+                <div class="note-box">
+                    <p><strong>YES</strong> if the statement agrees with the views of the writer</p>
+                    <p><strong>NO</strong> if the statement contradicts the views of the writer</p>
+                    <p><strong>NOT GIVEN</strong> if it is impossible to say what the writer thinks about this</p>
+                </div>
+
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li style="margin-bottom: 20px;" class="question-item" id="q32-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">32.</span>
+                            <span class="tf-statement">The DOC project to remove feral cats helped stop the decline in Otago skink numbers.</span>
+                            <span class="eye-icon" data-question="32">👁️</span>
+                        </div>
+                        <div class="yes-no-group" id="q32-group">
+                            <label class="yn-option"><input type="radio" name="q32" value="YES"> <span class="yn-text">YES</span></label>
+                            <label class="yn-option"><input type="radio" name="q32" value="NO"> <span class="yn-text">NO</span></label>
+                            <label class="yn-option"><input type="radio" name="q32" value="NOT GIVEN"> <span class="yn-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q33-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">33.</span>
+                            <span class="tf-statement">Parasite infections are having a serious effect on the physical condition of wild skinks.</span>
+                            <span class="eye-icon" data-question="33">👁️</span>
+                        </div>
+                        <div class="yes-no-group" id="q33-group">
+                            <label class="yn-option"><input type="radio" name="q33" value="YES"> <span class="yn-text">YES</span></label>
+                            <label class="yn-option"><input type="radio" name="q33" value="NO"> <span class="yn-text">NO</span></label>
+                            <label class="yn-option"><input type="radio" name="q33" value="NOT GIVEN"> <span class="yn-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q34-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">34.</span>
+                            <span class="tf-statement">The best possible habitat for the conservation of skinks is unknown.</span>
+                            <span class="eye-icon" data-question="34">👁️</span>
+                        </div>
+                        <div class="yes-no-group" id="q34-group">
+                            <label class="yn-option"><input type="radio" name="q34" value="YES"> <span class="yn-text">YES</span></label>
+                            <label class="yn-option"><input type="radio" name="q34" value="NO"> <span class="yn-text">NO</span></label>
+                            <label class="yn-option"><input type="radio" name="q34" value="NOT GIVEN"> <span class="yn-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q35-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">35.</span>
+                            <span class="tf-statement">It is possible that skinks used to have larger numbers of young than they do now.</span>
+                            <span class="eye-icon" data-question="35">👁️</span>
+                        </div>
+                        <div class="yes-no-group" id="q35-group">
+                            <label class="yn-option"><input type="radio" name="q35" value="YES"> <span class="yn-text">YES</span></label>
+                            <label class="yn-option"><input type="radio" name="q35" value="NO"> <span class="yn-text">NO</span></label>
+                            <label class="yn-option"><input type="radio" name="q35" value="NOT GIVEN"> <span class="yn-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 20px;" class="question-item" id="q36-item">
+                        <div class="question-wrapper">
+                            <span class="question-number">36.</span>
+                            <span class="tf-statement">The survival of the common species of skink may soon be at risk.</span>
+                            <span class="eye-icon" data-question="36">👁️</span>
+                        </div>
+                        <div class="yes-no-group" id="q36-group">
+                            <label class="yn-option"><input type="radio" name="q36" value="YES"> <span class="yn-text">YES</span></label>
+                            <label class="yn-option"><input type="radio" name="q36" value="NO"> <span class="yn-text">NO</span></label>
+                            <label class="yn-option"><input type="radio" name="q36" value="NOT GIVEN"> <span class="yn-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- Questions 37-40: Multiple Choice -->
+                <h3 style="margin-top: 30px;">Questions 37-40</h3>
+                <p><em>Choose the correct letter, A, B, C, or D.</em></p>
+                
+                <!-- Câu 37 -->
+                <div class="mcq-item" id="q37-item">
+                    <div class="question-wrapper">
+                        <span class="question-number">37.</span>
+                        <span>According to the sixth paragraph, what is being said about the future of the grand and Otago skinks?</span>
+                        <span class="eye-icon" data-question="37">👁️</span>
+                    </div>
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="q37" value="A"> <span class="option-text">A More data is necessary in order for DOC to target the right areas.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q37" value="B"> <span class="option-text">B DOC is uncertain how long a new strategy will take to be effective.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q37" value="C"> <span class="option-text">C There is a considerable risk that DOC will not succeed in saving them.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q37" value="D"> <span class="option-text">D The first step in DOC’s strategy is to identify their main predator.</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Câu 38 -->
+                <div class="mcq-item" id="q38-item">
+                    <div class="question-wrapper">
+                        <span class="question-number">38.</span>
+                        <span>According to the writer, a problem with the DOC’s fencing project was that</span>
+                        <span class="eye-icon" data-question="38">👁️</span>
+                    </div>
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="q38" value="A"> <span class="option-text">A the fence needed to surround various kinds of habitat.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q38" value="B"> <span class="option-text">B the fence was not the preferred choice of some conservationists.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q38" value="C"> <span class="option-text">C the fence had to be constructed near a heavily populated urban area.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q38" value="D"> <span class="option-text">D there was no way of knowing how many skinks were inside the fence.</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Câu 39 -->
+                <div class="mcq-item" id="q39-item">
+                    <div class="question-wrapper">
+                        <span class="question-number">39.</span>
+                        <span>The writer uses the phrase ‘a last resort’ in the eighth paragraph in order to</span>
+                        <span class="eye-icon" data-question="39">👁️</span>
+                    </div>
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="q39" value="A"> <span class="option-text">A introduce a recent alternative approach to skink conservation.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q39" value="B"> <span class="option-text">B question whether captive breeding has worked in the past.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q39" value="C"> <span class="option-text">C imply that skinks are unlikely to reproduce outside their usual habitat.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q39" value="D"> <span class="option-text">D express a preference for conserving skinks in their natural environment.</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Câu 40 -->
+                <div class="mcq-item" id="q40-item">
+                    <div class="question-wrapper">
+                        <span class="question-number">40.</span>
+                        <span>What is the writer doing in the final paragraph?</span>
+                        <span class="eye-icon" data-question="40">👁️</span>
+                    </div>
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="q40" value="A"> <span class="option-text">A Referring to obstacles in the way of skink conservation.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q40" value="B"> <span class="option-text">B Appealing to landowners to donate land for conservation purposes.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q40" value="C"> <span class="option-text">C Describing a conservation scheme that is being set up on farmland.</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q40" value="D"> <span class="option-text">D Showing how commercial profit can be made from ecological venture.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/14</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- Explanation Panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header">
+            <span id="explanationTitle">Giải thích</span>
+            <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+        </div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
+    </div>
+</div>
+
+<script>
+    // ==================== GLOBAL VARIABLES ====================
+    let examSubmitted = false;
+    let explanationMode = false;
+    let startTime = Date.now();
+    let readingMode = false;
+    let timerRunning = true;
+    let timeLeft = 3600;
+    const timerEl = document.getElementById('timerDisplay');
+    let timerInterval;
+    let selectedRange = null;
+
+    // ANSWER KEY (based on TEST 5 Explanation)
+    const answerKey = {
+        q27: 'J', q28: 'E', q29: 'F', q30: 'B', q31: 'G',
+        q32: 'NO', q33: 'NO', q34: 'YES', q35: 'NOT GIVEN', q36: 'YES',
+        q37: 'C', q38: 'A', q39: 'D', q40: 'C'
+    };
+
+    // ==================== LOCATIONS WITH KEYWORDS (exact text from passage, no trailing punctuation) ====================
+    const answerLocations = {
+        q27: { text: "With their gleaming scales, long bodies and often surprisingly short limbs", keywords: ["short limbs"] },
+        q28: { text: "Skinks, being reptiles, need to regulate their temperature, and lie on sunny rocks to absorb heat", keywords: ["regulate their temperature", "absorb heat"] },
+        q29: { text: "the grand and Otago are the only kinds that do not hibernate through winter", keywords: ["do not hibernate through winter"] },
+        q30: { text: "Identification depends on where specimens are found", keywords: ["where specimens are found"] },
+        q31: { text: "in zoos or research centres they can live beyond thirty", keywords: ["zoos or research centres"] },
+        q32: { text: "Despite the capture of hundreds of cats, skinks showed no signs of recovery; indeed, there were further declines", keywords: ["no signs of recovery", "further declines"] },
+        q33: { text: "Although no direct health implications have been detected", keywords: ["no direct health implications"] },
+        q34: { text: "we haven’t a clue to the habitat we should be recreating for the skinks", keywords: ["haven’t a clue"] },
+        q35: { text: "If survivors have only two offspring annually", keywords: ["only two offspring annually"] }, // related but not about past
+        q36: { text: "even common species may be facing a doubtful future", keywords: ["common species", "doubtful future"] },
+        q37: { text: "The prediction that less than six years is all the Otagos and grands have left is supported by data from surveys conducted outside the protected area between 1984 and 2002. These show that more than 50 per cent of sub-populations of both skinks have died out over the past years. Populations in other regions are believed to be smaller, although access issues on some properties limit knowledge. No more than five years remain in which to turn things around - a close call considering it will be at least three before detectable response in the populations can be expected owing to their low breeding rate", keywords: ["less than six years", "close call"] },
+        q38: { text: "An added complication was that grands and Otagos have subtly different environmental preferences, both of which need catering for", keywords: ["subtly different environmental preferences", "need catering for"] },
+        q39: { text: "Captive management, however, is a last resort. The priority is to manage and protect skinks in the wild", keywords: ["last resort", "priority is to manage and protect skinks in the wild"] },
+        q40: { text: "Central Otago Ecological Trust (COET) aims to establish a refuge for the reintroduction of native species. It has identified suitable habitat and, with the generous support of a local farmer with grazing land there, has begun the construction of a mammal-proof fence to protect a 24-hectare area", keywords: ["COET aims to establish a refuge", "support of a local farmer", "construction of a mammal-proof fence"] }
+    };
+
+    // ==================== EXPLANATIONS (based on TEST 5 Explanation doc) ====================
+    const explanations = {
+        q27: "<strong>Đáp án: J (small legs)</strong><br><br><strong>Giải thích:</strong> Đoạn A: 'With their gleaming scales, long bodies and often surprisingly short limbs' → short limbs tương ứng với 'small legs'.",
+        q28: "<strong>Đáp án: E (body heat)</strong><br><br><strong>Giải thích:</strong> Đoạn A: 'Skinks, being reptiles, need to regulate their temperature' → điều chỉnh thân nhiệt (body heat).",
+        q29: "<strong>Đáp án: F (winter sleep)</strong><br><br><strong>Giải thích:</strong> Đoạn A: 'the grand and Otago are the only kinds that do not hibernate through winter' → không ngủ đông (winter sleep).",
+        q30: "<strong>Đáp án: B (location)</strong><br><br><strong>Giải thích:</strong> Đoạn A: 'Identification depends on where specimens are found' → phụ thuộc vào vị trí (location).",
+        q31: "<strong>Đáp án: G (captivity)</strong><br><br><strong>Giải thích:</strong> Đoạn A: 'in zoos or research centres they can live beyond thirty' → trong điều kiện nuôi nhốt (captivity).",
+        q32: "<strong>Đáp án: NO</strong><br><br><strong>Giải thích:</strong> Đoạn B: 'Despite the capture of hundreds of cats, skinks showed no signs of recovery; indeed, there were further declines.' → dự án không giúp ngăn suy giảm.",
+        q33: "<strong>Đáp án: NO</strong><br><br><strong>Giải thích:</strong> Đoạn C: 'Although no direct health implications have been detected' → không có ảnh hưởng nghiêm trọng đến sức khỏe.",
+        q34: "<strong>Đáp án: YES</strong><br><br><strong>Giải thích:</strong> Đoạn D: 'we haven’t a clue to the habitat we should be recreating for the skinks' → không biết môi trường sống tối ưu.",
+        q35: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Bài đọc không đề cập đến số lượng con non trong quá khứ. Câu E chỉ nói hiện tại 'only two offspring annually'.",
+        q36: "<strong>Đáp án: YES</strong><br><br><strong>Giải thích:</strong> Đoạn E: 'even common species may be facing a doubtful future.' → loài phổ biến cũng có nguy cơ.",
+        q37: "<strong>Đáp án: C</strong><br><br><strong>Giải thích:</strong> Đoạn F: dự đoán 'less than six years' và 'close call' cho thấy rủi ro lớn không thể cứu chúng.",
+        q38: "<strong>Đáp án: A</strong><br><br><strong>Giải thích:</strong> Đoạn G: 'grands and Otagos have subtly different environmental preferences, both of which need catering for' → cần bao quanh nhiều loại môi trường sống.",
+        q39: "<strong>Đáp án: D</strong><br><br><strong>Giải thích:</strong> Đoạn H: 'Captive management, however, is a last resort. The priority is to manage and protect skinks in the wild.' → ưu tiên bảo tồn trong tự nhiên.",
+        q40: "<strong>Đáp án: C</strong><br><br><strong>Giải thích:</strong> Đoạn J mô tả dự án COET trên đất nông nghiệp với sự hỗ trợ của nông dân địa phương."
+    };
+
+    // ==================== TIMER ====================
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (!examSubmitted && timerRunning && timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    // ==================== READING MODE TOGGLE ====================
+    const testWrapper = document.getElementById('testWrapper');
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    
+    document.getElementById('readingModeToggle').addEventListener('click', () => {
+        readingMode = !readingMode;
+        if (readingMode) {
+            testWrapper.classList.add('reading-mode');
+            toggleSwitch.classList.add('active');
+        } else {
+            testWrapper.classList.remove('reading-mode');
+            toggleSwitch.classList.remove('active');
+        }
+    });
+
+    // ==================== FONT SIZE CONTROLS ====================
+    document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+    document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+    document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+    function setFontSize(size) {
+        document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+        document.getElementById('readingContent').className = `reading-text font-${size}`;
+        document.getElementById('questionsContent').className = `questions-list font-${size}`;
+    }
+
+    // ==================== RESIZE COLUMNS ====================
+    const readingPanel = document.getElementById('readingPanel');
+    const questionsPanel = document.getElementById('questionsPanel');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', () => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('mainArea');
+        const rect = mainArea.getBoundingClientRect();
+        let readingWidth = e.clientX - rect.left - 4;
+        if (readingWidth < 250) readingWidth = 250;
+        if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+        readingPanel.style.width = readingWidth + 'px';
+        questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+    });
+
+    // ==================== NAVIGATION BUTTONS ====================
+    function createNavButtons() {
+        const navContainer = document.getElementById('navButtons');
+        navContainer.innerHTML = '';
+        for (let i = 27; i <= 40; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn unanswered';
+            btn.textContent = i;
+            btn.setAttribute('data-question', i);
+            btn.addEventListener('click', function() {
+                const qNum = this.getAttribute('data-question');
+                scrollToQuestion(qNum);
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+            navContainer.appendChild(btn);
+        }
+    }
+
+    function scrollToQuestion(questionNum) {
+        if (questionNum <= 31) {
+            const element = document.getElementById(`q${questionNum}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const wrapper = element.closest('.question-wrapper');
+                if (wrapper) {
+                    wrapper.classList.add('question-highlight');
+                    setTimeout(() => wrapper.classList.remove('question-highlight'), 1500);
+                }
+            }
+        } else if (questionNum <= 36) {
+            const element = document.getElementById(`q${questionNum}-item`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('question-highlight');
+                setTimeout(() => element.classList.remove('question-highlight'), 1500);
+            }
+        } else {
+            const element = document.getElementById(`q${questionNum}-item`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('question-highlight');
+                setTimeout(() => element.classList.remove('question-highlight'), 1500);
+            }
+        }
+    }
+
+    function updateNavButtons() {
+        for (let i = 27; i <= 40; i++) {
+            const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+            if (!btn) continue;
+            let isAnswered = !!getUserAnswer(i);
+            btn.classList.remove('answered', 'unanswered');
+            btn.classList.add(isAnswered ? 'answered' : 'unanswered');
+        }
+    }
+
+    // ==================== GET USER ANSWER ====================
+    function getUserAnswer(q) {
+        if (q <= 31) {
+            let input = document.getElementById(`q${q}`);
+            return input ? input.value.trim().toUpperCase() || null : null;
+        } else if (q <= 36) {
+            const selected = document.querySelector(`input[name="q${q}"]:checked`);
+            return selected ? selected.value : null;
+        } else {
+            const selected = document.querySelector(`input[name="q${q}"]:checked`);
+            return selected ? selected.value : null;
+        }
+    }
+
+    // ==================== UPDATE ANSWER COUNT ====================
+    function updateAnswerCount() {
+        let answered = 0;
+        for (let i = 27; i <= 40; i++) {
+            if (getUserAnswer(i)) answered++;
+        }
+        document.getElementById('answeredCount').textContent = `${answered}/14 answered`;
+        document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/14`;
+        updateNavButtons();
+    }
+
+    // Auto update
+    document.querySelectorAll('input[type="radio"]').forEach(el => {
+        el.addEventListener('change', updateAnswerCount);
+    });
+    
+    document.querySelectorAll('.letter-input').forEach(el => {
+        el.addEventListener('input', function() {
+            this.value = this.value.toUpperCase().replace(/[^A-K]/g, '');
+            updateAnswerCount();
+        });
+    });
+
+    // ==================== HELPER: FIND NODE AND OFFSET ====================
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) {
+                return { node, offset: targetPos - currentPos.value };
+            }
+            currentPos.value += len;
+        } else {
+            for (let child of node.childNodes) {
+                const result = findNodeAndOffset(child, targetPos, currentPos);
+                if (result) return result;
+            }
+        }
+        return null;
+    }
+
+    // ==================== CLEAR ALL HIGHLIGHTS ====================
+    function clearAllHighlights() {
+        document.querySelectorAll('.dynamic-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        document.querySelectorAll('.keyword-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) {
+                while (el.firstChild) {
+                    parent.insertBefore(el.firstChild, el);
+                }
+                parent.removeChild(el);
+            }
+        });
+        document.querySelectorAll('.question-highlight').forEach(el => {
+            el.classList.remove('question-highlight');
+        });
+        document.querySelectorAll('.eye-icon.active').forEach(el => {
+            el.classList.remove('active');
+        });
+    }
+
+    // ==================== HIGHLIGHT ANSWER LOCATION ====================
+    function highlightAnswerLocation(questionNum) {
+        clearAllHighlights();
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
+        
+        // Highlight question in panel
+        if (questionNum <= 31) {
+            const input = document.getElementById(`q${questionNum}`);
+            if (input) {
+                const wrapper = input.closest('.question-wrapper');
+                if (wrapper) wrapper.classList.add('question-highlight');
+                setTimeout(() => input.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
+        } else if (questionNum <= 36) {
+            const element = document.getElementById(`q${questionNum}-item`);
+            if (element) {
+                element.classList.add('question-highlight');
+                setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
+        } else {
+            const element = document.getElementById(`q${questionNum}-item`);
+            if (element) {
+                element.classList.add('question-highlight');
+                setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
+        }
+        
+        const currentEyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (currentEyeIcon) currentEyeIcon.classList.add('active');
+        
+        // Highlight reading passage
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
+        
+        for (let p of paragraphs) {
+            if (loc.text && p.textContent.includes(loc.text)) {
+                try {
+                    const text = p.textContent;
+                    const startIdx = text.indexOf(loc.text);
+                    
+                    let currentPos = {value: 0};
+                    const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                    
+                    currentPos = {value: 0};
+                    const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                    
+                    if (startNodeInfo && endNodeInfo) {
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                        range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                        
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        
+                        setTimeout(() => {
+                            const highlightSpan = document.querySelector('.dynamic-highlight');
+                            if (highlightSpan && loc.keywords && loc.keywords.length > 0) {
+                                let html = highlightSpan.innerHTML;
+                                loc.keywords.forEach(keyword => {
+                                    try {
+                                        const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                        const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+                                        html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
+                                    } catch (e) {}
+                                });
+                                highlightSpan.innerHTML = html;
+                            }
+                        }, 50);
+                        
+                        setTimeout(() => {
+                            const highlighted = document.querySelector('.dynamic-highlight');
+                            if (highlighted) highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                        return true;
+                    }
+                } catch (e) { console.log('Lỗi highlight:', e); }
+                break;
+            }
+        }
+        // fallback
+        for (let p of paragraphs) {
+            for (let keyword of loc.keywords) {
+                if (p.textContent.includes(keyword)) {
+                    try {
+                        const range = document.createRange();
+                        range.selectNodeContents(p);
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        setTimeout(() => span.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                        return true;
+                    } catch (e) {}
+                }
+            }
+        }
+        return false;
+    }
+
+    // ==================== SHOW EXPLANATION ====================
+    function showExplanation(questionNum) {
+        if (!explanationMode && !examSubmitted) return;
+        highlightAnswerLocation(questionNum);
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+        let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+        if (examSubmitted) {
+            const userAnswer = getUserAnswer(questionNum);
+            const correct = answerKey[`q${questionNum}`];
+            const isCorrect = userAnswer && userAnswer.toString().toUpperCase().trim() === correct.toString().toUpperCase().trim();
+            html += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top: 10px; padding: 10px;">`;
+            html += `<strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+            if (!isCorrect && correct) html += `<strong>Đáp án đúng:</strong> ${correct}`;
+            else if (isCorrect) html += `<strong>✅ Đúng!</strong>`;
+            html += `</div>`;
+        }
+        document.getElementById('explanationText').innerHTML = html;
+        
+        if (explanationMode && examSubmitted) {
+            document.querySelectorAll('.correct-answer-badge').forEach(b => b.remove());
+            if (questionNum <= 31) {
+                const input = document.getElementById(`q${questionNum}`);
+                if (input) {
+                    const wrapper = input.closest('.question-wrapper');
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${questionNum}`];
+                    wrapper.appendChild(badge);
+                }
+            } else if (questionNum <= 36) {
+                const item = document.getElementById(`q${questionNum}-item`);
+                if (item) {
+                    const wrapper = item.querySelector('.question-wrapper');
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${questionNum}`];
+                    wrapper.appendChild(badge);
+                }
+            } else {
+                const item = document.getElementById(`q${questionNum}-item`);
+                if (item) {
+                    const wrapper = item.querySelector('.question-wrapper');
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${questionNum}`];
+                    wrapper.appendChild(badge);
+                }
+            }
+        }
+    }
+
+    // ==================== SETUP EYE ICONS ====================
+    function setupEyeIcons() {
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const questionNum = this.getAttribute('data-question');
+                showExplanation(questionNum);
+            });
+        });
+    }
+
+    document.getElementById('closeExplanation').addEventListener('click', () => {
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // ==================== MARK ANSWERS ====================
+    function markAnswers() {
+        // Mark 27-31 letter inputs
+        for (let i = 27; i <= 31; i++) {
+            const input = document.getElementById(`q${i}`);
+            if (input) {
+                const user = input.value.trim().toUpperCase();
+                const correct = answerKey[`q${i}`].toUpperCase();
+                input.classList.remove('correct', 'incorrect-marked');
+                const wrapper = input.closest('.question-wrapper');
+                const oldBadge = wrapper.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                if (user) {
+                    if (user === correct) input.classList.add('correct');
+                    else {
+                        input.classList.add('incorrect-marked');
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = correct;
+                        wrapper.appendChild(badge);
+                    }
+                } else {
+                    input.classList.add('incorrect-marked');
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = correct;
+                    wrapper.appendChild(badge);
+                }
+            }
+        }
+        // Mark 32-36 Yes/No
+        for (let i = 32; i <= 36; i++) {
+            const group = document.getElementById(`q${i}-group`);
+            if (!group) continue;
+            const options = group.querySelectorAll('.yn-option');
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const correct = answerKey[`q${i}`];
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                const radio = opt.querySelector('input');
+                if (radio.value === correct) opt.classList.add('correct');
+                if (selected && radio.value === selected.value && radio.value !== correct) opt.classList.add('incorrect');
+            });
+            if (!selected) {
+                options.forEach(opt => {
+                    if (opt.querySelector('input').value === correct) opt.classList.add('correct');
+                });
+            }
+        }
+        // Mark 37-40 MCQ
+        for (let i = 37; i <= 40; i++) {
+            const options = document.querySelectorAll(`#q${i}-item .mcq-option`);
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const correct = answerKey[`q${i}`];
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                const radio = opt.querySelector('input');
+                if (radio.value === correct) opt.classList.add('correct');
+                if (selected && radio.value === selected.value && radio.value !== correct) opt.classList.add('incorrect');
+            });
+            if (!selected) {
+                options.forEach(opt => {
+                    if (opt.querySelector('input').value === correct) opt.classList.add('correct');
+                });
+            }
+        }
+    }
+
+    // ==================== CALCULATE RESULTS ====================
+    function calculateResults() {
+        let correct = 0, total = 14;
+        for (let i = 27; i <= 31; i++) {
+            const input = document.getElementById(`q${i}`);
+            if (input && input.value.trim().toUpperCase() === answerKey[`q${i}`].toUpperCase()) correct++;
+        }
+        for (let i = 32; i <= 36; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selected && selected.value === answerKey[`q${i}`]) correct++;
+        }
+        for (let i = 37; i <= 40; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selected && selected.value === answerKey[`q${i}`]) correct++;
+        }
+        const percentage = Math.round(correct / total * 100);
+        const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(timeTaken / 60);
+        const seconds = timeTaken % 60;
+        return { correct, total, percentage, timeString: `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}` };
+    }
+
+    // ==================== SUBMIT ====================
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (examSubmitted) return;
+        let unanswered = [];
+        for (let i = 27; i <= 40; i++) if (!getUserAnswer(i)) unanswered.push(i);
+        if (unanswered.length > 0 && !confirm(`Bạn còn ${unanswered.length} câu chưa làm. Bạn có chắc muốn nộp bài?`)) return;
+        examSubmitted = true;
+        timerRunning = false;
+        clearInterval(timerInterval);
+        markAnswers();
+        const results = calculateResults();
+        document.getElementById('resultStats').style.display = 'inline-block';
+        document.getElementById('resultStats').textContent = `Kết quả: ${results.correct}/${results.total} (${results.percentage}%) - Thời gian: ${results.timeString}`;
+        document.getElementById('explainBtn').disabled = false;
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = 'KẾT QUẢ BÀI LÀM';
+        document.getElementById('explanationText').innerHTML = `
+            <h4>Kết quả bài làm:</h4>
+            <p><strong>Số câu đúng:</strong> ${results.correct}/${results.total}</p>
+            <p><strong>Tỷ lệ đúng:</strong> ${results.percentage}%</p>
+            <p><strong>Thời gian làm bài:</strong> ${results.timeString}</p>
+            <p>Nhấn "Xem giải thích" và click vào 👁️ để xem chi tiết từng câu.</p>
+        `;
+    });
+
+    // ==================== EXPLAIN ====================
+    document.getElementById('explainBtn').addEventListener('click', function() {
+        if (!examSubmitted) return;
+        explanationMode = true;
+        document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'inline-block');
+        this.disabled = true;
+        this.textContent = 'Đang xem giải thích';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // ==================== RESET ====================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('Bạn có chắc muốn reset tất cả?')) {
+            examSubmitted = false; explanationMode = false; timerRunning = true; timeLeft = 3600; startTime = Date.now();
+            for (let i = 27; i <= 31; i++) {
+                const inp = document.getElementById(`q${i}`);
+                if (inp) { inp.value = ''; inp.classList.remove('correct', 'incorrect-marked'); }
+            }
+            for (let i = 32; i <= 36; i++) {
+                document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false);
+                const g = document.getElementById(`q${i}-group`);
+                if (g) g.querySelectorAll('.yn-option').forEach(o => o.classList.remove('correct', 'incorrect'));
+            }
+            for (let i = 37; i <= 40; i++) {
+                document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false);
+                document.querySelectorAll(`#q${i}-item .mcq-option`).forEach(o => o.classList.remove('correct', 'incorrect'));
+            }
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+            document.getElementById('submitBtn').disabled = false; document.getElementById('submitBtn').textContent = 'Nộp bài';
+            document.getElementById('explainBtn').disabled = true; document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            document.getElementById('resultStats').style.display = 'none';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+            updateAnswerCount();
+        }
+    });
+
+    // ==================== RIGHT-CLICK HIGHLIGHT ====================
+    const contextMenu = document.getElementById('contextMenu');
+    document.getElementById('readingContent').addEventListener('contextmenu', (e) => {
+        e.preventDefault(); const sel = window.getSelection();
+        if (sel.toString().trim() === '') return;
+        selectedRange = sel.getRangeAt(0);
+        contextMenu.style.display = 'block'; contextMenu.style.left = e.pageX + 'px'; contextMenu.style.top = e.pageY + 'px';
+    });
+    document.getElementById('questionsContent').addEventListener('contextmenu', (e) => {
+        e.preventDefault(); const sel = window.getSelection();
+        if (sel.toString().trim() === '') return;
+        selectedRange = sel.getRangeAt(0);
+        contextMenu.style.display = 'block'; contextMenu.style.left = e.pageX + 'px'; contextMenu.style.top = e.pageY + 'px';
+    });
+    document.addEventListener('click', () => contextMenu.style.display = 'none');
+    window.applyHighlight = (color) => {
+        if (!selectedRange) return;
+        try { const span = document.createElement('span'); span.className = `highlight-${color}`; const range = selectedRange.cloneRange(); window.getSelection().removeAllRanges(); const contents = range.extractContents(); span.appendChild(contents); range.insertNode(span); } catch (e) { alert('Không thể highlight'); }
+        contextMenu.style.display = 'none'; selectedRange = null;
+    };
+    window.removeHighlight = () => {
+        if (!selectedRange) return;
+        try { document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => { if (selectedRange.intersectsNode(h)) { const parent = h.parentNode; while (h.firstChild) parent.insertBefore(h.firstChild, h); parent.removeChild(h); } }); window.getSelection().removeAllRanges(); } catch (e) {}
+        contextMenu.style.display = 'none'; selectedRange = null;
+    };
+
+    // ==================== AUTO-RESIZE INPUTS ====================
+    function autoResizeInput(input) {
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden'; tempSpan.style.position = 'absolute'; tempSpan.style.whiteSpace = 'pre'; tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily; tempSpan.style.fontSize = window.getComputedStyle(input).fontSize; tempSpan.style.fontWeight = window.getComputedStyle(input).fontWeight; tempSpan.style.padding = window.getComputedStyle(input).padding; tempSpan.style.border = window.getComputedStyle(input).border;
+        document.body.appendChild(tempSpan);
+        function updateWidth() { let value = input.value || ' '; tempSpan.textContent = value; let width = tempSpan.offsetWidth + 20; input.style.width = Math.max(60, Math.min(300, width)) + 'px'; }
+        updateWidth(); input.addEventListener('input', updateWidth); input.addEventListener('change', updateWidth);
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        ['q27','q28','q29','q30','q31'].forEach(id => { const inp = document.getElementById(id); if (inp) autoResizeInput(inp); });
+    });
+
+    // ==================== INIT ====================
+    createNavButtons(); updateAnswerCount(); setupEyeIcons();
+    document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+    startTimer();
+
+    // ==================== SAVE TO DASHBOARD ====================
+    let currentVol = 7, currentTest = 5;
+    function saveToDashboard() {
+        if (!examSubmitted) return;
+        const passageData = { passageId: 3, name: 'Saving the Skink', totalQuestions: 14, correctCount: 0, timeSpent: document.getElementById('timerDisplay').textContent, details: [] };
+        let correctCount = 0;
+        for (let i = 27; i <= 31; i++) { const inp = document.getElementById(`q${i}`); const user = inp ? inp.value.trim().toUpperCase() : null; const correct = answerKey[`q${i}`].toUpperCase(); const isCorrect = user === correct; if (isCorrect) correctCount++; passageData.details.push({ question: i, user: user || '(trống)', correct: correct, isCorrect }); }
+        for (let i = 32; i <= 36; i++) { const sel = document.querySelector(`input[name="q${i}"]:checked`); const user = sel ? sel.value : null; const correct = answerKey[`q${i}`]; const isCorrect = user === correct; if (isCorrect) correctCount++; passageData.details.push({ question: i, user: user || '(trống)', correct, isCorrect }); }
+        for (let i = 37; i <= 40; i++) { const sel = document.querySelector(`input[name="q${i}"]:checked`); const user = sel ? sel.value : null; const correct = answerKey[`q${i}`]; const isCorrect = user === correct; if (isCorrect) correctCount++; passageData.details.push({ question: i, user: user || '(trống)', correct, isCorrect }); }
+        passageData.correctCount = correctCount;
+        const key = `ielts_vol${currentVol}_test${currentTest}_passage_3`;
+        localStorage.setItem(key, JSON.stringify(passageData));
+        console.log(`Saved to dashboard: ${key}`);
+    }
+    const originalSubmit = document.getElementById('submitBtn').onclick;
+    document.getElementById('submitBtn').onclick = function() { if (typeof originalSubmit === 'function') originalSubmit.call(this); setTimeout(saveToDashboard, 500); };
+</script>
+</body>
+</html>
