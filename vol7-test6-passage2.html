@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vol 7 - Reading Test 6 - Passage 2 (Jellyfish)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: #1a1a2a; display: flex; justify-content: center; min-height: 100vh; }
+        .test-wrapper { width: 100%; max-width: 1600px; background: #f5f3ee; display: flex; flex-direction: column; height: 100vh; }
+        .test-wrapper.reading-mode { background: #f8f5e6; }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        .ielts-header {
+            background: #1e3a5f; color: white; padding: 8px 20px; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 3px solid #e6b422;
+        }
+        .brand { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .ielts-logo { background: #e6b422; color: #1e3a5f; font-weight: 800; font-size: 24px; padding: 4px 18px; border-radius: 40px; }
+        .candidate { background: #2d4b77; padding: 4px 16px; border-radius: 30px; font-size: 14px; }
+        .question-types { background: #0f2a44; padding: 4px 16px; border-radius: 30px; font-size: 13px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 6px 20px; border-radius: 40px; font-size: 22px; font-family: monospace; border: 1px solid #e6b422; }
+
+        .reading-mode-toggle {
+            display: flex; align-items: center; gap: 8px; background: #2d4b77; padding: 4px 12px; border-radius: 30px; cursor: pointer;
+        }
+        .toggle-switch {
+            width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422;
+        }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s;
+        }
+        .toggle-switch.active::after { left: 22px; }
+
+        .font-controls {
+            display: flex; gap: 5px; background: #2d4b77; padding: 3px; border-radius: 30px;
+        }
+        .font-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer;
+        }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        .question-nav {
+            background: #d2cbbc; padding: 6px 20px; border-bottom: 2px solid #b0aa9a; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
+        }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn {
+            width: 32px; height: 32px; border-radius: 6px; border: 2px solid #1e3a5f; background: white; color: #1e3a5f;
+            font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; }
+        .reading-panel { width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden; }
+        .questions-panel { width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden; }
+        .resizer { width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s; }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header { background: #d2cbbc; padding: 8px 15px; font-weight: 600; color: #1e3a5f; border-bottom: 1px solid #b0aa9a; display: flex; justify-content: space-between; }
+        .reading-text { flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px; }
+        .reading-text p { margin-bottom: 15px; }
+        .questions-list { flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px; }
+
+        .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
+
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; }
+        .dynamic-highlight { background-color: #f9e79f; display: inline; border-radius: 3px; padding: 0 2px; animation: highlightFadeIn 0.5s ease; }
+        .keyword-highlight { text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline; border-radius: 3px; padding: 0 2px; }
+        .question-highlight { background-color: #fef9e7; border-left: 4px solid #f1c40f; padding-left: 10px; }
+        @keyframes highlightFadeIn { from { background-color: #fff; } to { background-color: #f9e79f; } }
+
+        .context-menu {
+            position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px;
+        }
+        .context-menu div { padding: 8px 20px; cursor: pointer; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+
+        .question-wrapper { display: inline-flex; align-items: center; gap: 8px; position: relative; }
+        .letter-input {
+            width: 45px; text-align: center; text-transform: uppercase; font-weight: bold; border: none;
+            border-bottom: 2px solid #bdc3c7; background: #fafafa; padding: 2px 5px; font-size: 1em;
+            transition: 0.2s; outline: none; border-radius: 4px 4px 0 0; margin: 0 5px;
+            font-family: 'Times New Roman', serif;
+        }
+        .letter-input.correct { border-bottom-color: #27ae60 !important; background-color: #e8f8f5 !important; color: #1e8449 !important; }
+        .letter-input.incorrect-marked { border-bottom-color: #e74c3c !important; background-color: #fdedec !important; }
+        .correct-answer-badge {
+            display: inline-block; background-color: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px;
+            font-size: 12px; margin-left: 8px; font-weight: bold; vertical-align: middle; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .eye-icon { display: none; margin-left: 5px; cursor: pointer; font-size: 18px; opacity: 0.7; transition: 0.2s; }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+
+        .bottom-bar {
+            background: #d2cbbc; padding: 10px 20px; display: flex; gap: 15px; border-top: 1px solid #b0aa9a; align-items: center; flex-wrap: wrap;
+        }
+        .btn {
+            padding: 6px 20px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s;
+        }
+        .btn-primary { background: #1e3a5f; color: white; } .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; opacity: 0.6; }
+        .btn-success { background: #4CAF50; color: white; } .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { background: #a5d6a7; cursor: not-allowed; opacity: 0.6; pointer-events: none; }
+        .btn-danger { background: #f44336; color: white; } .btn-danger:hover { background: #d32f2f; }
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; }
+
+        .explanation-panel {
+            background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px;
+            border-radius: 8px; display: none; z-index: 100;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; color: #666; } .close-btn:hover { color: #1e3a5f; }
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
+
+        .question-item { margin-bottom: 15px; padding: 10px; border-left: 3px solid transparent; transition: 0.2s; scroll-margin-top: 20px; }
+        .question-item.highlight-question { border-left: 3px solid #f1c40f; background-color: #fef9e7; }
+
+        .summary-box {
+            background: #f9f7f0; padding: 20px; border-radius: 12px; margin: 15px 0; border-left: 4px solid #1e3a5f;
+        }
+
+        .checkbox-group {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+        .checkbox-option {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+        .checkbox-option input {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .question-number {
+            font-weight: bold;
+            color: #1e3a5f;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 6 - Passage 2</div>
+            <div class="question-types">Matching • Multi • Summary</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- Question Navigator -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 14-26:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main Resizable Area -->
+    <div class="main-area" id="mainArea">
+        <!-- Reading Panel (Jellyfish text) -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header"><span>READING PASSAGE 2: Jellyfish – The Dominant Species</span></div>
+            <div class="reading-text font-medium" id="readingContent">
+                <p><strong>A</strong><br>Jellyfish have become the curse of beach holidays, permeating every ocean on the globe, thriving in the Arctic and the tropics. In an ever-changing world where other species struggle to endure, jellyfish populations are on the rise. To the untrained eye, these creatures drift aimlessly on the oceans’ currents and appear benign. In addition, they lack sharp claws, piercing teeth or even a brain. Despite this, they are armed with an amazing arsenal of weapons, especially the stinging power of their tentacles. As a result, jellyfish are among the most-feared, least-understood creatures in the seas.</p>
+                <p><strong>B</strong><br>According to Dr Monty Graham, a jellyfish scientist at the University of South Alabama, US, ‘Jellyfish are a pretty good group of animals to track coastal ecosystems. When you start to see jellyfish numbers grow, that usually indicates a stressed system.’ While populations appear to be down this year, Dr Graham sees ‘a statistically solid increase’ over the longer term. This increase first gained attention in the 1980s when a huge number of jellyfish, Atlantic Ocean natives named Mnemiopsis leidyi, devastated the Black Sea, an ecosystem already weakened by overfishing of anchovies. Scientists believe that this species of jellyfish came in on the bottom of a ship and then rapidly multiplied, feeding on anchovy eggs and the plankton that young fish rely on.</p>
+                <p><strong>C</strong><br>Dense jellyfish aggregations can be a natural feature of healthy ocean ecosystems, but a clear picture is now emerging of more severe and frequent jellyfish outbreaks worldwide. Dr Anthony Richardson, from the University of Queensland, Australia, explains that once jellyfish gain a foothold, if conditions are right they can establish a massive population at the expense of other ocean life. The problem is that parts of the ocean might switch from being dominated by fish to being dominated by jellyfish.</p>
+                <p><strong>D</strong><br>A study done by Richardson and his colleagues explores the causes behind jellyfish infestation, and the need for swift, decisive action to stem jellyfish takeover. Jellyfish outbreaks are linked directly to human actions, including overfishing, the input of fertilizer and sewage into the ocean, and climate change. Overfishing has removed fish from marine ecosystems at astounding rates. According to Richardson, this has made it possible for jellyfish to take their place. ‘This is because small fish appear to keep jellyfish in check by predation (on jellyfish when they are very small) and competition (when feeding). So, once we remove fish, jellyfish can proliferate.’ Eutrophication is another human-caused change in the ocean that has likely contributed to jellyfish explosions. Eutrophication is an increase of nitrogen and phosphorus in the ocean, largely caused by fertilizer and waste run-off. This leads to algae blooms, which lower oxygen in the marine ecosystem, creating so-called ‘dead zones’, which have been increasing dramatically around the world. According to Richardson, these low-oxygen waters give jellyfish the advantage. ‘Fish avoid low-oxygen waters but jellyfish, having lower oxygen demands, not only survive but can thrive in these conditions as there is less predation and competition from fish.’</p>
+                <p><strong>E</strong><br>Furthermore, Richardson and his colleagues speculate that climate change may expand the traditional geographical range of jellyfish. ‘As water warms, tropical species are moving towards the poles. Many venomous jellyfish species are tropical and could move into more densely populated subtropical and temperate regions.’</p>
+                <p><strong>F</strong><br>Once jellyfish appear en masse in an ecosystem they can make it very difficult for fish to stage a comeback. By feeding on fish eggs, the jellyfish successfully prevent fish from returning to their normal population numbers, says Richardson. ‘One can thus think of two alternate states with each being stable: one dominated by fish and the other by jellyfish. Unfortunately, where there is a jellyfish-dominated state then this does not support the nutritional needs of other fish, marine mammals, and seabirds.’ In other words an ecosystem that loses fish also loses the species that depend on fish for survival. This state has been defined as a ‘monoculture of jellyfish’, an apt analogy since the situation shares similarities with other monocultures. When the rich biodiversity of tropical forests is replaced by plantations growing a single species of tree, an area of rich variety becomes a desert in terms of biodiversity, as do ocean ecosystems when jellyfish become the dominant species. One result of large jellyfish populations is the economic effect it has had on the fishing industry. In the Gulf of Mexico, shrimp fishermen are struggling with a jellyfish boom that fills nets, causing them to break and resulting in millions of dollars in losses.</p>
+                <p><strong>G</strong><br>Experts say that a greater understanding of jellyfish, including their ideal water temperature and feeding habits, is necessary to determine with certainty what is causing the recent massive invasion, and to come up with ways to combat it. Due to the difficulty of turning ecosystems around once jellyfish have become dominant, Richardson and his colleagues propose focusing on ‘prevention rather than cure’. They recommend a halt to overfishing small fish that are vital to keeping jellyfish in check, reducing the amount of fertilizer and sewage running off into the oceans, and finally, if possible, confronting climate change.</p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions Panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header"><span>QUESTIONS 14-26</span><span class="answer-badge" id="answeredCount">0/13 answered</span></div>
+            <div class="questions-list font-medium" id="questionsContent">
+                <!-- Questions 14-17 matching -->
+                <h3>Questions 14-17</h3>
+                <p><em>Reading Passage 2 has seven sections, <strong>A-G</strong>. Which section contains the following information? Choose the correct letter, A-G.</em></p>
+                <div class="note-box" style="background:#f0ebe0; border-left:4px solid #e6b422; padding:8px; margin-bottom:15px;"><p><strong>NB</strong> You may use any letter more than once.</p></div>
+                <div class="question-item" id="q14-item"><div class="question-wrapper"><span class="question-number">14.</span> <span>a prediction as to the direction in which the jellyfish population may spread</span> <input type="text" class="letter-input" id="q14" maxlength="1" placeholder=""> <span class="eye-icon" data-question="14">👁️</span></div></div>
+                <div class="question-item" id="q15-item"><div class="question-wrapper"><span class="question-number">15.</span> <span>a description of some physical characteristics of jellyfish</span> <input type="text" class="letter-input" id="q15" maxlength="1" placeholder=""> <span class="eye-icon" data-question="15">👁️</span></div></div>
+                <div class="question-item" id="q16-item"><div class="question-wrapper"><span class="question-number">16.</span> <span>an account of the consequences of jellyfish as lone survivors</span> <input type="text" class="letter-input" id="q16" maxlength="1" placeholder=""> <span class="eye-icon" data-question="16">👁️</span></div></div>
+                <div class="question-item" id="q17-item"><div class="question-wrapper"><span class="question-number">17.</span> <span>suggestions on how to avoid further jellyfish invasions</span> <input type="text" class="letter-input" id="q17" maxlength="1" placeholder=""> <span class="eye-icon" data-question="17">👁️</span></div></div>
+
+                <!-- Questions 18-19 (two effects) with checkboxes -->
+                <h3 style="margin-top:40px;">Questions 18-19</h3>
+                <p><em>Choose TWO correct answers. Select the letters and write them in the boxes.</em></p>
+                <p>The list below gives some effects that jellyfish have had on the world. Which TWO of these effects are mentioned by the writer of the text?</p>
+
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span class="question-number">18.</span> <span class="eye-icon" data-question="18">👁️</span>
+                    <span class="question-number" style="margin-left: 10px;">19.</span> <span class="eye-icon" data-question="19">👁️</span>
+                </div>
+
+                <div class="checkbox-group" id="group18-19">
+                    <label class="checkbox-option"><input type="checkbox" class="cb-18-19" value="A"> A They have damaged the tourism industry in some areas.</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-18-19" value="B"> B They have led to a reduction in the oceans' oxygen levels.</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-18-19" value="C"> C They have contributed to the decline in the Black Sea anchovy population.</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-18-19" value="D"> D They have caused the shrimp business in the Gulf of Mexico to shut down.</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-18-19" value="E"> E They have created financial hardship in the fishing industry.</label>
+                </div>
+
+                <input type="hidden" id="q18">
+                <input type="hidden" id="q19">
+
+                <!-- Questions 20-21 (two causes) -->
+                <h3 style="margin-top:40px;">Questions 20-21</h3>
+                <p><em>Choose TWO correct answers. Select the letters and write them in the boxes.</em></p>
+                <p>Which TWO of the following are possible causes of an increase in jellyfish numbers?</p>
+
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span class="question-number">20.</span> <span class="eye-icon" data-question="20">👁️</span>
+                    <span class="question-number" style="margin-left: 10px;">21.</span> <span class="eye-icon" data-question="21">👁️</span>
+                </div>
+
+                <div class="checkbox-group" id="group20-21">
+                    <label class="checkbox-option"><input type="checkbox" class="cb-20-21" value="A"> A a shortage of small fish in the oceans</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-20-21" value="B"> B the dumping of chemicals into the oceans</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-20-21" value="C"> C a decline in biodiversity in the oceans</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-20-21" value="D"> D more competition among other fish in the oceans</label>
+                    <label class="checkbox-option"><input type="checkbox" class="cb-20-21" value="E"> E a decrease in seabird populations</label>
+                </div>
+
+                <input type="hidden" id="q20">
+                <input type="hidden" id="q21">
+
+                <!-- Questions 22-26 sentence completion -->
+                <h3 style="margin-top:40px;">Questions 22-26</h3>
+                <p><em>Complete the sentences below. Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                <div class="summary-box">
+                    <p><span class="question-number">22.</span> Some fish in the oceans may be unable to sustain their population as the jellyfish eat their <span class="question-wrapper"><input class="letter-input" id="q22" style="width:100px;" placeholder=""> <span class="eye-icon" data-question="22">👁️</span></span>.</p>
+                    <p><span class="question-number">23.</span> The state of jellyfish becoming the main ocean species has been named <span class="question-wrapper"><input class="letter-input" id="q23" style="width:100px;" placeholder=""> <span class="eye-icon" data-question="23">👁️</span></span>.</p>
+                    <p><span class="question-number">24.</span> Increasing numbers of jellyfish can damage <span class="question-wrapper"><input class="letter-input" id="q24" style="width:100px;" placeholder=""> <span class="eye-icon" data-question="24">👁️</span></span> used for commercial fishing.</p>
+                    <p><span class="question-number">25.</span> Understanding basic facts about jellyfish, such as the <span class="question-wrapper"><input class="letter-input" id="q25" style="width:100px;" placeholder=""> <span class="eye-icon" data-question="25">👁️</span></span> of the ocean which suits them best, may help control their numbers.</p>
+                    <p><span class="question-number">26.</span> Richardson believes it is better to direct attention to <span class="question-wrapper"><input class="letter-input" id="q26" style="width:100px;" placeholder=""> <span class="eye-icon" data-question="26">👁️</span></span>, instead of just trying to solve existing problems.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- Explanation Panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header"><span id="explanationTitle">Giải thích</span><span class="close-btn" id="closeExplanation">✕ Đóng</span></div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
+    </div>
+</div>
+
+<script>
+    // ==================== GLOBAL ====================
+    let examSubmitted = false;
+    let explanationMode = false;
+    let readingMode = false;
+    let timerRunning = true;
+    let timeLeft = 3600;
+    let timerInterval;
+    let selectedRange = null;
+    const startTime = Date.now();
+
+    // ANSWER KEY (from TEST 6 Explanation.docx)
+    const answerKey = {
+        q14: 'E', q15: 'A', q16: 'F', q17: 'G',
+        q18: 'C', q19: 'E',   // correct set {C, E}
+        q20: 'A', q21: 'B',   // correct set {A, B}
+        q22: 'EGGS', q23: 'MONOCULTURE', q24: 'NETS', q25: 'TEMPERATURE', q26: 'PREVENTION'
+    };
+
+    // For paired questions (18-19 and 20-21) we define the correct sets
+    const pairedSets = {
+        '18-19': new Set(['C', 'E']),
+        '20-21': new Set(['A', 'B'])
+    };
+
+    // ==================== ANSWER LOCATIONS WITH EXACT TEXT AND KEYWORDS ====================
+    const answerLocations = {
+        q14: {
+            text: `Furthermore, Richardson and his colleagues speculate that climate change may expand the traditional geographical range of jellyfish. ‘As water warms, tropical species are moving towards the poles. Many venomous jellyfish species are tropical and could move into more densely populated subtropical and temperate regions`,
+            keywords: ["expand the traditional geographical range", "moving towards the poles"]
+        },
+        q15: {
+            text: `To the untrained eye, these creatures drift aimlessly on the oceans’ currents and appear benign. In addition, they lack sharp claws, piercing teeth or even a brain. Despite this, they are armed with an amazing arsenal of weapons, especially the stinging power of their tentacles`,
+            keywords: ["lack sharp claws", "piercing teeth", "even a brain", "stinging power of their tentacles"]
+        },
+        q16: {
+            text: `Once jellyfish appear en masse in an ecosystem they can make it very difficult for fish to stage a comeback. By feeding on fish eggs, the jellyfish successfully prevent fish from returning to their normal population numbers, says Richardson. ‘One can thus think of two alternate states with each being stable: one dominated by fish and the other by jellyfish. Unfortunately, where there is a jellyfish-dominated state then this does not support the nutritional needs of other fish, marine mammals, and seabirds.’ In other words an ecosystem that loses fish also loses the species that depend on fish for survival. This state has been defined as a ‘monoculture of jellyfish’`,
+            keywords: ["jellyfish-dominated state", "monoculture of jellyfish", "loses the species that depend on fish"]
+        },
+        q17: {
+            text: `Due to the difficulty of turning ecosystems around once jellyfish have become dominant, Richardson and his colleagues propose focusing on ‘prevention rather than cure’. They recommend a halt to overfishing small fish that are vital to keeping jellyfish in check, reducing the amount of fertilizer and sewage running off into the oceans, and finally, if possible, confronting climate change`,
+            keywords: ["prevention rather than cure", "halt to overfishing", "reducing fertilizer and sewage", "confronting climate change"]
+        },
+        q18: {
+            text: `This increase first gained attention in the 1980s when a huge number of jellyfish, Atlantic Ocean natives named Mnemiopsis leidyi, devastated the Black Sea, an ecosystem already weakened by overfishing of anchovies`,
+            keywords: ["Black Sea", "anchovy eggs"]
+        },
+        q19: {
+            text: `One result of large jellyfish populations is the economic effect it has had on the fishing industry. In the Gulf of Mexico, shrimp fishermen are struggling with a jellyfish boom that fills nets, causing them to break and resulting in millions of dollars in losses`,
+            keywords: ["economic effect", "fishing industry", "millions of dollars in losses"]
+        },
+        q20: {
+            text: `Overfishing has removed fish from marine ecosystems at astounding rates. According to Richardson, this has made it possible for jellyfish to take their place. ‘This is because small fish appear to keep jellyfish in check by predation (on jellyfish when they are very small) and competition (when feeding). So, once we remove fish, jellyfish can proliferate.’`,
+            keywords: ["remove fish", "small fish keep jellyfish in check"]
+        },
+        q21: {
+            text: `Eutrophication is another human-caused change in the ocean that has likely contributed to jellyfish explosions. Eutrophication is an increase of nitrogen and phosphorus in the ocean, largely caused by fertilizer and waste run-off`,
+            keywords: ["fertilizer and waste run-off", "eutrophication"]
+        },
+        q22: {
+            text: `By feeding on fish eggs, the jellyfish successfully prevent fish from returning to their normal population numbers`,
+            keywords: ["fish eggs"]
+        },
+        q23: {
+            text: `This state has been defined as a ‘monoculture of jellyfish’`,
+            keywords: ["monoculture"]
+        },
+        q24: {
+            text: `In the Gulf of Mexico, shrimp fishermen are struggling with a jellyfish boom that fills nets, causing them to break and resulting in millions of dollars in losses`,
+            keywords: ["fills nets"]
+        },
+        q25: {
+            text: `Experts say that a greater understanding of jellyfish, including their ideal water temperature and feeding habits, is necessary to determine with certainty what is causing the recent massive invasion, and to come up with ways to combat it`,
+            keywords: ["water temperature"]
+        },
+        q26: {
+            text: `Due to the difficulty of turning ecosystems around once jellyfish have become dominant, Richardson and his colleagues propose focusing on ‘prevention rather than cure’`,
+            keywords: ["prevention rather than cure"]
+        }
+    };
+
+    // ==================== EXPLANATIONS (Vietnamese) ====================
+    const explanations = {
+        q14: "<strong>Đáp án: E</strong><br><br><strong>Giải thích:</strong> Đoạn E: 'climate change may expand the traditional geographical range... tropical species moving towards the poles' → dự đoán lan rộng.",
+        q15: "<strong>Đáp án: A</strong><br><br><strong>Giải thích:</strong> Đoạn A: mô tả đặc điểm vật lý: thiếu vuốt, răng, não, nhưng có xúc tu chích.",
+        q16: "<strong>Đáp án: F</strong><br><br><strong>Giải thích:</strong> Đoạn F: hậu quả khi sứa thống trị: 'jellyfish-dominated state', 'monoculture', mất đa dạng.",
+        q17: "<strong>Đáp án: G</strong><br><br><strong>Giải thích:</strong> Đoạn G: đề xuất 'prevention rather than cure', giảm đánh bắt, phân bón, đối phó biến đổi khí hậu.",
+        q18: "<strong>Đáp án: C</strong><br><br><strong>Giải thích:</strong> Đoạn B: sứa Mnemiopsis tàn phá Biển Đen, ăn trứng cá cơm → suy giảm cá cơm.",
+        q19: "<strong>Đáp án: E</strong><br><br><strong>Giải thích:</strong> Đoạn F: ngư dân tôm ở vịnh Mexico thiệt hại triệu đô vì sứa làm hỏng lưới → khó khăn tài chính.",
+        q20: "<strong>Đáp án: A</strong><br><br><strong>Giải thích:</strong> Đoạn D: đánh bắt quá mức cá nhỏ (loại giữ sứa trong tầm kiểm soát) → sứa bùng nổ.",
+        q21: "<strong>Đáp án: B</strong><br><br><strong>Giải thích:</strong> Đoạn D: phân bón và chất thải chảy ra biển gây eutrophication, tạo vùng chết, lợi cho sứa.",
+        q22: "<strong>Đáp án: EGGS</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'feeding on fish eggs' → trứng cá.",
+        q23: "<strong>Đáp án: MONOCULTURE</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'defined as a monoculture of jellyfish'.",
+        q24: "<strong>Đáp án: NETS</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'fills nets, causing them to break' → lưới.",
+        q25: "<strong>Đáp án: TEMPERATURE</strong><br><br><strong>Giải thích:</strong> Đoạn G: 'ideal water temperature'.",
+        q26: "<strong>Đáp án: PREVENTION</strong><br><br><strong>Giải thích:</strong> Đoạn G: 'focusing on prevention rather than cure'."
+    };
+
+    // ==================== TIMER ====================
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (!examSubmitted && timerRunning && timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60), secs = timeLeft % 60;
+                document.getElementById('timerDisplay').textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }
+        }, 1000);
+    }
+
+    // ==================== READING MODE TOGGLE ====================
+    const testWrapper = document.getElementById('testWrapper');
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    document.getElementById('readingModeToggle').addEventListener('click', () => {
+        readingMode = !readingMode;
+        testWrapper.classList.toggle('reading-mode');
+        toggleSwitch.classList.toggle('active');
+    });
+
+    // ==================== FONT CONTROLS ====================
+    document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+    document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+    document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+    function setFontSize(size) {
+        document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+        document.getElementById('readingContent').className = `reading-text font-${size}`;
+        document.getElementById('questionsContent').className = `questions-list font-${size}`;
+    }
+
+    // ==================== RESIZE COLUMNS ====================
+    const readingPanel = document.getElementById('readingPanel'), questionsPanel = document.getElementById('questionsPanel'), resizer = document.getElementById('resizer');
+    let isResizing = false;
+    resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'col-resize'; });
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('mainArea'), rect = mainArea.getBoundingClientRect();
+        let w = e.clientX - rect.left - 4;
+        w = Math.max(250, Math.min(rect.width - 250, w));
+        readingPanel.style.width = w + 'px';
+        questionsPanel.style.width = (rect.width - w - 8) + 'px';
+    });
+    document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = 'default'; });
+
+    // ==================== NAVIGATION BUTTONS ====================
+    function createNavButtons() {
+        const nav = document.getElementById('navButtons');
+        nav.innerHTML = '';
+        for (let i = 14; i <= 26; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn unanswered';
+            btn.textContent = i;
+            btn.setAttribute('data-question', i);
+            btn.addEventListener('click', function() {
+                const q = this.getAttribute('data-question');
+                scrollToQuestion(q);
+                document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+                this.classList.add('active');
+            });
+            nav.appendChild(btn);
+        }
+    }
+    function scrollToQuestion(q) {
+        const item = document.getElementById(`q${q}-item`) || document.getElementById(`q${q}`)?.closest('.question-item');
+        if (item) { item.scrollIntoView({behavior:'smooth', block:'center'}); item.classList.add('question-highlight'); setTimeout(()=>item.classList.remove('question-highlight'),1500); }
+    }
+
+    // ==================== GET USER ANSWER ====================
+    function getUserAnswer(q) {
+        if (q >= 18 && q <= 21) {
+            const input = document.getElementById(`q${q}`);
+            return input ? input.value.trim().toUpperCase() || null : null;
+        } else {
+            const input = document.getElementById(`q${q}`);
+            return input ? input.value.trim().toUpperCase() || null : null;
+        }
+    }
+
+    // ==================== UPDATE ANSWER COUNT ====================
+    function updateAnswerCount() {
+        let ans = 0;
+        for (let i=14; i<=26; i++) if (getUserAnswer(i)) ans++;
+        document.getElementById('answeredCount').textContent = `${ans}/13 answered`;
+        document.getElementById('progressDisplay').textContent = `Đã làm: ${ans}/13`;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            let q = btn.getAttribute('data-question');
+            btn.classList.remove('answered','unanswered');
+            btn.classList.add(getUserAnswer(q) ? 'answered' : 'unanswered');
+        });
+    }
+
+    // ==================== CHECKBOX HANDLING FOR 18-19 AND 20-21 ====================
+    function setupCheckboxGroup(className, inputId1, inputId2, max = 2) {
+        const checkboxes = document.querySelectorAll('.' + className);
+        const input1 = document.getElementById(inputId1);
+        const input2 = document.getElementById(inputId2);
+
+        function updateInputsFromCheckboxes() {
+            const checked = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            input1.value = checked[0] || '';
+            input2.value = checked[1] || '';
+            updateAnswerCount();
+        }
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function(e) {
+                const checked = Array.from(checkboxes).filter(cb => cb.checked);
+                if (checked.length > max) {
+                    this.checked = false;
+                }
+                updateInputsFromCheckboxes();
+            });
+        });
+
+        function updateCheckboxesFromInputs() {
+            const vals = [input1.value.toUpperCase(), input2.value.toUpperCase()].filter(v => v);
+            checkboxes.forEach(cb => {
+                cb.checked = vals.includes(cb.value);
+            });
+        }
+        updateCheckboxesFromInputs();
+    }
+
+    // ==================== HIGHLIGHT HELPERS ====================
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) return { node, offset: targetPos - currentPos.value };
+            currentPos.value += len;
+        } else for (let child of node.childNodes) { const res = findNodeAndOffset(child, targetPos, currentPos); if (res) return res; }
+        return null;
+    }
+
+    function clearAllHighlights() {
+        document.querySelectorAll('.dynamic-highlight, .keyword-highlight').forEach(el => {
+            const p = el.parentNode; while (el.firstChild) p.insertBefore(el.firstChild, el); p.removeChild(el);
+        });
+        document.querySelectorAll('.question-highlight').forEach(el => el.classList.remove('question-highlight'));
+        document.querySelectorAll('.eye-icon.active').forEach(ic => ic.classList.remove('active'));
+    }
+
+    function highlightAnswerLocation(questionNum) {
+        clearAllHighlights();
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
+        const qItem = document.getElementById(`q${questionNum}-item`) || document.getElementById(`q${questionNum}`)?.closest('.question-item');
+        if (qItem) qItem.classList.add('question-highlight');
+        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (eyeIcon) eyeIcon.classList.add('active');
+
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
+        for (let p of paragraphs) {
+            if (p.textContent.includes(loc.text)) {
+                try {
+                    const fullText = p.textContent;
+                    const startIdx = fullText.indexOf(loc.text);
+                    let cur = {value:0}, startNode = findNodeAndOffset(p, startIdx, cur);
+                    cur = {value:0}; let endNode = findNodeAndOffset(p, startIdx + loc.text.length, cur);
+                    if (startNode && endNode) {
+                        const range = document.createRange();
+                        range.setStart(startNode.node, startNode.offset);
+                        range.setEnd(endNode.node, endNode.offset);
+                        const span = document.createElement('span'); span.className = 'dynamic-highlight';
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        setTimeout(() => {
+                            let html = span.innerHTML;
+                            loc.keywords.forEach(kw => {
+                                const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                html = html.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="keyword-highlight">$1</span>');
+                            });
+                            span.innerHTML = html;
+                        }, 50);
+                        setTimeout(() => span.scrollIntoView({behavior:'smooth', block:'center'}), 200);
+                        return true;
+                    }
+                } catch (e) {}
+                break;
+            }
+        }
+        for (let p of paragraphs) for (let kw of loc.keywords) if (p.textContent.includes(kw)) { p.scrollIntoView({behavior:'smooth', block:'center'}); return true; }
+        return false;
+    }
+
+    // ==================== SHOW EXPLANATION ====================
+    function showExplanation(questionNum) {
+        if (!explanationMode && !examSubmitted) return;
+        highlightAnswerLocation(questionNum);
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+        let html = explanations[`q${questionNum}`] || 'Không có giải thích.';
+        if (examSubmitted) {
+            const user = getUserAnswer(questionNum);
+            const correct = answerKey[`q${questionNum}`];
+            const isCorrect = user && user === correct;
+            html += `<div class="answer-feedback ${isCorrect?'correct':'incorrect'}" style="margin-top:10px;"><strong>Câu trả lời của bạn:</strong> ${user||'(chưa có)'}<br>`;
+            if (!isCorrect && correct) html += `<strong>Đáp án đúng:</strong> ${correct}`;
+            else if (isCorrect) html += `<strong>✅ Đúng!</strong>`;
+            html += `</div>`;
+        }
+        document.getElementById('explanationText').innerHTML = html;
+        if (explanationMode && examSubmitted) {
+            document.querySelectorAll('.correct-answer-badge').forEach(b=>b.remove());
+            const inp = document.getElementById(`q${questionNum}`);
+            if (inp) {
+                const cor = answerKey[`q${questionNum}`];
+                const badge = document.createElement('span'); badge.className='correct-answer-badge'; badge.textContent=cor;
+                inp.parentNode.appendChild(badge);
+            }
+        }
+    }
+
+    // ==================== SETUP EYE ICONS ====================
+    document.querySelectorAll('.eye-icon').forEach(ic => ic.addEventListener('click', e => { e.stopPropagation(); showExplanation(ic.getAttribute('data-question')); }));
+    document.getElementById('closeExplanation').addEventListener('click', ()=>{ document.getElementById('explanationPanel').classList.remove('show'); clearAllHighlights(); });
+
+    // ==================== MARK ANSWERS ====================
+    function markAnswers() {
+        for (let i=14; i<=17; i++) markSingle(i);
+        markPair(18,19, pairedSets['18-19']);
+        markPair(20,21, pairedSets['20-21']);
+        for (let i=22; i<=26; i++) markSingle(i);
+    }
+
+    function markSingle(q) {
+        const inp = document.getElementById(`q${q}`);
+        if (!inp) return;
+        const ans = inp.value.trim().toUpperCase();
+        const cor = answerKey[`q${q}`].toUpperCase();
+        inp.classList.remove('correct','incorrect-marked');
+        const wrapper = inp.closest('.question-wrapper');
+        wrapper?.querySelector('.correct-answer-badge')?.remove();
+        if (ans) {
+            if (ans === cor) inp.classList.add('correct');
+            else { inp.classList.add('incorrect-marked'); const b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=answerKey[`q${q}`]; wrapper?.appendChild(b); }
+        } else { inp.classList.add('incorrect-marked'); const b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent=answerKey[`q${q}`]; wrapper?.appendChild(b); }
+    }
+
+    function markPair(q1, q2, correctSet) {
+        const inp1 = document.getElementById(`q${q1}`);
+        const inp2 = document.getElementById(`q${q2}`);
+        if (!inp1 || !inp2) return;
+        const ans1 = inp1.value.trim().toUpperCase();
+        const ans2 = inp2.value.trim().toUpperCase();
+        const userSet = new Set();
+        if (ans1) userSet.add(ans1);
+        if (ans2) userSet.add(ans2);
+        const isCorrect = userSet.size === 2 && ans1 !== ans2 && userSet.has([...correctSet][0]) && userSet.has([...correctSet][1]);
+
+[inp1, inp2].forEach(inp => {
+            inp.classList.remove('correct','incorrect-marked');
+            const wrapper = inp.closest('.question-wrapper');
+            wrapper?.querySelector('.correct-answer-badge')?.remove();
+            if (isCorrect) {
+                inp.classList.add('correct');
+            } else {
+                inp.classList.add('incorrect-marked');
+                // Thêm "wrapper &&" để tránh lỗi nếu không tìm thấy thẻ cha
+                if (wrapper && !wrapper.querySelector('.correct-answer-badge')) {
+                    const b = document.createElement('span'); b.className='correct-answer-badge'; b.textContent = [...correctSet].join('/');
+                    wrapper.appendChild(b);
+                }
+            }
+        });
+    }
+
+    function calcResults() {
+        let correct = 0;
+        for (let i=14; i<=17; i++) { let u = getUserAnswer(i); if (u && u === answerKey[`q${i}`]) correct++; }
+        let u18 = getUserAnswer(18), u19 = getUserAnswer(19);
+        let set1819 = new Set([u18, u19].filter(v=>v));
+        if (set1819.size === 2 && set1819.has('C') && set1819.has('E')) correct += 2;
+        let u20 = getUserAnswer(20), u21 = getUserAnswer(21);
+        let set2021 = new Set([u20, u21].filter(v=>v));
+        if (set2021.size === 2 && set2021.has('A') && set2021.has('B')) correct += 2;
+        for (let i=22; i<=26; i++) { let u = getUserAnswer(i); if (u && u === answerKey[`q${i}`]) correct++; }
+        let total=13, pct=Math.round(correct/total*100);
+        let taken = Math.floor((Date.now()-startTime)/1000);
+        let m=Math.floor(taken/60), s=taken%60;
+        return {correct, total, pct, time:`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`};
+    }
+
+    // ==================== SUBMIT ====================
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (examSubmitted) return;
+        let un = [];
+        for (let i=14; i<=26; i++) if (!getUserAnswer(i)) un.push(i);
+        if (un.length && !confirm(`Bạn còn ${un.length} câu chưa làm. Nộp bài?`)) return;
+        examSubmitted = true;
+        timerRunning = false;
+        clearInterval(timerInterval);
+        markAnswers();
+        let res = calcResults();
+        document.getElementById('resultStats').style.display = 'inline-block';
+        document.getElementById('resultStats').textContent = `Kết quả: ${res.correct}/${res.total} (${res.pct}%) - Thời gian: ${res.time}`;
+        document.getElementById('explainBtn').disabled = false;
+        document.getElementById('submitBtn').disabled = true; document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = 'KẾT QUẢ';
+        document.getElementById('explanationText').innerHTML = `<h4>Đã nộp bài</h4><p>Đúng: ${res.correct}/${res.total} (${res.pct}%)</p><p>Thời gian: ${res.time}</p><p>Nhấn 'Xem giải thích' và 👁️ để xem chi tiết.</p>`;
+        saveToDashboard();
+    });
+
+    // ==================== EXPLAIN MODE ====================
+    document.getElementById('explainBtn').addEventListener('click', function() {
+        if (!examSubmitted) return;
+        explanationMode = true;
+        document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'inline-block');
+        this.disabled = true; this.textContent = 'Đang xem giải thích';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // ==================== RESET ====================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (!confirm('Reset tất cả?')) return;
+        examSubmitted = false; explanationMode = false; timeLeft = 3600;
+        for (let i=14; i<=26; i++) {
+            let inp = document.getElementById(`q${i}`);
+            if (inp) {
+                if (i >= 18 && i <= 21) {
+                    inp.value = '';
+                } else {
+                    inp.value = '';
+                    inp.classList.remove('correct','incorrect-marked');
+                    inp.closest('.question-wrapper')?.querySelector('.correct-answer-badge')?.remove();
+                }
+            }
+        }
+        document.querySelectorAll('.cb-18-19, .cb-20-21').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'none');
+        document.getElementById('submitBtn').disabled = false; document.getElementById('submitBtn').textContent = 'Nộp bài';
+        document.getElementById('explainBtn').disabled = true; document.getElementById('explainBtn').textContent = 'Xem giải thích';
+        document.getElementById('resultStats').style.display = 'none';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+        updateAnswerCount();
+    });
+
+    // ==================== RIGHT-CLICK HIGHLIGHT ====================
+    const contextMenu = document.getElementById('contextMenu');
+    document.getElementById('readingContent').addEventListener('contextmenu', showContextMenu);
+    document.getElementById('questionsContent').addEventListener('contextmenu', showContextMenu);
+    function showContextMenu(e) {
+        e.preventDefault(); let s = window.getSelection(); if (!s.toString().trim()) return;
+        selectedRange = s.getRangeAt(0);
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+    }
+    document.addEventListener('click', ()=>contextMenu.style.display='none');
+    window.applyHighlight = (c) => { if(selectedRange){ let sp=document.createElement('span'); sp.className='highlight-'+c; try{ selectedRange.surroundContents(sp); }catch(e){ alert('Không highlight được đoạn này.'); } contextMenu.style.display='none'; selectedRange=null; }};
+    window.removeHighlight = () => { if(selectedRange){ let r=selectedRange.cloneRange(); document.querySelectorAll('.highlight-yellow,.highlight-green,.highlight-pink').forEach(h=>{ if(r.intersectsNode(h)){ let p=h.parentNode; while(h.firstChild)p.insertBefore(h.firstChild,h); p.removeChild(h); }}); window.getSelection().removeAllRanges(); contextMenu.style.display='none'; selectedRange=null; }};
+
+    // ==================== AUTO RESIZE INPUTS ====================
+    function autoResizeInput(input) {
+        const temp = document.createElement('span');
+        temp.style.visibility='hidden'; temp.style.position='absolute'; temp.style.whiteSpace='pre';
+        temp.style.fontFamily=getComputedStyle(input).fontFamily; temp.style.fontSize=getComputedStyle(input).fontSize;
+        temp.style.fontWeight=getComputedStyle(input).fontWeight; temp.style.padding=getComputedStyle(input).padding;
+        temp.style.border=getComputedStyle(input).border; document.body.appendChild(temp);
+        function update() { let val = input.value||' '; temp.textContent=val; input.style.width = Math.max(40, Math.min(200, temp.offsetWidth+20))+'px'; }
+        update(); input.addEventListener('input', update);
+        input.addEventListener('input', updateAnswerCount);
+    }
+    document.querySelectorAll('.letter-input').forEach(inp => { autoResizeInput(inp); });
+
+    // ==================== DASHBOARD SAVE ====================
+    let currentVol = 7, currentTest = 6;
+    function saveToDashboard() {
+        if (!examSubmitted) return;
+        const passageData = {
+            passageId: 2, name: 'Jellyfish – The Dominant Species', totalQuestions: 13, correctCount: 0,
+            timeSpent: document.getElementById('timerDisplay').textContent, details: []
+        };
+        let correctCount = calcResults().correct;
+        passageData.correctCount = correctCount;
+        const key = `ielts_vol${currentVol}_test${currentTest}_passage_2`;
+        localStorage.setItem(key, JSON.stringify(passageData));
+        console.log(`Saved passage 2 to dashboard: ${key}`);
+    }
+
+    // ==================== INIT ====================
+    createNavButtons();
+    updateAnswerCount();
+    setupCheckboxGroup('cb-18-19', 'q18', 'q19', 2);
+    setupCheckboxGroup('cb-20-21', 'q20', 'q21', 2);
+    document.querySelectorAll('.eye-icon').forEach(ic => ic.style.display = 'none');
+    startTimer();
+</script>
+</body>
+</html>

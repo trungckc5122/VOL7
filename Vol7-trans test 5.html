@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vol 7 Test 5 - Song ngữ Anh Việt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1600px;
+            background: #ecf0f1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        /* Reading mode */
+        .app-container.reading-mode {
+            background: #f8f5e6;
+        }
+        .app-container.reading-mode .col-content {
+            background: #fffaf0;
+        }
+        .app-container.reading-mode .col-header {
+            background: #d6cdb8;
+            color: #3a2e1f;
+        }
+        .app-container.reading-mode .status-bar {
+            background: #d6cdb8;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f2a44 100%);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .brand h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #e6b422;
+        }
+
+        .passage-selector {
+            display: flex;
+            gap: 10px;
+            background: #1a2f44;
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #e6b422;
+        }
+
+        .passage-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .passage-btn:hover {
+            background: #2d4b77;
+        }
+
+        .passage-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+
+        .reading-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2d4b77;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #0f2a44;
+            border-radius: 20px;
+            position: relative;
+            transition: 0.3s;
+            border: 1px solid #e6b422;
+        }
+        .toggle-switch.active {
+            background: #e6b422;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+            margin-left: 15px;
+        }
+        .font-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .font-btn:hover {
+            background: #3e5f8a;
+        }
+        .font-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Main area with resizable columns */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background: #bdc3c7;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
+        }
+
+        .column.en-column {
+            width: 50%;
+        }
+
+        .column.vi-column {
+            width: 50%;
+        }
+
+        .col-header {
+            background: #d2cbbc;
+            padding: 10px 18px;
+            font-weight: 700;
+            color: #1e3a5f;
+            border-bottom: 2px solid #b0aa9a;
+            font-size: 1rem;
+        }
+
+        .col-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            line-height: 1.8;
+            font-size: 16px;
+            background: #fffcf5;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            transition: 0.1s;
+        }
+        .resizer:hover {
+            background: #e6b422;
+        }
+
+        /* Font size classes */
+        .col-content.font-small {
+            font-size: 14px;
+        }
+        .col-content.font-medium {
+            font-size: 16px;
+        }
+        .col-content.font-large {
+            font-size: 18px;
+        }
+
+        /* Typography */
+        .col-content h1, .col-content h2 {
+            font-size: 1.9rem;
+            color: #1e3a5f;
+            border-bottom: 2px solid #e6b422;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        .col-content h3 {
+            font-size: 1.4rem;
+            color: #2d4b77;
+            margin: 25px 0 15px;
+        }
+        .col-content p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+        .col-content em {
+            color: #5d3a1a;
+            font-style: italic;
+        }
+        .col-content strong {
+            color: #1e3a5f;
+        }
+        .col-content .paragraph-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-right: 8px;
+        }
+
+        /* Right-click menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #9a8c7a;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            padding: 5px 0;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+            min-width: 160px;
+        }
+        .context-menu div {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+        .context-menu div:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        /* Highlight colors */
+        .highlight-yellow {
+            background-color: #f9e79f;
+            border-radius: 3px;
+        }
+        .highlight-green {
+            background-color: #a9d6b0;
+            border-radius: 3px;
+        }
+        .highlight-pink {
+            background-color: #fbb9c0;
+            border-radius: 3px;
+        }
+
+        /* Status bar (timer removed) */
+        .status-bar {
+            background: #d2cbbc;
+            padding: 8px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            border-top: 1px solid #b0aa9a;
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 4px 16px;
+            border: none;
+            border-radius: 30px;
+            background: #1e3a5f;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #2d4b77;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #1e3a5f;
+            color: #1e3a5f;
+        }
+        .btn-outline:hover {
+            background: #1e3a5f;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="brand">
+            <h1>IELTS Vol 7 · Test 5</h1>
+        </div>
+        <div class="passage-selector" id="passageSelector">
+            <button class="passage-btn active" data-passage="1">Passage 1</button>
+            <button class="passage-btn" data-passage="2">Passage 2</button>
+            <button class="passage-btn" data-passage="3">Passage 3</button>
+        </div>
+        <div class="header-controls">
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+           
+        </div>
+    </div>
+
+    <!-- Main resizable columns -->
+    <div class="main-area" id="mainArea">
+        <!-- Cột gốc -->
+        <div class="column en-column" id="enColumn">
+            <div class="col-header">Bản gốc</div>
+            <div class="col-content font-medium" id="enContent"></div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+        <!-- Cột dịch -->
+        <div class="column vi-column" id="viColumn">
+            <div class="col-header">Bản dịch</div>
+            <div class="col-content font-medium" id="viContent"></div>
+        </div>
+    </div>
+
+    <!-- Status bar (no timer) -->
+    <div class="status-bar">
+        <span>Bôi đen văn bản → nhấp chuột phải để highlight màu</span>
+        <button class="btn btn-outline" id="resetHighlightBtn">Xóa tất cả highlight</button>
+        <button class="btn btn-outline" id="syncScrollBtn" style="background: #e6b422; color: #1e3a5f; border: 1px solid #1e3a5f;">Đồng bộ cuộn: BẬT</button>
+    </div>
+
+    <!-- Right-click menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đoạn chọn</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DỮ LIỆU PASSAGE 1,2,3 (Vol 7 Test 5)
+        const passages = {
+            1: {
+                en: [
+                    "<h1>Reef fish study</h1>",
+                    "<p><em>Tom Holmes examines the relationship between size and survival in fish on Australia's Great Barrier Reef</em></p>",
+                    "<p>It is a widely held belief among those who study animals that larger size conveys some form of advantage throughout life. The idea that certain body characteristics may influence a prey's ability to survive when being attacked by a predator has received considerable attention in the past, and has been applied to a wide range of both animals and habitats. Body size, weight, growth rate, overall condition, sensory development and escape speed have all been linked to survival. Of these, body size has received the most attention from researchers, which has subsequently led to the development of a number of theories on how this characteristic may influence the predator-prey relationship. One of the most popular of these is known as the 'bigger is better' hypothesis. This theory predicts that larger body size should increase an individual's ability to escape from a predator due to the characteristics associated with this, such as overall strength and visual development. Bigger is thought to be better, but is this always the case?</p>",
+                    "<p>Compared with other habitats and ecosystems, not a great deal is known about predator-prey relationships within tropical reef communities. What we do know is largely limited to predator identity and, to some extent, to what these predators eat. But what drives these interactions and how does body size influence the outcome? How would fish populations respond to the removal of certain predators from a reef fish community? It is precisely these questions that have led our research team to Lizard Island, in the northern sector of the Great Barrier Reef. We want to examine the predator-prey relationship during the 'early juvenile' or larval phase of tropical fish, and determine whether a predator's choice of prey is influenced by factors such as the prey's size, weight and swimming speed, as these characteristics vary from individual to individual at the beginning of the juvenile stage.</p>",
+                    "<p>Most coral reef fish have a life cycle consisting of an open ocean larval phase followed by a juvenile to adult phase near the reef. The transition between the two stages is marked by rapid and dramatic changes in the body of the fish, and a sudden move from the open ocean to coral reef habitats. This point is commonly known as 'settlement'. Not surprisingly, it is also characterised by increased levels of mortality in the first 48 hours following settlement, as individuals are forced to adapt to life not only on the reef but also with a previously unknown set of predators.</p>",
+                    "<p>However, studying the interactions between predators and prey during this phase is no easy task. On the northern Great Barrier Reef, coral reef fish settlement usually occurs within 2-3 days of a new moon during the warmer summer months. These short windows of opportunity, combined with the difficulties associated with working underwater, transporting fish and adapting them to the laboratory, often make research a daunting task. These obstacles are overcome using a combination of innovative techniques, long working hours and a measure of sheer persistence. We collect the larval fish immediately prior to settlement using purpose-built traps that use artificial light to attract and contain fish of this life stage only. These fish are subsequently transported to an aquarium, along with predatory fish, before being used in a series of aquarium and field-based trials.</p>",
+                    "<p>According to the 'bigger is better' hypothesis, being larger at the time of settlement should result in an increased chance of surviving an attack by a predator during the period immediately following settlement. However, our initial research shows that this is not always true. There may be several reasons for this.</p>",
+                    "<p>Communities of reef-based predators can differ considerably over quite small distances. Species that are abundant in one location may be particularly rare in a similar habitat just 100 metres away. In the same way that different predators prefer different types of prey, so too do they prefer different sizes of prey. This relationship is driven by physical characteristics of predators, such as mouth size, and behavioural differences between different predator species. As a result, the predator community into which a reef fish settles may very well determine which individuals survive.</p>",
+                    "<p>So why don't larger individuals survive more often than smaller fish over this period? The answer may well lie in an alternative hypothesis known as 'optimal foraging theory'. According to this theory, being either very large or very small in size should assist prey to escape during a predatory encounter. The theory predicts that a predator should prefer those individuals that provide the greatest energy return. This is generally a trade-off between the potential energy intake from eating a fish and the amount of energy required to catch it. Larger prey provide a higher energy return but smaller prey generally require less energy to catch. This usually results in a preference for medium-sized prey.</p>",
+                    "<p>At the time of settlement, juvenile reef fish vary in the characteristics that can help them survive a predatory attack. However, these characteristics are not strongly associated with body size. For example, larger individuals are not necessarily faster. This means that they may be easier to catch than smaller prey. If this is the case then, according to the optimal foraging theory, predators should prefer larger prey because of their greater energy return. Consequently, larger prey individuals may be targeted by some predators at the time of settlement. Our research hopes to show that larger size may, in fact, be a distinct disadvantage during certain life stages.</p>"
+                ],
+                vi: [
+                    "<h1>Nghiên cứu cá rạn san hô</h1>",
+                    "<p><em>Tom Holmes xem xét mối quan hệ giữa kích thước và sự sống sót của cá trên Rạn san hô Great Barrier của Úc</em></p>",
+                    "<p>Có một niềm tin phổ biến trong giới nghiên cứu động vật rằng kích thước lớn hơn mang lại một số lợi thế trong suốt cuộc đời. Ý tưởng cho rằng các đặc điểm cơ thể nhất định có thể ảnh hưởng đến khả năng sống sót của con mồi khi bị kẻ săn mồi tấn công đã nhận được sự quan tâm đáng kể trong quá khứ và đã được áp dụng cho nhiều loại động vật và môi trường sống. Kích thước cơ thể, cân nặng, tốc độ tăng trưởng, tình trạng tổng thể, sự phát triển giác quan và tốc độ thoát thân đều có liên quan đến sự sống còn. Trong số này, kích thước cơ thể nhận được nhiều sự chú ý nhất từ các nhà nghiên cứu, dẫn đến sự phát triển của một số lý thuyết về cách đặc điểm này có thể ảnh hưởng đến mối quan hệ giữa kẻ săn mồi và con mồi. Một trong những lý thuyết phổ biến nhất được gọi là giả thuyết 'to hơn là tốt hơn'. Lý thuyết này dự đoán rằng kích thước cơ thể lớn hơn sẽ làm tăng khả năng thoát khỏi kẻ săn mồi của một cá thể nhờ các đặc điểm liên quan đến điều này, chẳng hạn như sức mạnh tổng thể và sự phát triển thị giác. To hơn được cho là tốt hơn, nhưng liệu điều này có luôn đúng?</p>",
+                    "<p>So với các môi trường sống và hệ sinh thái khác, người ta chưa biết nhiều về mối quan hệ giữa kẻ săn mồi và con mồi trong các quần xã rạn san hô nhiệt đới. Những gì chúng ta biết phần lớn bị giới hạn ở việc xác định kẻ săn mồi và ở một mức độ nào đó, những kẻ săn mồi này ăn gì. Nhưng điều gì thúc đẩy những tương tác này và kích thước cơ thể ảnh hưởng đến kết quả như thế nào? Các quần thể cá sẽ phản ứng thế nào trước việc loại bỏ một số loài săn mồi nhất định khỏi quần xã cá rạn san hô? Chính những câu hỏi này đã đưa nhóm nghiên cứu của chúng tôi đến Đảo Lizard, ở khu vực phía bắc của Rạn san hô Great Barrier. Chúng tôi muốn xem xét mối quan hệ giữa kẻ săn mồi và con mồi trong giai đoạn 'cá con sớm' hoặc giai đoạn ấu trùng của cá nhiệt đới, và xác định liệu sự lựa chọn con mồi của kẻ săn mồi có bị ảnh hưởng bởi các yếu tố như kích thước, cân nặng và tốc độ bơi của con mồi hay không, vì những đặc điểm này khác nhau giữa các cá thể khi bắt đầu giai đoạn cá con.</p>",
+                    "<p>Hầu hết các loài cá rạn san hô có vòng đời bao gồm giai đoạn ấu trùng ở đại dương mở, tiếp theo là giai đoạn từ cá con đến trưởng thành gần rạn san hô. Sự chuyển tiếp giữa hai giai đoạn được đánh dấu bằng những thay đổi nhanh chóng và mạnh mẽ trong cơ thể cá, và sự di chuyển đột ngột từ đại dương mở đến môi trường sống rạn san hô. Thời điểm này thường được gọi là 'định cư'. Không có gì ngạc nhiên khi nó cũng được đặc trưng bởi tỷ lệ tử vong gia tăng trong 48 giờ đầu tiên sau khi định cư, khi các cá thể buộc phải thích nghi với cuộc sống không chỉ trên rạn san hô mà còn với một nhóm kẻ săn mồi chưa từng biết trước đây.</p>",
+                    "<p>Tuy nhiên, nghiên cứu sự tương tác giữa kẻ săn mồi và con mồi trong giai đoạn này không phải là nhiệm vụ dễ dàng. Ở phía bắc Rạn san hô Great Barrier, sự định cư của cá rạn san hô thường xảy ra trong vòng 2-3 ngày sau khi trăng non vào những tháng mùa hè ấm hơn. Những khoảng thời gian cơ hội ngắn ngủi này, cùng với những khó khăn liên quan đến làm việc dưới nước, vận chuyển cá và thích nghi chúng với phòng thí nghiệm, thường khiến nghiên cứu trở nên khó khăn. Những trở ngại này được khắc phục bằng sự kết hợp của các kỹ thuật sáng tạo, giờ làm việc dài và một chút kiên trì tuyệt đối. Chúng tôi thu thập cá ấu trùng ngay trước khi định cư bằng cách sử dụng các bẫy được chế tạo đặc biệt sử dụng ánh sáng nhân tạo để thu hút và giữ chỉ những con cá ở giai đoạn sống này. Những con cá này sau đó được vận chuyển đến bể cá, cùng với cá săn mồi, trước khi được sử dụng trong một loạt các thử nghiệm trong bể và thực địa.</p>",
+                    "<p>Theo giả thuyết 'to hơn là tốt hơn', kích thước lớn hơn tại thời điểm định cư sẽ làm tăng cơ hội sống sót sau cuộc tấn công của kẻ săn mồi trong giai đoạn ngay sau khi định cư. Tuy nhiên, nghiên cứu ban đầu của chúng tôi cho thấy điều này không phải lúc nào cũng đúng. Có thể có một số lý do cho điều này.</p>",
+                    "<p>Các quần xã săn mồi dựa trên rạn san hô có thể khác biệt đáng kể trong khoảng cách khá nhỏ. Các loài phong phú ở một địa điểm có thể đặc biệt hiếm trong môi trường sống tương tự chỉ cách đó 100 mét. Cũng giống như các loài săn mồi khác nhau ưa thích các loại con mồi khác nhau, chúng cũng ưa thích các kích thước con mồi khác nhau. Mối quan hệ này được thúc đẩy bởi các đặc điểm vật lý của kẻ săn mồi, chẳng hạn như kích thước miệng và sự khác biệt về hành vi giữa các loài săn mồi khác nhau. Kết quả là, quần xã săn mồi mà một con cá rạn san hô định cư vào có thể quyết định cá thể nào sống sót.</p>",
+                    "<p>Vậy tại sao những cá thể lớn hơn không sống sót thường xuyên hơn những con cá nhỏ hơn trong giai đoạn này? Câu trả lời có thể nằm ở một giả thuyết khác được gọi là 'lý thuyết kiếm ăn tối ưu'. Theo lý thuyết này, kích thước rất lớn hoặc rất nhỏ sẽ giúp con mồi trốn thoát trong cuộc chạm trán với kẻ săn mồi. Lý thuyết dự đoán rằng kẻ săn mồi nên ưu tiên những cá thể mang lại lợi ích năng lượng lớn nhất. Đây thường là sự cân bằng giữa năng lượng tiềm năng thu được từ việc ăn một con cá và lượng năng lượng cần thiết để bắt nó. Con mồi lớn hơn cung cấp năng lượng cao hơn nhưng con mồi nhỏ hơn thường cần ít năng lượng hơn để bắt. Điều này thường dẫn đến ưu tiên cho con mồi có kích thước trung bình.</p>",
+                    "<p>Tại thời điểm định cư, cá rạn san hô con có các đặc điểm khác nhau có thể giúp chúng sống sót sau cuộc tấn công của kẻ săn mồi. Tuy nhiên, những đặc điểm này không liên quan chặt chẽ đến kích thước cơ thể. Ví dụ, những cá thể lớn hơn không nhất thiết bơi nhanh hơn. Điều này có nghĩa là chúng có thể dễ bị bắt hơn con mồi nhỏ hơn. Nếu đúng như vậy, theo lý thuyết kiếm ăn tối ưu, kẻ săn mồi nên ưu tiên con mồi lớn hơn vì lợi ích năng lượng lớn hơn của chúng. Do đó, những cá thể con mồi lớn hơn có thể là mục tiêu của một số kẻ săn mồi tại thời điểm định cư. Nghiên cứu của chúng tôi hy vọng sẽ chỉ ra rằng kích thước lớn hơn thực tế có thể là một bất lợi rõ rệt trong một số giai đoạn nhất định của cuộc đời.</p>"
+                ]
+            },
+            2: {
+                en: [
+                    "<h1>Will Eating Less Make You Live Longer?</h1>",
+                    "<p><strong>A</strong><br>Calorie restriction, or 'semi-starvation' as some refer to it, has been proven to extend lifespan in many living organisms from yeast to mice, but the picture for primates, including humans, is not so clear. Research published by a team at the University of Wisconsin in the United States shows that rhesus monkeys also live longer on a calorie-restricted diet. But those findings disagree with research by the National Institute on Aging (NIA) in Maryland, also in the United States. Rozalyn Anderson, of the Wisconsin team, says the research is not intended as a recommendation of calorie restriction. 'I find the idea monumentally unattractive!' she says. 'We study it because it is so effective at delaying ageing and the onset of age-related disease. It's a way to tease out what it is that creates increased disease vulnerability as a function of age.'</p>",
+                    "<p><strong>B</strong><br>Both groups started long-term trials on rhesus monkeys in the late 1980s to determine whether calorie restriction would extend the lifespan of primates. In mice, many experiments had come to the same finding: feed them a diet with 30% fewer calories and see a lifespan extension of 40%. The monkey trials were set up in a similar way: researchers took the calorie content of a standard monkey diet, cut it by 30% (while continuing to supply all essential nutrients) and monitored whether those monkeys lived longer, healthier lives than those on the standard diet.</p>",
+                    "<p><strong>C</strong><br>In 2009, with the monkeys approaching old age, preliminary findings of the two trials started coming in. For the Wisconsin monkeys, calorie restriction seemed to be working. Compared to well-fed control animals, the lean monkeys were living longer and suffering less from the diseases of ageing: diabetes, heart disease and brain diseases. However, in 2012 the NIA results emerged with a dramatically different conclusion: their monkeys were not living any longer than the controls, although they were healthier.</p>",
+                    "<p><strong>D</strong><br>The Wisconsin group's latest results confirm that their calorie-restricted monkeys are living longer than the controls. They also offer a possible explanation of why the two groups' findings don't agree, and that lies in the treatment of the control group. The Wisconsin study began with monkeys in early adulthood. Initially, all the monkeys were allowed to eat as much as they liked. A few months into the trial, the monkeys were placed into one of two groups: the controls (who continued to be fed as much as they wished) and the calorie-restricted monkeys (who were given an individualised diet of 30% less than they were previously eating).</p>",
+                    "<p><strong>E</strong><br>The NIA study differed in two ways. First, the control group of monkeys were not allowed to eat as much as they wished. They were given a diet considered to represent a normal calorie count, while the calorie-restricted monkeys were fed 30% less than that. Second, whereas the Wisconsin monkeys were given highly processed food high in sucrose, making it easy to standardise, the NIA diet was based on whole grains, fish oils, and was very low in sugar. These different settings for the normal control diet may provide an explanation of why the two groups showed different results.</p>",
+                    "<p><strong>F</strong><br>The Wisconsin group may in effect have studied the effects of 'overeating'. Their control animals weighed up to 10% more than average for their age and gender. Compared to them, the calorie-restricted animals not only suffered fewer diseases, they lived longer. Julie Mattison, head of the NIA study, observes that an overweight person who goes to a fast food restaurant every day will obviously benefit if their calories are cut back by 30%.</p>",
+                    "<p><strong>G</strong><br>The NIA study fed their control monkeys what they considered a 'standard' caloric intake and saw that longevity for monkeys that were fed 30% less was the same. But in Anderson's view, the NIA control monkeys were not fed enough; the NIA was calorie restricting both groups of animals. Their older female control monkeys, for example, weighed nearly 20% less than the national average. Indeed, Anderson points out that several of the NIA control monkeys have lived past the age of 40, far exceeding the 27-year average lifespan for captive rhesus monkeys. 'That's the maximum lifespan ever detected for the species, so the idea that their intervention is doing nothing is really at odds with the data,' says Anderson.</p>",
+                    "<p><strong>H</strong><br>However, neither group had the right notion of a standard diet according to Leonie Heilbronn, who researches calorie restriction and healthy ageing at the University of Adelaide in Australia. Heilbronn points out that the NIA controls were a very healthy set of monkeys and leaner than a control monkey should be. On the other hand, she notes, the Wisconsin controls were a little bigger than they had to be. On balance, Heilbronn agrees with the Wisconsin researcher's argument. 'I think these studies suggest calorie restriction definitely will increase lifespan,' she says.</p>",
+                    "<p><strong>I</strong><br>Both studies agree that cutting calories is beneficial to health - in both cases the calorie-restricted monkeys had fewer diseases related to ageing. As to the question of whether calorie restriction extends lifespan in primates, Anderson and Mattison are currently working together to compare the two studies' raw data. They plan to co-publish a joint analysis. The current data conflict will ultimately provide deeper insights into ageing, Anderson predicts. 'The fact the two studies were set up differently, asking the same question in different ways - I think we will gain maximally from that.'</p>"
+                ],
+                vi: [
+                    "<h1>Ăn Ít Hơn Có Giúp Bạn Sống Lâu Hơn?</h1>",
+                    "<p><strong>A</strong><br>Hạn chế calo, hay 'bán đói'(cách gọi mang tính nhấn mạnh cho việc cắt giảm calo) như một số người gọi, đã được chứng minh là kéo dài tuổi thọ ở nhiều sinh vật sống từ nấm men đến chuột, nhưng bức tranh đối với động vật linh trưởng, bao gồm cả con người, không rõ ràng như vậy. Nghiên cứu được công bố bởi một nhóm tại Đại học Wisconsin ở Hoa Kỳ cho thấy khỉ rhesus cũng sống lâu hơn với chế độ ăn hạn chế calo. Nhưng những phát hiện đó mâu thuẫn với nghiên cứu của Viện Quốc gia về Lão hóa (NIA) ở Maryland, cũng tại Hoa Kỳ. Rozalyn Anderson, thuộc nhóm Wisconsin, cho biết nghiên cứu không nhằm mục đích khuyến nghị hạn chế calo. 'Tôi thấy ý tưởng đó cực kỳ kém hấp dẫn!' cô nói. 'Chúng tôi nghiên cứu nó vì nó rất hiệu quả trong việc làm chậm quá trình lão hóa và sự khởi phát của bệnh liên quan đến tuổi tác. Đó là một cách để tìm ra điều gì tạo ra sự gia tăng tính dễ mắc bệnh theo tuổi tác.'</p>",
+                    "<p><strong>B</strong><br>Cả hai nhóm đều bắt đầu các thử nghiệm dài hạn trên khỉ rhesus vào cuối những năm 1980 để xác định liệu hạn chế calo có kéo dài tuổi thọ của động vật linh trưởng hay không. Ở chuột, nhiều thí nghiệm đã đưa ra cùng một phát hiện: cho chúng ăn chế độ ăn ít hơn 30% calo và thấy tuổi thọ tăng 40%. Các thử nghiệm trên khỉ được thiết lập theo cách tương tự: các nhà nghiên cứu lấy hàm lượng calo của chế độ ăn khỉ tiêu chuẩn, cắt giảm 30% (trong khi vẫn cung cấp tất cả các chất dinh dưỡng thiết yếu) và theo dõi xem những con khỉ đó có sống lâu hơn, khỏe mạnh hơn những con ăn chế độ tiêu chuẩn hay không.</p>",
+                    "<p><strong>C</strong><br>Năm 2009, khi đàn khỉ bước vào tuổi già, những phát hiện sơ bộ của hai thử nghiệm bắt đầu được công bố. Đối với đàn khỉ Wisconsin, việc hạn chế calo dường như có tác dụng. So với động vật đối chứng được cho ăn đầy đủ, những con khỉ gầy sống lâu hơn và ít mắc các bệnh của tuổi già: tiểu đường, bệnh tim và bệnh não. Tuy nhiên, vào năm 2012, kết quả của NIA xuất hiện với một kết luận khác biệt đáng kể: những con khỉ của họ không sống lâu hơn so với nhóm đối chứng, mặc dù chúng khỏe mạnh hơn.</p>",
+                    "<p><strong>D</strong><br>Kết quả mới nhất của nhóm Wisconsin xác nhận rằng những con khỉ bị hạn chế calo của họ đang sống lâu hơn so với nhóm đối chứng. Họ cũng đưa ra một lời giải thích khả dĩ cho sự khác biệt trong phát hiện của hai nhóm, và điều đó nằm ở cách xử lý nhóm đối chứng. Nghiên cứu Wisconsin bắt đầu với những con khỉ ở giai đoạn đầu trưởng thành. Ban đầu, tất cả khỉ được phép ăn thỏa thích. Vài tháng sau khi thử nghiệm, những con khỉ được chia thành hai nhóm: nhóm đối chứng (tiếp tục được cho ăn thỏa thích) và nhóm hạn chế calo (được cho ăn chế độ cá nhân hóa ít hơn 30% so với trước đây).</p>",
+                    "<p><strong>E</strong><br>Nghiên cứu của NIA khác biệt ở hai điểm. Thứ nhất, nhóm khỉ đối chứng không được phép ăn thỏa thích. Chúng được cho ăn chế độ được coi là đại diện cho lượng calo bình thường, trong khi những con khỉ hạn chế calo được cho ăn ít hơn 30% so với mức đó. Thứ hai, trong khi những con khỉ Wisconsin được cho ăn thực phẩm chế biến cao, giàu sucrose, dễ dàng tiêu chuẩn hóa, thì chế độ ăn của NIA dựa trên ngũ cốc nguyên hạt, dầu cá và rất ít đường. Những thiết lập khác nhau này cho chế độ ăn đối chứng bình thường có thể cung cấp lời giải thích tại sao hai nhóm lại cho kết quả khác nhau.</p>",
+                    "<p><strong>F</strong><br>Trên thực tế, nhóm Wisconsin có thể đã nghiên cứu tác động của việc 'ăn quá nhiều'. Động vật đối chứng của họ nặng hơn tới 10% so với trung bình theo tuổi và giới tính. So với chúng, những động vật bị hạn chế calo không chỉ mắc ít bệnh hơn mà còn sống lâu hơn. Julie Mattison, trưởng nhóm nghiên cứu NIA, nhận xét rằng một người thừa cân đến nhà hàng thức ăn nhanh mỗi ngày rõ ràng sẽ được lợi nếu lượng calo của họ giảm đi 30%.</p>",
+                    "<p><strong>G</strong><br>Nghiên cứu của NIA đã cho những con khỉ đối chứng ăn lượng calo mà họ cho là 'tiêu chuẩn' và thấy rằng tuổi thọ của những con khỉ được cho ăn ít hơn 30% là như nhau. Nhưng theo quan điểm của Anderson, những con khỉ đối chứng của NIA không được cho ăn đủ; NIA đã hạn chế calo cả hai nhóm động vật. Ví dụ, những con khỉ cái lớn tuổi trong nhóm đối chứng của họ nặng gần 20% so với mức trung bình quốc gia. Thực tế, Anderson chỉ ra rằng một số con khỉ đối chứng của NIA đã sống qua tuổi 40, vượt xa tuổi thọ trung bình 27 năm của khỉ rhesus nuôi nhốt. 'Đó là tuổi thọ tối đa từng được ghi nhận đối với loài này, vì vậy ý kiến cho rằng sự can thiệp của họ chẳng có tác dụng gì thực sự mâu thuẫn với dữ liệu,' Anderson nói.</p>",
+                    "<p><strong>H</strong><br>Tuy nhiên, theo Leonie Heilbronn, người nghiên cứu về hạn chế calo và lão hóa khỏe mạnh tại Đại học Adelaide ở Úc, cả hai nhóm đều không có khái niệm đúng về chế độ ăn tiêu chuẩn. Heilbronn chỉ ra rằng nhóm đối chứng của NIA là một đàn khỉ rất khỏe mạnh và gầy hơn so với một con khỉ đối chứng bình thường. Mặt khác, bà lưu ý, nhóm đối chứng của Wisconsin lớn hơn một chút so với mức cần thiết. Nhìn chung, Heilbronn đồng ý với lập luận của nhà nghiên cứu Wisconsin. 'Tôi nghĩ những nghiên cứu này cho thấy việc hạn chế calo chắc chắn sẽ làm tăng tuổi thọ,' bà nói.</p>",
+                    "<p><strong>I</strong><br>Cả hai nghiên cứu đều đồng ý rằng cắt giảm calo có lợi cho sức khỏe - trong cả hai trường hợp, những con khỉ bị hạn chế calo đều mắc ít bệnh liên quan đến lão hóa hơn. Đối với câu hỏi liệu hạn chế calo có kéo dài tuổi thọ ở động vật linh trưởng hay không, Anderson và Mattison hiện đang hợp tác để so sánh dữ liệu thô của hai nghiên cứu. Họ dự định đồng xuất bản một phân tích chung. Anderson dự đoán rằng sự mâu thuẫn dữ liệu hiện tại cuối cùng sẽ cung cấp những hiểu biết sâu sắc hơn về lão hóa. 'Việc hai nghiên cứu được thiết lập khác nhau, hỏi cùng một câu hỏi theo những cách khác nhau - tôi nghĩ chúng ta sẽ thu được lợi ích tối đa từ điều đó.'</p>"
+                ]
+            },
+            3: {
+                en: [
+                    "<h1>Saving the Skink</h1>",
+                    "<p><em>What can be done to save the skink, one of New Zealand’s most endangered lizards?</em></p>",
+                    "<p><strong>A</strong><br>New Zealand’s reptiles come in three forms: the tuatara, the geckos and the skinks. With their gleaming scales, long bodies and often surprisingly short limbs, skinks are instantly recognisable. There are more than 90 species, half of which still await formal description. Identification depends on where specimens are found, and such minutiae as the number of scales on their toes. Two of the largest species of skink - the grand and the Otago - are found only in Otago, in New Zealand’s South Island. Skinks, being reptiles, need to regulate their temperature, and lie on sunny rocks to absorb heat. However, the grand and Otago are the only kinds that do not hibernate through winter; when snow can fall even in summer in Otago, there is no point in them lying dormant for extended periods. Like all other New Zealand reptiles except tuatara and the egg-laying Suter’s skink, they give birth to tiny baby lizards. Today, the Otago and grand skinks are lucky to reach five years of age in the wild, although in zoos or research centres they can live beyond thirty.</p>",
+                    "<p><strong>B</strong><br>Unfortunately, extinction may loom for these reptiles. With any decline in New Zealand fauna, predation is always suspected, so the efforts of the Department of Conservation (DOC) have focused on controlling specific pests. An example was a six-year project to control the feral cats on the Otago Skink Reserve, launched in the 1990s. Despite the capture of hundreds of cats, skinks showed no signs of recovery; indeed, there were further declines. The trapping programme also revealed rats and hedgehogs to be predators.</p>",
+                    "<p><strong>C</strong><br>Parasite infections are also thought to be on the rise. Although no direct health implications have been detected the trend is a concern, as it may signal a subtle deterioration in the skinks’ living environment. Infection with mites is suspected of inhibiting reproduction among captive animals.</p>",
+                    "<p><strong>D</strong><br>Another potential threat is habitat loss. Eight hundred years ago, Otago was covered in forest. However, extensive burning produced a wide open tussock country. The skinks’ response to this change isn’t known, nor what their habitat was in the earlier environment, with its predominance of shrubs and trees. Furthermore, recent intensive farming has led to poor soil. Even if we had the answer to the eradication of predators, we haven’t a clue to the habitat we should be recreating for the skinks, or if where they persist is best for conservation.</p>",
+                    "<p><strong>E</strong><br>It is also puzzling that grands and Otagos are disappearing more rapidly than other species in the same region. The explanation likely lies in their delayed sexual maturity. Taking five years before you can breed is a handicap, since there is little likelihood of surviving that long. If survivors have only two offspring annually, they do little to remedy the situation. The commoner skinks mature earlier and produce more offspring, thereby doing more to counter predator pressure. Not that there is room for complacency concerning these species. As more is learned about the size of skink populations, it becomes clear that even common species may be facing a doubtful future.</p>",
+                    "<p><strong>F</strong><br>So far, DOC’s efforts to eliminate specific predators have not resulted in a recovery of skink numbers. The prediction that less than six years is all the Otagos and grands have left is supported by data from surveys conducted outside the protected area between 1984 and 2002. These show that more than 50 per cent of sub-populations of both skinks have died out over the past years. Populations in other regions are believed to be smaller, although access issues on some properties limit knowledge. No more than five years remain in which to turn things around - a close call considering it will be at least three before detectable response in the populations can be expected owing to their low breeding rate.</p>",
+                    "<p><strong>G</strong><br>DOC’s recovery-programme team has recently embarked upon an experiment to extend nearly two kilometres of mammal-proof fencing around a population of Otagos and grands in the Macraes Flat reserve. Choosing a site was difficult, as with a limited budget and the high cost of the fencing it had to be small. It also had to include vacant space and resources for a growing population. An added complication was that grands and Otagos have subtly different environmental preferences, both of which need catering for.</p>",
+                    "<p><strong>H</strong><br>Because of the danger of imminent extinction, the team has also had to develop emergency captive-management techniques. Specially permitted breeders, who have had some success in breeding the Otago in captivity, are now developing techniques to breed grands. Captive management, however, is a last resort. The priority is to manage and protect skinks in the wild.</p>",
+                    "<p><strong>I</strong><br>Getting the public to understand the plight of these creatures is essential. Without public support, their chances are slim. Conservation is as much driven by public opinion as it is by political decisions. In New Zealand, the situation is more pressing than just about anywhere else on the planet because many of its native birds and lizards have simply not evolved to defend themselves against species introduced in the last few hundred years. In the once-isolated islands that form New Zealand, ecosystem collapse didn’t happen 5,000 years ago or even 500 years ago; it’s happening now.</p>",
+                    "<p><strong>J</strong><br>Fortunately, DOC no longer faces these problems alone. The challenge has been taken up by a group of conservationists representing business, science and agriculture. Central Otago Ecological Trust (COET) aims to establish a refuge for the reintroduction of native species. It has identified suitable habitat and, with the generous support of a local farmer with grazing land there, has begun the construction of a mammal-proof fence to protect a 24-hectare area. The recovery programme and COET provide hope that skinks might once again flourish.</p>"
+                ],
+                vi: [
+                    "<h1>Cứu loài thằn lằn Skink</h1>",
+                    "<p><em>Có thể làm gì để cứu loài thằn lằn skink, một trong những loài thằn lằn có nguy cơ tuyệt chủng cao nhất của New Zealand?</em></p>",
+                    "<p><strong>A</strong><br>Các loài bò sát của New Zealand có ba dạng: tuatara, tắc kè và thằn lằn skink. Với lớp vảy sáng bóng, thân dài và thường có chân ngắn một cách đáng ngạc nhiên, thằn lằn skink có thể dễ dàng nhận ra. Có hơn 90 loài, một nửa trong số đó vẫn đang chờ được mô tả chính thức. Việc xác định phụ thuộc vào nơi tìm thấy mẫu vật và những chi tiết nhỏ như số lượng vảy trên ngón chân của chúng. Hai loài thằn lằn skink lớn nhất - grand và Otago - chỉ được tìm thấy ở Otago, trên Đảo Nam của New Zealand. Thằn lằn skink, là loài bò sát, cần điều chỉnh nhiệt độ cơ thể và nằm trên những tảng đá có nắng để hấp thụ nhiệt. Tuy nhiên, grand và Otago là những loài duy nhất không ngủ đông; khi tuyết có thể rơi ngay cả trong mùa hè ở Otago, việc chúng nằm im trong thời gian dài cũng vô ích. Giống như tất cả các loài bò sát khác của New Zealand ngoại trừ tuatara và loài thằn lằn skink Suter đẻ trứng, chúng sinh ra những con thằn lằn con rất nhỏ. Ngày nay, thằn lằn Otago và grand may mắn lắm mới đạt đến năm tuổi trong tự nhiên, mặc dù trong các vườn thú hoặc trung tâm nghiên cứu, chúng có thể sống trên ba mươi năm.</p>",
+                    "<p><strong>B</strong><br>Thật không may, sự tuyệt chủng có thể đang đến gần với những loài bò sát này. Khi bất kỳ sự suy giảm nào xảy ra đối với hệ động vật New Zealand, sự săn mồi luôn bị nghi ngờ, vì vậy các nỗ lực của Cục Bảo tồn (DOC) tập trung vào việc kiểm soát các loài gây hại cụ thể. Một ví dụ là dự án kéo dài sáu năm nhằm kiểm soát mèo hoang tại Khu bảo tồn Thằn lằn Otago, được khởi động vào những năm 1990. Bất chấp việc bắt được hàng trăm con mèo, thằn lằn skink không có dấu hiệu phục hồi; thực tế, còn tiếp tục suy giảm. Chương trình đặt bẫy cũng cho thấy chuột và nhím là những kẻ săn mồi.</p>",
+                    "<p><strong>C</strong><br>Nhiễm ký sinh trùng cũng được cho là đang gia tăng. Mặc dù chưa phát hiện ảnh hưởng trực tiếp đến sức khỏe, nhưng xu hướng này là một mối lo ngại, vì nó có thể báo hiệu sự suy thoái tinh vi trong môi trường sống của thằn lằn skink. Nhiễm ve bét bị nghi ngờ là ức chế sinh sản ở động vật nuôi nhốt.</p>",
+                    "<p><strong>D</strong><br>Một mối đe dọa tiềm tàng khác là mất môi trường sống. Tám trăm năm trước, Otago được bao phủ bởi rừng. Tuy nhiên, việc đốt phá rộng rãi đã tạo ra một vùng đất cỏ bụi rộng mở. Phản ứng của thằn lằn skink đối với sự thay đổi này vẫn chưa được biết, cũng như môi trường sống của chúng trong môi trường trước đó, với ưu thế là cây bụi và cây cối. Hơn nữa, việc canh tác thâm canh gần đây đã dẫn đến đất đai nghèo nàn. Ngay cả khi chúng ta có câu trả lời cho việc tiêu diệt các loài săn mồi, chúng ta cũng không biết môi trường sống nên tái tạo cho thằn lằn skink là gì, hay liệu nơi chúng đang tồn tại có phải là tốt nhất cho việc bảo tồn hay không.</p>",
+                    "<p><strong>E</strong><br>Cũng khó hiểu là loài grand và Otago đang biến mất nhanh hơn các loài khác trong cùng khu vực. Lời giải thích có lẽ nằm ở sự trưởng thành sinh dục muộn của chúng. Mất năm năm mới có thể sinh sản là một bất lợi, vì khả năng sống sót lâu như vậy là rất thấp. Nếu những con sống sót chỉ có hai con non mỗi năm, chúng chẳng giúp ích được gì nhiều để cải thiện tình hình. Các loài thằn lằn skink phổ biến hơn trưởng thành sớm hơn và sinh nhiều con hơn, do đó chống lại áp lực từ kẻ săn mồi tốt hơn. Không phải là có chỗ cho sự tự mãn đối với những loài này. Khi biết thêm về quy mô quần thể thằn lằn skink, rõ ràng là ngay cả những loài phổ biến cũng có thể phải đối mặt với một tương lai mờ mịt.</p>",
+                    "<p><strong>F</strong><br>Cho đến nay, những nỗ lực của DOC nhằm loại bỏ các loài săn mồi cụ thể vẫn chưa mang lại sự phục hồi số lượng thằn lằn skink. Dự đoán rằng loài Otago và grand chỉ còn chưa đầy sáu năm được hỗ trợ bởi dữ liệu từ các cuộc khảo sát được thực hiện bên ngoài khu vực được bảo vệ từ năm 1984 đến năm 2002. Những dữ liệu này cho thấy hơn 50% quần thể phụ của cả hai loài thằn lằn đã chết dần trong những năm qua. Các quần thể ở các khu vực khác được cho là nhỏ hơn, mặc dù vấn đề tiếp cận một số tài sản hạn chế kiến thức. Chỉ còn không quá năm năm để xoay chuyển tình thế - một tình huống nguy hiểm vì sẽ mất ít nhất ba năm trước khi có thể thấy phản ứng có thể phát hiện được trong quần thể do tỷ lệ sinh sản thấp của chúng.</p>",
+                    "<p><strong>G</strong><br>Nhóm chương trình phục hồi của DOC gần đây đã bắt tay vào một thử nghiệm kéo dài gần hai km hàng rào chống động vật có vú xung quanh một quần thể Otago và grand tại khu bảo tồn Macraes Flat. Việc chọn địa điểm rất khó khăn, vì với ngân sách hạn hẹp và chi phí làm hàng rào cao, nó phải nhỏ. Nó cũng phải bao gồm không gian trống và nguồn lực cho một quần thể đang phát triển. Một sự phức tạp nữa là loài grand và Otago có sở thích môi trường khác nhau một cách tinh tế, cả hai đều cần được đáp ứng.</p>",
+                    "<p><strong>H</strong><br>Do nguy cơ tuyệt chủng sắp xảy ra, nhóm cũng phải phát triển các kỹ thuật quản lý nuôi nhốt khẩn cấp. Các nhà lai tạo được phép đặc biệt, những người đã có một số thành công trong việc nhân giống Otago trong điều kiện nuôi nhốt, hiện đang phát triển các kỹ thuật để nhân giống grand. Tuy nhiên, quản lý nuôi nhốt là giải pháp cuối cùng. Ưu tiên là quản lý và bảo vệ thằn lằn skink trong tự nhiên.</p>",
+                    "<p><strong>I</strong><br>Việc làm cho công chúng hiểu được hoàn cảnh khó khăn của những sinh vật này là điều cần thiết. Nếu không có sự ủng hộ của công chúng, cơ hội sống sót của chúng rất mong manh. Bảo tồn được thúc đẩy bởi dư luận cũng như bởi các quyết định chính trị. Ở New Zealand, tình hình cấp bách hơn bất kỳ nơi nào khác trên hành tinh vì nhiều loài chim và thằn lằn bản địa của nó vẫn chưa tiến hóa để tự vệ trước các loài du nhập trong vài trăm năm qua. Tại những hòn đảo từng bị cô lập tạo nên New Zealand, sự sụp đổ hệ sinh thái đã không xảy ra 5.000 năm trước hay thậm chí 500 năm trước; nó đang xảy ra ngay bây giờ.</p>",
+                    "<p><strong>J</strong><br>May mắn thay, DOC không còn đối mặt với những vấn đề này một mình. Thách thức đã được đón nhận bởi một nhóm các nhà bảo tồn đại diện cho doanh nghiệp, khoa học và nông nghiệp. Quỹ Tín thác Sinh thái Trung Otago (COET) nhằm mục đích thiết lập một khu bảo tồn để tái thả các loài bản địa. Họ đã xác định được môi trường sống phù hợp và với sự hỗ trợ hào phóng của một nông dân địa phương có đất chăn thả ở đó, đã bắt đầu xây dựng hàng rào chống động vật có vú để bảo vệ khu vực rộng 24 ha. Chương trình phục hồi và COET mang lại hy vọng rằng thằn lằn skink có thể một lần nữa phát triển mạnh mẽ.</p>"
+                ]
+            }
+        };
+
+        // Variables
+        let currentPassage = 1;
+        let readingMode = false;
+        
+        // DOM elements
+        const enDiv = document.getElementById('enContent');
+        const viDiv = document.getElementById('viContent');
+        const appContainer = document.getElementById('appContainer');
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        const readingModeToggle = document.getElementById('readingModeToggle');
+
+        // Load passage
+        function loadPassage(id) {
+            const p = passages[id];
+            if (!p) return;
+            
+            let enHtml = '';
+            p.en.forEach(para => {
+                enHtml += para;
+            });
+            enDiv.innerHTML = enHtml;
+
+            let viHtml = '';
+            p.vi.forEach(para => {
+                viHtml += para;
+            });
+            viDiv.innerHTML = viHtml;
+        }
+
+        loadPassage(1);
+
+        // Passage selector
+        document.querySelectorAll('.passage-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const id = parseInt(btn.getAttribute('data-passage'), 10);
+                currentPassage = id;
+                loadPassage(id);
+            });
+        });
+
+        // Reading mode toggle
+        readingModeToggle.addEventListener('click', () => {
+            readingMode = !readingMode;
+            if (readingMode) {
+                appContainer.classList.add('reading-mode');
+                toggleSwitch.classList.add('active');
+            } else {
+                appContainer.classList.remove('reading-mode');
+                toggleSwitch.classList.remove('active');
+            }
+        });
+
+        // Font size controls
+        document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+            
+            const contents = document.querySelectorAll('.col-content');
+            contents.forEach(el => {
+                el.classList.remove('font-small', 'font-medium', 'font-large');
+                el.classList.add(`font-${size}`);
+            });
+        }
+
+        // Resize columns
+        const resizer = document.getElementById('resizer');
+        const enColumn = document.getElementById('enColumn');
+        const viColumn = document.getElementById('viColumn');
+        const mainArea = document.getElementById('mainArea');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', () => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const rect = mainArea.getBoundingClientRect();
+            let leftWidth = e.clientX - rect.left - 4;
+            if (leftWidth < 200) leftWidth = 200;
+            if (leftWidth > rect.width - 200) leftWidth = rect.width - 200;
+            enColumn.style.width = leftWidth + 'px';
+            viColumn.style.width = (rect.width - leftWidth - 8) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
+
+        // Right-click highlight
+        const contextMenu = document.getElementById('contextMenu');
+        let selectedRange = null;
+
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target;
+            if (target.closest('.col-content')) {
+                e.preventDefault();
+                const selection = window.getSelection();
+                if (selection.toString().trim()) {
+                    selectedRange = selection.getRangeAt(0);
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = e.pageX + 'px';
+                    contextMenu.style.top = e.pageY + 'px';
+                }
+            }
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        window.applyHighlight = (color) => {
+            if (!selectedRange) return;
+            const span = document.createElement('span');
+            span.className = `highlight-${color}`;
+            try {
+                const range = selectedRange.cloneRange();
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch (e) {
+                alert('Không thể highlight vùng này.');
+            }
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        window.removeHighlight = () => {
+            if (!selectedRange) return;
+            const range = selectedRange.cloneRange();
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                if (range.intersectsNode(h)) {
+                    const parent = h.parentNode;
+                    while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display = 'none';
+            selectedRange = null;
+        };
+
+        // Reset all highlights
+        document.getElementById('resetHighlightBtn').addEventListener('click', () => {
+            document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(h => {
+                const parent = h.parentNode;
+                while (h.firstChild) parent.insertBefore(h.firstChild, h);
+                parent.removeChild(h);
+            });
+        });
+
+        // Đồng bộ cuộn có bật/tắt
+        const enContent = document.getElementById('enContent');
+        const viContent = document.getElementById('viContent');
+        const syncBtn = document.getElementById('syncScrollBtn');
+
+        let syncEnabled = true;
+        let isSyncing = false;
+
+        syncBtn.addEventListener('click', () => {
+            syncEnabled = !syncEnabled;
+            if (syncEnabled) {
+                syncBtn.style.background = '#e6b422';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: BẬT';
+            } else {
+                syncBtn.style.background = 'transparent';
+                syncBtn.style.color = '#1e3a5f';
+                syncBtn.textContent = 'Đồng bộ cuộn: TẮT';
+            }
+        });
+
+        function syncScroll(source, target) {
+            if (!syncEnabled || isSyncing) return;
+            isSyncing = true;
+            
+            const sourceScrollRatio = source.scrollTop / (source.scrollHeight - source.clientHeight);
+            target.scrollTop = sourceScrollRatio * (target.scrollHeight - target.clientHeight);
+            
+            isSyncing = false;
+        }
+
+        enContent.addEventListener('scroll', () => syncScroll(enContent, viContent));
+        viContent.addEventListener('scroll', () => syncScroll(viContent, enContent));
+    })();
+</script>
+</body>
+</html>

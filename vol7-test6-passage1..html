@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOL 7 - Reading Test 6 - Passage 1 - Deep sea discovery</title>
+    <style>
+        /* ===== RESET & BASE (giữ nguyên từ file mẫu) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: #1a1a2a; display: flex; justify-content: center; min-height: 100vh; padding: 0; }
+        .test-wrapper { width: 100%; max-width: 1600px; background: #f5f3ee; display: flex; flex-direction: column; height: 100vh; }
+        .test-wrapper.reading-mode { background: #f8f5e6; }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        /* Header */
+        .ielts-header { background: #1e3a5f; color: white; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #e6b422; }
+        .brand { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .ielts-logo { background: #e6b422; color: #1e3a5f; font-weight: 800; font-size: 24px; padding: 4px 18px; border-radius: 40px; }
+        .candidate { background: #2d4b77; padding: 4px 16px; border-radius: 30px; font-size: 14px; }
+        .question-types { background: #0f2a44; padding: 4px 16px; border-radius: 30px; font-size: 13px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 6px 20px; border-radius: 40px; font-size: 22px; font-family: monospace; border: 1px solid #e6b422; }
+
+        /* Reading Mode Toggle */
+        .reading-mode-toggle { display: flex; align-items: center; gap: 8px; background: #2d4b77; padding: 4px 12px; border-radius: 30px; cursor: pointer; }
+        .toggle-switch { width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422; }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .toggle-switch.active::after { left: 22px; }
+
+        /* Font Controls */
+        .font-controls { display: flex; gap: 5px; background: #2d4b77; padding: 3px; border-radius: 30px; }
+        .font-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        /* Question Navigator */
+        .question-nav { background: #d2cbbc; padding: 6px 20px; border-bottom: 2px solid #b0aa9a; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn { width: 32px; height: 32px; border-radius: 6px; border: 2px solid #1e3a5f; background: white; color: #1e3a5f; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        /* Main Resizable Area */
+        .main-area { display: flex; flex: 1; overflow: hidden; }
+        .reading-panel { width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden; }
+        .questions-panel { width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden; }
+        .resizer { width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s; }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header { background: #d2cbbc; padding: 8px 15px; font-weight: 600; color: #1e3a5f; border-bottom: 1px solid #b0aa9a; display: flex; justify-content: space-between; }
+        .reading-text { flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px; }
+        .reading-text p { margin-bottom: 15px; position: relative; }
+        .questions-list { flex: 1; overflow-y: auto; padding: 20px 25px; line-height: 1.6; font-size: 15px; position: relative; }
+
+        .font-small { font-size: 13px; } .font-medium { font-size: 15px; } .font-large { font-size: 17px; }
+
+        /* Highlight colors */
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; display: inline; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; display: inline; }
+        .dynamic-highlight { background-color: #f9e79f; display: inline; border-radius: 3px; padding: 0 2px; animation: highlightFadeIn 0.5s ease; }
+        @keyframes highlightFadeIn { from { background-color: #fff; } to { background-color: #f9e79f; } }
+        .keyword-highlight { text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; display: inline; border-radius: 3px; padding: 0 2px; }
+        .question-highlight { background-color: #fef9e7; border-left: 4px solid #f1c40f; padding-left: 10px; }
+
+        .context-menu { position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px; }
+        .context-menu div { padding: 8px 20px; cursor: pointer; transition: 0.2s; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+
+        .note-box { background: #f0ebe0; border-left: 4px solid #e6b422; padding: 12px 15px; margin: 15px 0; font-style: italic; }
+
+        .questions-list h3 { margin-top: 30px; margin-bottom: 15px; font-size: 20px; color: #1e3a5f; border-bottom: 2px solid #e6b422; padding-bottom: 5px; }
+        .questions-list ul, .questions-list ol { margin: 10px 0 20px 30px; }
+        .questions-list li { margin: 12px 0; line-height: 1.6; }
+
+        .tf-group { margin: 5px 0 15px 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .tf-option { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .tf-option.correct .tf-text { color: #4CAF50; font-weight: bold; }
+        .tf-option.incorrect .tf-text { color: #f44336; font-weight: bold; }
+
+        .question-wrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; position: relative; }
+        .question-number { font-weight: bold; color: #1e3a5f; margin-right: 5px; min-width: 25px; }
+
+        .fill-input { padding: 5px 10px; border: 1px solid #9a8c7a; border-radius: 5px; width: 140px; font-size: 14px; margin: 0 5px; background: white; }
+        .fill-input.correct { border: 2px solid #4CAF50; background-color: #e8f5e8; }
+        .fill-input.incorrect { border: 2px solid #f44336; background-color: #ffebee; }
+        .correct-answer-badge { display: inline-block; background-color: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 8px; font-weight: bold; vertical-align: middle; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        .eye-icon { display: none; margin-left: 5px; cursor: pointer; font-size: 18px; opacity: 0.7; transition: all 0.2s; }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+
+        .bottom-bar { background: #d2cbbc; padding: 10px 20px; display: flex; gap: 15px; border-top: 1px solid #b0aa9a; align-items: center; flex-wrap: wrap; }
+        .btn { padding: 6px 20px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .btn-primary { background: #1e3a5f; color: white; }
+        .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; opacity: 0.6; }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { background: #a5d6a7; cursor: not-allowed; opacity: 0.6; pointer-events: none; }
+        .btn-danger { background: #f44336; color: white; }
+        .btn-danger:hover { background: #d32f2f; }
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; }
+
+        .explanation-panel { background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none; z-index: 100; }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; color: #666; }
+        .close-btn:hover { color: #1e3a5f; }
+
+        .answer-feedback.correct { background: #e8f5e8; border-left: 4px solid #4CAF50; padding: 10px; }
+        .answer-feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; padding: 10px; }
+
+        .question-item { margin-bottom: 15px; padding: 10px; border-left: 3px solid transparent; transition: all 0.2s; scroll-margin-top: 20px; }
+        .question-item.highlight-question { border-left: 3px solid #f1c40f; background-color: #fef9e7; }
+
+        .notes-section { background: #f9f7f0; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #1e3a5f; }
+        .notes-item { margin: 15px 0; line-height: 1.8; }
+        .bold-text { font-weight: 700; color: #1e3a5f; }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 6 - Passage 1</div>
+            <div class="question-types">T/F/NG • Notes completion</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- Question Navigator -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 1-13:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main Resizable Area -->
+    <div class="main-area" id="mainArea">
+        <!-- Reading Panel -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header">
+                <span>READING PASSAGE 1: Deep sea discovery</span>
+            </div>
+            <div class="reading-text font-medium" id="readingContent">
+                <h1>Deep sea discovery</h1>
+                <p><em>Recent research has provided new insights into how fish communicate</em></p>
+                <p><strong>A</strong> Nico Michiels is an ecologist from the University of Tubingen in Germany who spends part of each year in Egypt, where he dives in the Red Sea, observing fish life and gathering data on its coral reefs. In September 2007 he decided to find out how far red light could penetrate the ocean depths. Seawater absorbs different colours at different depths, and as an experienced diver, Michiels was aware that red light is extinguished not far below the surface whereas blue-green light penetrates deeper. To find out the depth at which red disappeared in this particular ocean, however, he attached a special plastic filter to his dive mask which was designed to block out all colours except red. Then he began to descend. In theory, once he reached about 15 metres, he should have been plunged into darkness. Instead, something totally unexpected happened. Sure enough, 20 metres down it was as dark as night. ‘All the fish disappeared. With no light from the surface, they were effectively black and had become invisible,’ he says. ‘But it didn’t stay black for long. Then I saw a group of goby fish with bright red eyes lit up against the background. After that red spots began to show up all over the reef.’</p>
+                <p><strong>B</strong> Even with the red filter removed, Michiels could pick them out without much trouble once his eyes grew accustomed to the gloom. It seems strange that no diver or researcher had spotted all this red before, but as Michiels points out, no one saw it because no one expected to see it. On that one dive Michiels discovered three fish species with prominent red markings, and has found many others since.</p>
+                <p><strong>C</strong> But how can fish appear red where there’s no red light? Ordinary red pigments* look red because they reflect red light while absorbing all other wavelengths. At 20 metres down, there had to be some other explanation for the red Michiels was seeing. He suspected fluorescence. Fluorescent pigments behave differently from ordinary ones: they receive incoming light of one wavelength, for example blue, and emit light of a longer wavelength, in this case red. On the reef in the Red Sea during daytime, the most likely explanation was that the predominantly blue and green wavelengths at depth triggered the emission of fluorescent red in the fish.</p>
+                <p><strong>D</strong> With only a week left in Egypt, and lacking the equipment to confirm that the fish were fluorescent, Michiels photographed as many of them as he could. Then once back in Germany, he bought an assortment of tropical fish and installed them in his lab. Here he confirmed that the fish did indeed fluoresce. In most of the fish he looked at, the fluorescence could be traced to specialised pigment cells that lie in the skin beneath the scales. These cells contain ‘guanine crystals’, which scatter light to give fish their silvery sheen. However, Michiels says they are still not sure exactly what is fluorescing. ‘It’s not the crystals themselves. It’s probably a fluorescent protein built into the crystals, and we have a suspicion that it might be made by bacteria.’</p>
+                <p><strong>E</strong> Intrigued, Michiels began a systematic search for red fluorescence in reef fish. He and his colleagues, Nils Anthes and Dennis Sprenger, have identified some 50 species with red fluorescence. The most common markings tend to be on the body towards the head and to a lesser extent around the eyes, and then the fins. To Michiels, the distribution of these markings is one of the strongest indications that red fluorescence has a very particular function: communication with other members of the species. According to several recent studies, a whole range of animals employ fluorescence as a natural highlighter to boost the visibility of body parts they use to signal, for example to ward off enemies. In reef fish, the red tends to be confined to parts of the body used to signal, suggesting these markings serve a similar function. But instead of highlighting an existing colour, the fluorescence gives the fish a colour that otherwise wouldn’t exist. For example, fish commonly use eye rings to signal that they are present and their direction of gaze, and Michiels suspects that red-eyed gobies use signals to indicate their location and keep their group together.</p>
+                <p><strong>F</strong> Red light, whatever its source, doesn’t travel far through water, which suggests signals are intended to be private, seen only by nearby fish of the right species. There are several lines of evidence to support this, says Michiels. And closely related species do not have completely identical markings, which suggests they might be important in species recognition.</p>
+                <p><strong>G</strong> Michiels suspects red fluorescence has another important role for some reef fish: helping them blend in. During his first dive with the red filter, he noticed corals glow a dark but faint red too. Against this irregular red background, a fish that glows red all over would be hard to distinguish. More compelling for Michiels is the case of the scorpionfish, which lies perfectly still until food swims past which it then sucks in.</p>
+                <p><strong>H</strong> Yet if red plays any part in a fish’s life then it must be able to see it. Fish that live in a world dominated by blue-green light are assumed to have eyes tuned to those wavelengths, and most marine fish that have been studied are thought incapable of seeing red. One exception is the seahorse, whose eyes are sensitive to red. As for the other fish, it remains to be seen.</p>
+                <p><em>*pigments: a pigment is a substance that gives something a particular colour</em></p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions Panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header">
+                <span>QUESTIONS 1-13</span>
+                <span class="answer-badge" id="answeredCount">0/13 answered</span>
+            </div>
+            <div class="questions-list font-medium" id="questionsContent">
+                <!-- Questions 1-6: True/False/Not Given -->
+                <h3>Questions 1-6</h3>
+                <p><em>Do the following statements agree with the information given in Reading Passage 1?</em></p>
+                <p>In boxes 1-6 on your answer sheet, write</p>
+                <div class="note-box">
+                    <p><strong>TRUE</strong> if the statement agrees with the information</p>
+                    <p><strong>FALSE</strong> if the statement contradicts the information</p>
+                    <p><strong>NOT GIVEN</strong> if there is no information on this</p>
+                </div>
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li class="question-item" id="q1-item">
+                        <div class="question-wrapper"><span class="question-number">1.</span><span class="tf-statement">During his 2007 dive, Michiels expected to encounter total darkness at about 15 metres.</span><span class="eye-icon" data-question="1">👁️</span></div>
+                        <div class="tf-group" id="q1-group"><label class="tf-option"><input type="radio" name="q1" value="TRUE"> <span class="tf-text">TRUE</span></label><label class="tf-option"><input type="radio" name="q1" value="FALSE"> <span class="tf-text">FALSE</span></label><label class="tf-option"><input type="radio" name="q1" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label></div>
+                    </li>
+                    <li class="question-item" id="q2-item">
+                        <div class="question-wrapper"><span class="question-number">2.</span><span class="tf-statement">Michiels could see the red markings on fish without the aid of the red filter.</span><span class="eye-icon" data-question="2">👁️</span></div>
+                        <div class="tf-group" id="q2-group"><label class="tf-option"><input type="radio" name="q2" value="TRUE"> <span class="tf-text">TRUE</span></label><label class="tf-option"><input type="radio" name="q2" value="FALSE"> <span class="tf-text">FALSE</span></label><label class="tf-option"><input type="radio" name="q2" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label></div>
+                    </li>
+                    <li class="question-item" id="q3-item">
+                        <div class="question-wrapper"><span class="question-number">3.</span><span class="tf-statement">Other divers had assumed they would see fish with red markings.</span><span class="eye-icon" data-question="3">👁️</span></div>
+                        <div class="tf-group" id="q3-group"><label class="tf-option"><input type="radio" name="q3" value="TRUE"> <span class="tf-text">TRUE</span></label><label class="tf-option"><input type="radio" name="q3" value="FALSE"> <span class="tf-text">FALSE</span></label><label class="tf-option"><input type="radio" name="q3" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label></div>
+                    </li>
+                    <li class="question-item" id="q4-item">
+                        <div class="question-wrapper"><span class="question-number">4.</span><span class="tf-statement">All the fish with red markings that Michiels found during his diving expeditions came from the Red Sea.</span><span class="eye-icon" data-question="4">👁️</span></div>
+                        <div class="tf-group" id="q4-group"><label class="tf-option"><input type="radio" name="q4" value="TRUE"> <span class="tf-text">TRUE</span></label><label class="tf-option"><input type="radio" name="q4" value="FALSE"> <span class="tf-text">FALSE</span></label><label class="tf-option"><input type="radio" name="q4" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label></div>
+                    </li>
+                    <li class="question-item" id="q5-item">
+                        <div class="question-wrapper"><span class="question-number">5.</span><span class="tf-statement">Michiels first thought of the possibility that fish could fluoresce while he was in Germany.</span><span class="eye-icon" data-question="5">👁️</span></div>
+                        <div class="tf-group" id="q5-group"><label class="tf-option"><input type="radio" name="q5" value="TRUE"> <span class="tf-text">TRUE</span></label><label class="tf-option"><input type="radio" name="q5" value="FALSE"> <span class="tf-text">FALSE</span></label><label class="tf-option"><input type="radio" name="q5" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label></div>
+                    </li>
+                    <li class="question-item" id="q6-item">
+                        <div class="question-wrapper"><span class="question-number">6.</span><span class="tf-statement">Michiels remains uncertain as to what creates fluorescence in fish.</span><span class="eye-icon" data-question="6">👁️</span></div>
+                        <div class="tf-group" id="q6-group"><label class="tf-option"><input type="radio" name="q6" value="TRUE"> <span class="tf-text">TRUE</span></label><label class="tf-option"><input type="radio" name="q6" value="FALSE"> <span class="tf-text">FALSE</span></label><label class="tf-option"><input type="radio" name="q6" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label></div>
+                    </li>
+                </ul>
+
+                <!-- Questions 7-13: Notes completion -->
+                <h3>Questions 7-13</h3>
+                <p><em>Complete the notes below.</em></p>
+                <p><em>Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+                <div class="notes-section">
+                    <h4 style="color:#1e3a5f;">Michiels’s findings</h4>
+                    <p><strong>Michiels has observed:</strong><br>- 50 types of fish with red fluorescence in total.<br>- markings mainly near the <span class="bold-text">7</span> <input class="fill-input" id="q7" data-answer="head" placeholder=" "> <span class="eye-icon" data-question="7">👁️</span></p>
+                    <p><strong>Some of Michiels’s beliefs are that:</strong><br>- red fluorescence is used specifically for <span class="bold-text">8</span> <input class="fill-input" id="q8" data-answer="communication" placeholder=" "> <span class="eye-icon" data-question="8">👁️</span> purposes.<br>- fish, like some animals, use fluorescence to keep <span class="bold-text">9</span> <input class="fill-input" id="q9" data-answer="enemies" placeholder=" "> <span class="eye-icon" data-question="9">👁️</span> away.<br>- gobies depend on red fluorescence to show their <span class="bold-text">10</span> <input class="fill-input" id="q10" data-answer="location" placeholder=" "> <span class="eye-icon" data-question="10">👁️</span><br>- there are variations in the markings of fish among those <span class="bold-text">11</span> <input class="fill-input" id="q11" data-answer="species" placeholder=" "> <span class="eye-icon" data-question="11">👁️</span> which are very similar.</p>
+                    <p><strong>Other benefits of red fluorescence:</strong><br>- fish cannot easily be seen near backgrounds of <span class="bold-text">12</span> <input class="fill-input" id="q12" data-answer="corals" placeholder=" "> <span class="eye-icon" data-question="12">👁️</span> which give off a red light.<br>- helps some fish catch their prey.</p>
+                    <p><strong>The ability to see red amongst fish:</strong><br>- the only fish proven to have this ability is the <span class="bold-text">13</span> <input class="fill-input" id="q13" data-answer="seahorse" placeholder=" "> <span class="eye-icon" data-question="13">👁️</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- Explanation Panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header">
+            <span id="explanationTitle">Giải thích</span>
+            <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+        </div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- Right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight</div>
+    </div>
+</div>
+
+<script>
+    // ==================== GLOBAL ====================
+    let examSubmitted = false;
+    let explanationMode = false;
+    let startTime = Date.now();
+    let readingMode = false;
+    let timerRunning = true;
+    let timeLeft = 3600;
+    const timerEl = document.getElementById('timerDisplay');
+    let timerInterval;
+    let selectedRange = null;
+    const currentVol = 7, currentTest = 6;
+
+    // ==================== ANSWER KEY ====================
+    const answerKey = {
+        q1: 'TRUE', q2: 'TRUE', q3: 'FALSE', q4: 'NOT GIVEN', q5: 'FALSE', q6: 'TRUE',
+        q7: 'head', q8: 'communication', q9: 'enemies', q10: 'location', q11: 'species',
+        q12: 'corals', q13: 'seahorse'
+    };
+
+    // ==================== ANSWER LOCATIONS (text + keywords) ====================
+    const answerLocations = {
+        q1: { text: "In theory, once he reached about 15 metres, he should have been plunged into darkness", keywords: ["15 metres", "plunged into darkness"] },
+        q2: { text: "Even with the red filter removed, Michiels could pick them out without much trouble once his eyes grew accustomed to the gloom", keywords: ["red filter removed", "pick them out"] },
+        q3: { text: "no one saw it because no one expected to see it", keywords: ["no one expected"] },
+        q4: { text: "Not mentioned in the passage", keywords: [] },
+        q5: { text: "At 20 metres down, there had to be some other explanation for the red Michiels was seeing. He suspected fluorescence", keywords: ["suspected fluorescence"] },
+        q6: { text: "However, Michiels says they are still not sure exactly what is fluorescing", keywords: ["still not sure"] },
+        q7: { text: "The most common markings tend to be on the body towards the head and to a lesser extent around the eyes, and then the fins", keywords: ["head"] },
+        q8: { text: "To Michiels, the distribution of these markings is one of the strongest indications that red fluorescence has a very particular function: communication with other members of the species", keywords: ["communication"] },
+        q9: { text: "According to several recent studies, a whole range of animals employ fluorescence as a natural highlighter to boost the visibility of body parts they use to signal, for example to ward off enemies", keywords: ["ward off enemies"] },
+        q10: { text: "Michiels suspects that red-eyed gobies use signals to indicate their location and keep their group together", keywords: ["location"] },
+        q11: { text: "And closely related species do not have completely identical markings, which suggests they might be important in species recognition", keywords: ["closely related species", "not completely identical"] },
+        q12: { text: "During his first dive with the red filter, he noticed corals glow a dark but faint red too. Against this irregular red background, a fish that glows red all over would be hard to distinguish", keywords: ["corals", "red background"] },
+        q13: { text: "One exception is the seahorse, whose eyes are sensitive to red", keywords: ["seahorse", "sensitive to red"] }
+    };
+
+    // ==================== EXPLANATIONS (tiếng Việt) ====================
+    const explanations = {
+        q1: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> Đoạn A: 'In theory, once he reached about 15 metres, he should have been plunged into darkness.' Ông ấy dự kiến sẽ tối hoàn toàn ở độ sâu 15 mét.",
+        q2: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> Đoạn B: 'Even with the red filter removed, Michiels could pick them out without much trouble once his eyes grew accustomed.'",
+        q3: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn B: 'no one saw it because no one expected to see it.' Các thợ lặn khác không hề kỳ vọng thấy màu đỏ.",
+        q4: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Bài đọc không cho biết tất cả cá có đốm đỏ mà Michiels tìm thấy trong các chuyến lặn đều đến từ Biển Đỏ.",
+        q5: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn C: 'He suspected fluorescence.' (ở Ai Cập), không phải ở Đức.",
+        q6: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> Đoạn D: 'However, Michiels says they are still not sure exactly what is fluorescing.'",
+        q7: "<strong>Đáp án: head</strong><br><br><strong>Giải thích:</strong> Đoạn E: 'The most common markings tend to be on the body towards the head...'",
+        q8: "<strong>Đáp án: communication</strong><br><br><strong>Giải thích:</strong> Đoạn E: 'red fluorescence has a very particular function: communication with other members of the species.'",
+        q9: "<strong>Đáp án: enemies</strong><br><br><strong>Giải thích:</strong> Đoạn E: 'employ fluorescence ... to ward off enemies.'",
+        q10: "<strong>Đáp án: location</strong><br><br><strong>Giải thích:</strong> Đoạn E: 'red-eyed gobies use signals to indicate their location and keep their group together.'",
+        q11: "<strong>Đáp án: species</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'closely related species do not have completely identical markings, which suggests they might be important in species recognition.'",
+        q12: "<strong>Đáp án: corals</strong><br><br><strong>Giải thích:</strong> Đoạn G: 'he noticed corals glow a dark but faint red too. Against this irregular red background, a fish that glows red all over would be hard to distinguish.'",
+        q13: "<strong>Đáp án: seahorse</strong><br><br><strong>Giải thích:</strong> Đoạn H: 'One exception is the seahorse, whose eyes are sensitive to red.'"
+    };
+
+    // ==================== CÁC HÀM CHUNG ====================
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if (!examSubmitted && timerRunning && timeLeft > 0) {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    document.getElementById('readingModeToggle').addEventListener('click', () => {
+        readingMode = !readingMode;
+        document.getElementById('testWrapper').classList.toggle('reading-mode', readingMode);
+        document.getElementById('toggleSwitch').classList.toggle('active', readingMode);
+    });
+
+    document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+    document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+    document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+    function setFontSize(size) {
+        document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+        document.getElementById('readingContent').className = `reading-text font-${size}`;
+        document.getElementById('questionsContent').className = `questions-list font-${size}`;
+    }
+
+    // Resize columns
+    const readingPanel = document.getElementById('readingPanel');
+    const questionsPanel = document.getElementById('questionsPanel');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
+    resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'col-resize'; });
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('mainArea');
+        const rect = mainArea.getBoundingClientRect();
+        let readingWidth = e.clientX - rect.left - 4;
+        if (readingWidth < 250) readingWidth = 250;
+        if (readingWidth > rect.width - 250) readingWidth = rect.width - 250;
+        readingPanel.style.width = readingWidth + 'px';
+        questionsPanel.style.width = (rect.width - readingWidth - 8) + 'px';
+    });
+    document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = 'default'; });
+
+    // Navigation buttons
+    function createNavButtons() {
+        const navContainer = document.getElementById('navButtons');
+        navContainer.innerHTML = '';
+        for (let i = 1; i <= 13; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn unanswered';
+            btn.textContent = i;
+            btn.setAttribute('data-question', i);
+            btn.addEventListener('click', function() { scrollToQuestion(this.getAttribute('data-question')); });
+            navContainer.appendChild(btn);
+        }
+    }
+    function scrollToQuestion(qNum) {
+        qNum = parseInt(qNum);
+        if (qNum <= 6) {
+            const el = document.getElementById(`q${qNum}-item`);
+            if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('question-highlight'); setTimeout(() => el.classList.remove('question-highlight'), 1500); }
+        } else {
+            const el = document.getElementById(`q${qNum}`);
+            if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); const wrapper = el.closest('.question-wrapper') || el.parentNode; wrapper.classList.add('question-highlight'); setTimeout(() => wrapper.classList.remove('question-highlight'), 1500); }
+        }
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.nav-btn[data-question="${qNum}"]`).classList.add('active');
+    }
+    function updateNavButtons() {
+        for (let i = 1; i <= 13; i++) {
+            const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+            if (!btn) continue;
+            btn.classList.remove('answered', 'unanswered');
+            btn.classList.add(getUserAnswer(i) ? 'answered' : 'unanswered');
+        }
+    }
+    function getUserAnswer(q) {
+        if (q <= 6) {
+            const sel = document.querySelector(`input[name="q${q}"]:checked`);
+            return sel ? sel.value : null;
+        } else {
+            const inp = document.getElementById(`q${q}`);
+            return inp ? inp.value.trim() || null : null;
+        }
+    }
+    function updateAnswerCount() {
+        let answered = 0;
+        for (let i = 1; i <= 13; i++) if (getUserAnswer(i)) answered++;
+        document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+        document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+        updateNavButtons();
+    }
+    document.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', updateAnswerCount));
+    document.querySelectorAll('.fill-input').forEach(el => el.addEventListener('input', updateAnswerCount));
+
+    // Helper tìm node cho highlight
+    function findNodeAndOffset(node, targetPos, currentPos = {value: 0}) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const len = node.textContent.length;
+            if (currentPos.value + len > targetPos) return { node, offset: targetPos - currentPos.value };
+            currentPos.value += len;
+        } else for (let child of node.childNodes) { const res = findNodeAndOffset(child, targetPos, currentPos); if (res) return res; }
+        return null;
+    }
+
+    // Xoá toàn bộ highlight
+    function clearAllHighlights() {
+        document.querySelectorAll('.dynamic-highlight, .keyword-highlight').forEach(el => {
+            const parent = el.parentNode;
+            if (parent) { while (el.firstChild) parent.insertBefore(el.firstChild, el); parent.removeChild(el); }
+        });
+        document.querySelectorAll('.question-highlight').forEach(el => el.classList.remove('question-highlight'));
+        document.querySelectorAll('.eye-icon.active').forEach(el => el.classList.remove('active'));
+    }
+
+    // Highlight vị trí đáp án (có fallback keywords như test5)
+    function highlightAnswerLocation(questionNum) {
+        clearAllHighlights();
+        const loc = answerLocations[`q${questionNum}`];
+        if (!loc) return false;
+
+        // Highlight câu hỏi tương ứng
+        if (questionNum <= 6) {
+            const el = document.getElementById(`q${questionNum}-item`);
+            if (el) el.classList.add('question-highlight');
+        } else {
+            const el = document.getElementById(`q${questionNum}`);
+            if (el) {
+                const wrapper = el.closest('.question-wrapper') || el.parentNode;
+                wrapper.classList.add('question-highlight');
+            }
+        }
+        const eyeIcon = document.querySelector(`.eye-icon[data-question="${questionNum}"]`);
+        if (eyeIcon) eyeIcon.classList.add('active');
+
+        const reading = document.getElementById('readingContent');
+        const paragraphs = reading.getElementsByTagName('p');
+        let found = false;
+
+        // Tìm đoạn chứa chính xác loc.text
+        for (let p of paragraphs) {
+            if (loc.text && p.textContent.includes(loc.text)) {
+                try {
+                    const text = p.textContent;
+                    const startIdx = text.indexOf(loc.text);
+                    let currentPos = { value: 0 };
+                    const startNodeInfo = findNodeAndOffset(p, startIdx, currentPos);
+                    currentPos = { value: 0 };
+                    const endNodeInfo = findNodeAndOffset(p, startIdx + loc.text.length, currentPos);
+                    if (startNodeInfo && endNodeInfo) {
+                        const range = document.createRange();
+                        range.setStart(startNodeInfo.node, startNodeInfo.offset);
+                        range.setEnd(endNodeInfo.node, endNodeInfo.offset);
+                        const span = document.createElement('span');
+                        span.className = 'dynamic-highlight';
+                        span.appendChild(range.extractContents());
+                        range.insertNode(span);
+                        setTimeout(() => {
+                            if (loc.keywords && loc.keywords.length) {
+                                let html = span.innerHTML;
+                                loc.keywords.forEach(kw => {
+                                    try {
+                                        const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                        const regex = new RegExp(`(${escaped})`, 'gi');
+                                        html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
+                                    } catch (e) { }
+                                });
+                                span.innerHTML = html;
+                            }
+                            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 50);
+                        found = true;
+                        break;
+                    }
+                } catch (e) {
+                    console.log('Lỗi highlight:', e);
+                }
+            }
+        }
+
+        // Fallback: nếu không tìm thấy đoạn chính xác, tìm theo keyword
+        if (!found && loc.keywords && loc.keywords.length) {
+            for (let p of paragraphs) {
+                for (let keyword of loc.keywords) {
+                    if (p.textContent.includes(keyword)) {
+                        try {
+                            const range = document.createRange();
+                            range.selectNodeContents(p);
+                            const span = document.createElement('span');
+                            span.className = 'dynamic-highlight';
+                            span.appendChild(range.extractContents());
+                            range.insertNode(span);
+                            setTimeout(() => {
+                                span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 300);
+                            found = true;
+                            break;
+                        } catch (e) { }
+                    }
+                }
+                if (found) break;
+            }
+        }
+
+        return found;
+    }
+
+    // Hiển thị giải thích
+    function showExplanation(qNum) {
+        if (!explanationMode && !examSubmitted) return;
+        highlightAnswerLocation(qNum);
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = `Giải thích câu ${qNum}`;
+        let html = explanations[`q${qNum}`] || 'Không có giải thích.';
+        if (examSubmitted) {
+            const userAnswer = getUserAnswer(qNum);
+            const correct = answerKey[`q${qNum}`];
+            const isCorrect = userAnswer && userAnswer.toString().toLowerCase().trim() === correct.toString().toLowerCase().trim();
+            html += `<div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="margin-top:10px;padding:10px;"><strong>Câu trả lời của bạn:</strong> ${userAnswer || '(chưa có)'}<br>`;
+            if (!isCorrect && correct) html += `<strong>Đáp án đúng:</strong> ${correct}`;
+            else if (isCorrect) html += `<strong>✅ Đúng!</strong>`;
+            html += `</div>`;
+        }
+        document.getElementById('explanationText').innerHTML = html;
+
+        // Xoá badge cũ và thêm badge mới (đặt sau eye-icon để tránh lộn xộn)
+        if (explanationMode && examSubmitted) {
+            document.querySelectorAll('.correct-answer-badge').forEach(badge => badge.remove());
+            if (qNum <= 6) {
+                const questionItem = document.getElementById(`q${qNum}-item`);
+                if (questionItem) {
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${qNum}`];
+                    questionItem.querySelector('.question-wrapper').appendChild(badge);
+                }
+            } else {
+                const inp = document.getElementById(`q${qNum}`);
+                if (inp) {
+                    const badge = document.createElement('span');
+                    badge.className = 'correct-answer-badge';
+                    badge.textContent = answerKey[`q${qNum}`];
+                    // Tìm eye-icon cùng câu để thêm sau nó
+                    const eyeIcon = document.querySelector(`.eye-icon[data-question="${qNum}"]`);
+                    if (eyeIcon) {
+                        eyeIcon.insertAdjacentElement('afterend', badge);
+                    } else {
+                        inp.parentNode.appendChild(badge);
+                    }
+                }
+            }
+        }
+    }
+
+    function setupEyeIcons() {
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => { e.stopPropagation(); showExplanation(icon.getAttribute('data-question')); });
+        });
+    }
+    document.getElementById('closeExplanation').addEventListener('click', () => {
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+
+    // Mark answers & submit
+    function markAnswers() {
+        for (let i = 1; i <= 6; i++) {
+            const group = document.getElementById(`q${i}-group`);
+            if (!group) continue;
+            const options = group.querySelectorAll('.tf-option');
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const correct = answerKey[`q${i}`];
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                const radio = opt.querySelector('input');
+                if (radio.value === correct) opt.classList.add('correct');
+                if (selected && radio.value === selected.value && radio.value !== correct) opt.classList.add('incorrect');
+            });
+            if (!selected) options.forEach(opt => { if (opt.querySelector('input').value === correct) opt.classList.add('correct'); });
+        }
+        for (let i = 7; i <= 13; i++) {
+            const inp = document.getElementById(`q${i}`);
+            if (!inp) continue;
+            const user = inp.value.trim().toLowerCase();
+            const correct = answerKey[`q${i}`].toLowerCase();
+            inp.classList.remove('correct', 'incorrect');
+            const wrapper = inp.closest('.question-wrapper') || inp.parentNode;
+            const old = wrapper.querySelector('.correct-answer-badge');
+            if (old) old.remove();
+            if (user) {
+                if (user === correct) inp.classList.add('correct');
+                else { inp.classList.add('incorrect'); const badge = document.createElement('span'); badge.className = 'correct-answer-badge'; badge.textContent = answerKey[`q${i}`]; wrapper.appendChild(badge); }
+            } else {
+                inp.classList.add('incorrect');
+                const badge = document.createElement('span'); badge.className = 'correct-answer-badge'; badge.textContent = answerKey[`q${i}`]; wrapper.appendChild(badge);
+            }
+        }
+    }
+    function calculateResults() {
+        let correct = 0;
+        for (let i = 1; i <= 6; i++) { const sel = document.querySelector(`input[name="q${i}"]:checked`); if (sel && sel.value === answerKey[`q${i}`]) correct++; }
+        for (let i = 7; i <= 13; i++) { const inp = document.getElementById(`q${i}`); if (inp && inp.value.trim().toLowerCase() === answerKey[`q${i}`].toLowerCase()) correct++; }
+        const total = 13, percentage = Math.round(correct / total * 100);
+        const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(timeTaken / 60), seconds = timeTaken % 60;
+        return { correct, total, percentage, timeString: `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}` };
+    }
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (examSubmitted) return;
+        const unanswered = [];
+        for (let i = 1; i <= 13; i++) if (!getUserAnswer(i)) unanswered.push(i);
+        if (unanswered.length > 0 && !confirm(`Bạn còn ${unanswered.length} câu chưa làm. Nộp bài?`)) return;
+        examSubmitted = true; timerRunning = false; clearInterval(timerInterval);
+        markAnswers();
+        const res = calculateResults();
+        document.getElementById('resultStats').style.display = 'inline-block';
+        document.getElementById('resultStats').textContent = `Kết quả: ${res.correct}/${res.total} (${res.percentage}%) - TG: ${res.timeString}`;
+        document.getElementById('explainBtn').disabled = false;
+        document.getElementById('submitBtn').disabled = true; document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+        document.getElementById('explanationPanel').classList.add('show');
+        document.getElementById('explanationTitle').textContent = 'KẾT QUẢ';
+        document.getElementById('explanationText').innerHTML = `<h4>Kết quả bài làm:</h4><p>Đúng: ${res.correct}/${res.total} (${res.percentage}%)</p><p>Thời gian: ${res.timeString}</p><p>Nhấn "Xem giải thích" và click 👁️ để xem chi tiết.</p>`;
+        saveToDashboard(res.correct);
+    });
+    function saveToDashboard(correctCount) {
+        const key = `ielts_vol${currentVol}_test${currentTest}_passage_1`;
+        localStorage.setItem(key, JSON.stringify({ passageId:1, name:'Deep sea discovery', totalQuestions:13, correctCount, timeSpent:document.getElementById('timerDisplay').textContent }));
+    }
+    document.getElementById('explainBtn').addEventListener('click', function() {
+        if (!examSubmitted) return;
+        explanationMode = true;
+        document.querySelectorAll('.correct-answer-badge').forEach(b => b.remove());
+        document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'inline-block');
+        this.disabled = true; this.textContent = 'Đang xem giải thích';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (!confirm('Reset tất cả?')) return;
+        examSubmitted = false; explanationMode = false; timerRunning = true; timeLeft = 3600; startTime = Date.now();
+        for (let i = 1; i <= 6; i++) { document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.checked = false); document.getElementById(`q${i}-group`)?.querySelectorAll('.tf-option').forEach(o => o.classList.remove('correct','incorrect')); }
+        for (let i = 7; i <= 13; i++) { const inp = document.getElementById(`q${i}`); if (inp) { inp.value = ''; inp.classList.remove('correct','incorrect'); inp.style.width = ''; inp.parentNode.querySelector('.correct-answer-badge')?.remove(); } }
+        document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+        document.getElementById('submitBtn').disabled = false; document.getElementById('submitBtn').textContent = 'Nộp bài';
+        document.getElementById('explainBtn').disabled = true; document.getElementById('explainBtn').textContent = 'Xem giải thích';
+        document.getElementById('resultStats').style.display = 'none';
+        document.getElementById('explanationPanel').classList.remove('show');
+        clearAllHighlights();
+        updateAnswerCount();
+    });
+
+    // Context menu highlight
+    const contextMenu = document.getElementById('contextMenu');
+    document.getElementById('readingContent').addEventListener('contextmenu', e => { e.preventDefault(); const s = window.getSelection(); if (s.toString().trim()) { selectedRange = s.getRangeAt(0); contextMenu.style.left = e.pageX + 'px'; contextMenu.style.top = e.pageY + 'px'; contextMenu.style.display = 'block'; } });
+    document.getElementById('questionsContent').addEventListener('contextmenu', e => { e.preventDefault(); const s = window.getSelection(); if (s.toString().trim()) { selectedRange = s.getRangeAt(0); contextMenu.style.left = e.pageX + 'px'; contextMenu.style.top = e.pageY + 'px'; contextMenu.style.display = 'block'; } });
+    document.addEventListener('click', () => contextMenu.style.display = 'none');
+    window.applyHighlight = (color) => { if (!selectedRange) return; try { const span = document.createElement('span'); span.className = `highlight-${color}`; span.appendChild(selectedRange.extractContents()); selectedRange.insertNode(span); } catch(e){} contextMenu.style.display = 'none'; selectedRange = null; };
+    window.removeHighlight = () => { if (!selectedRange) return; try { document.querySelectorAll('.highlight-yellow,.highlight-green,.highlight-pink').forEach(h => { if (selectedRange.intersectsNode(h)) h.replaceWith(...h.childNodes); }); } catch(e){} contextMenu.style.display = 'none'; selectedRange = null; };
+
+    // Auto-resize inputs
+    function autoResizeInput(input) {
+        const temp = document.createElement('span'); temp.style.visibility = 'hidden'; temp.style.position = 'absolute'; temp.style.whiteSpace = 'pre'; temp.style.font = window.getComputedStyle(input).font; document.body.appendChild(temp);
+        function update() { temp.textContent = input.value || ' '; input.style.width = Math.max(80, Math.min(300, temp.offsetWidth + 20)) + 'px'; }
+        update(); input.addEventListener('input', update);
+    }
+    document.querySelectorAll('.fill-input').forEach(inp => autoResizeInput(inp));
+
+    // Initialization
+    createNavButtons();
+    updateAnswerCount();
+    setupEyeIcons();
+    startTimer();
+</script>
+</body>
+</html>
