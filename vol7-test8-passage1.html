@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vol 7 - Reading Test 8 - Passage 1: Dust and the American West</title>
+    <style>
+        /* ===== base & reset (giữ nguyên từ bản gốc) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: #1a1a2a; display: flex; justify-content: center; min-height: 100vh; }
+        .test-wrapper { width: 100%; max-width: 1600px; background: #f5f3ee; display: flex; flex-direction: column; height: 100vh; }
+        .test-wrapper.reading-mode { background: #f8f5e6; }
+        .test-wrapper.reading-mode .reading-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .questions-panel { background: #fffaf0; }
+        .test-wrapper.reading-mode .panel-header { background: #d6cdb8; color: #3a2e1f; }
+        .test-wrapper.reading-mode .question-nav { background: #d6cdb8; }
+        .test-wrapper.reading-mode .bottom-bar { background: #d6cdb8; }
+
+        /* header */
+        .ielts-header { background: #1e3a5f; color: white; padding: 5px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #e6b422; }
+        .brand { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .ielts-logo { background: #e6b422; color: #1e3a5f; font-weight: 800; font-size: 20px; padding: 4px 12px; border-radius: 40px; }
+        .candidate { background: #2d4b77; padding: 4px 10px; border-radius: 30px; font-size: 12px; }
+        .question-types { background: #0f2a44; padding: 4px 10px; border-radius: 30px; font-size: 11px; border: 1px solid #e6b422; }
+        .timer { background: #0f2a44; padding: 4px 15px; border-radius: 40px; font-size: 18px; font-weight: 700; font-family: monospace; border: 1px solid #e6b422; }
+        .reading-mode-toggle { display: flex; align-items: center; gap: 5px; background: #2d4b77; padding: 3px 8px; border-radius: 30px; cursor: pointer; }
+        .toggle-switch { width: 40px; height: 20px; background: #0f2a44; border-radius: 20px; position: relative; transition: 0.3s; border: 1px solid #e6b422; }
+        .toggle-switch.active { background: #e6b422; }
+        .toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .toggle-switch.active::after { left: 22px; }
+        .toggle-label { font-size: 11px; font-weight: 500; color: white; }
+        .font-controls { display: flex; gap: 2px; background: #2d4b77; padding: 2px; border-radius: 30px; }
+        .font-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        /* nav */
+        .question-nav { background: #d2cbbc; padding: 6px 20px; border-bottom: 2px solid #b0aa9a; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn { width: 32px; height: 32px; border-radius: 6px; border: 2px solid #1e3a5f; background: white; color: #1e3a5f; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .nav-btn:hover { background: #e6b422; border-color: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        /* main area */
+        .main-area { display: flex; flex: 1; overflow: hidden; }
+        .reading-panel { width: 45%; background: #fffcf5; border-right: 2px solid #b0aa9a; display: flex; flex-direction: column; overflow: hidden; }
+        .questions-panel { width: 55%; background: #f8f6f0; display: flex; flex-direction: column; overflow: hidden; }
+        .resizer { width: 8px; background: #b0aa9a; cursor: col-resize; transition: 0.1s; }
+        .resizer:hover { background: #e6b422; }
+        .panel-header { background: #d2cbbc; padding: 8px 15px; font-weight: 600; color: #1e3a5f; border-bottom: 1px solid #b0aa9a; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+
+        /* scrollable content */
+        .reading-text, .questions-list { flex: 1; overflow-y: auto; padding: 20px; line-height: 1.7; font-size: 15px; }
+        .reading-text.font-small, .questions-list.font-small { font-size: 13px; }
+        .reading-text.font-medium, .questions-list.font-medium { font-size: 15px; }
+        .reading-text.font-large, .questions-list.font-large { font-size: 17px; }
+
+        /* reading typography */
+        .reading-text h1 { font-size: 24px; color: #1e3a5f; margin-bottom: 10px; border-bottom: 2px solid #e6b422; padding-bottom: 5px; }
+        .reading-text h3 { font-size: 18px; color: #2d4b77; margin: 20px 0 10px; }
+        .reading-text p { margin-bottom: 15px; text-align: justify; }
+
+        /* questions style */
+        .questions-list h3 { font-size: 22px; color: #1e3a5f; margin: 20px 0 15px; border-bottom: 2px solid #e6b422; }
+        .questions-list .note-box { background: #f0ebe0; border-left: 4px solid #e6b422; padding: 12px 15px; margin: 15px 0; font-style: italic; }
+        .tf-group { margin: 5px 0 15px 25px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .tf-option { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .tf-option.correct .tf-text { color: #4CAF50; font-weight: bold; }
+        .tf-option.incorrect .tf-text { color: #f44336; font-weight: bold; }
+        .question-wrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .question-number { font-weight: bold; color: #1e3a5f; min-width: 25px; }
+        .eye-icon { display: none; margin-left: 10px; cursor: pointer; font-size: 18px; opacity: 0.7; transition: 0.2s; vertical-align: middle; }
+        .eye-icon:hover { opacity: 1; transform: scale(1.1); }
+        .eye-icon.active { opacity: 1; color: #e6b422; }
+        .fill-input { padding: 5px 10px; border: 1px solid #9a8c7a; border-radius: 5px; width: 140px; font-size: 14px; margin: 0 5px; background: white; }
+        .fill-input.correct { border: 2px solid #4CAF50; background-color: #e8f5e8; }
+        .fill-input.incorrect { border: 2px solid #f44336; background-color: #ffebee; }
+        .correct-answer-badge { display: inline-block; background-color: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 5px; font-weight: bold; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .answer-badge { background: #1e3a5f; color: white; border-radius: 20px; padding: 2px 12px; font-size: 13px; }
+
+        /* note list styling for questions 8-13 (giống như ảnh) */
+        .note-list { margin: 20px 0; }
+        .note-list p { margin: 12px 0; line-height: 1.8; }
+        .note-list .bold-num { font-weight: 700; color: #1e3a5f; font-size: 1.05em; }
+        .indent-list { margin-left: 25px; list-style-type: none; }
+        .indent-list li { margin: 10px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .indent-list li .fill-input { margin-left: 5px; }
+
+        /* bottom bar */
+        .bottom-bar { background: #d2cbbc; padding: 10px 20px; display: flex; gap: 15px; border-top: 1px solid #b0aa9a; align-items: center; flex-wrap: wrap; }
+        .btn { padding: 6px 20px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: #1e3a5f; color: white; }
+        .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-success:hover { background: #45a049; }
+        .btn-success:disabled { background: #a5d6a7; cursor: not-allowed; }
+        .btn-danger { background: #f44336; color: white; }
+        .btn-danger:hover { background: #d32f2f; }
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; border: 1px solid #1e3a5f; }
+        .result-stats { background: #1e3a5f; color: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
+
+        /* explanation panel */
+        .explanation-panel { background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 15px; }
+        .close-btn { cursor: pointer; color: #666; font-weight: 400; }
+        .close-btn:hover { color: #1e3a5f; }
+        .explanation-content { color: #333; line-height: 1.6; font-size: 14px; }
+
+        /* highlight classes */
+        .highlight-yellow { background-color: #f9e79f; border-radius: 3px; padding: 0 2px; }
+        .highlight-green { background-color: #a9d6b0; border-radius: 3px; padding: 0 2px; }
+        .highlight-pink { background-color: #fbb9c0; border-radius: 3px; padding: 0 2px; }
+        .dynamic-highlight { background-color: #f9e79f; display: inline; }
+        .keyword-highlight { text-decoration: underline; text-decoration-color: #e67e22; text-decoration-thickness: 2px; font-weight: 600; background-color: #fff3cd; border-radius: 3px; padding: 0 2px; }
+        .question-highlight { border-left: 4px solid #f1c40f; background-color: #fef9e7; padding-left: 10px; transition: 0.3s; }
+
+        /* context menu */
+        .context-menu { position: fixed; background: white; border: 1px solid #9a8c7a; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); padding: 5px 0; border-radius: 8px; z-index: 1000; display: none; min-width: 150px; }
+        .context-menu div { padding: 8px 20px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .context-menu div:hover { background: #1e3a5f; color: white; }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- header -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 - Test 8</div>
+            <div class="question-types">True/False/Not Given • Notes Completion</div>
+            <div class="reading-mode-toggle" id="readingModeToggle">
+                <div class="toggle-switch" id="toggleSwitch"></div>
+                <span class="toggle-label">Đọc sách</span>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" id="fontSmall">A-</button>
+                <button class="font-btn active" id="fontMedium">A</button>
+                <button class="font-btn" id="fontLarge">A+</button>
+            </div>
+        </div>
+        <div class="timer" id="timerDisplay">60:00</div>
+    </div>
+
+    <!-- question nav -->
+    <div class="question-nav">
+        <span style="font-weight:600;color:#1e3a5f;">Câu:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- main resizable area -->
+    <div class="main-area" id="mainArea">
+        <!-- reading panel -->
+        <div class="reading-panel" id="readingPanel">
+            <div class="panel-header">
+                <span>READING PASSAGE 1</span>
+                <span style="color:#5a4a3a;">Dust and the American West</span>
+            </div>
+            <div class="reading-text font-medium" id="readingContent">
+                <h1>Dust and the American West</h1>
+                <h3>A</h3>
+                <p>Images of deserts in the United States show dusty, barren landscapes, but the land may not always have been this way. Ever since settlers moved west across the US there have been dust-clouds everywhere. It was part of the landscape, or so it seemed to them. But there were no records of the landscape of the West until the settlers arrived. Now evidence is starting to emerge which suggests that before the settlers, there was very little dust.</p>
+                <h3>B</h3>
+                <p>The evidence comes from the San Juan mountains of southwest Colorado, downwind of Arizona and New Mexico. Jason Neff, a geochemist from the University of Colorado, has been analyzing sediments, the sand, stones and mud, laid down over the past 5,000 years. Atmospheric dust was minimal throughout those five millennia until the mid-19th century, he says, but then, ‘from about 1860 to 1900, dust deposition rates shot up.’</p>
+                <h3>C</h3>
+                <p>This is surprising because usually dry means dusty, and the American West has almost always been dry - often drier than today. There was a near-permanent drought between 900 and 1300 which was so intense that it destroyed a series of native American civilizations, including the Anasazi, whose cliff homes are now US national treasures. Yet the evidence from the San Juan lakes is that it was not dusty. Even as their civilization was collapsing, the Anasazi seem to have protected their soils from erosion.</p>
+                <h3>D</h3>
+                <p>This was not the case with the European settlers once they brought their cows. The landscape the cattle were introduced to was remarkably ill-equipped to cope with grazing animals, says Neff. ‘Unlike most other parts of the US, there were few grazers in the American Southwest until the Europeans came. No bison and few antelope or deer.’</p>
+                <h3>E</h3>
+                <p>In the Great Plains to the east and north, bison roamed in vast herds. Their regular grazing had created tough grass, while the herds manured the soil. In the Southwest, the land had few defenses against a sudden invasion of millions of livestock, whose teeth stripped the grass and whose hooves punctured the hard crust of desert soils that protected them from the wind. The invasion was sudden, funded by a bubble of speculative investment, much of it from Britain. The money went into railroads, and herds of cattle and sheep that rode the rails to the wide open pastures. By 1900, when sedimentation rates peaked, there were 20 million cattle and 25 million sheep in the West.</p>
+                <h3>F</h3>
+                <p>One of the biggest ranches was owned by the Aztec Land and Cattle Company, which owned a million acres of land by 1884. Each acre had cost the company a mere 50 cents, and like many other speculators, it was only interested in quick profits and had little incentive to protect the soils from overgrazing. By the time Aztec sold the ranch in 1901, it was barren, with cattle carcasses scattered across the exhausted land. Such was the damage to the grasslands that even now few of the pastures have recovered. The parched and exposed soil simply blew away. The 1862 Homestead Act was passed in order to encourage the populating of the West. Any family willing to make the journey was entitled to claim 160 acres and farm it. Yet by the time people moved west in large numbers, the cattle companies had taken most of the land and surrounded it with barbed wire. The water sources were therefore cut off, and were aggressively guarded. It was only in the 1930s, with the passage of the Taylor Grazing Act, that federal authorities finally sought to limit cattle herds.</p>
+                <h3>G</h3>
+                <p>Soil scientists have known for a while about the importance of the hard crust that forms on arid soils. ‘These crusts can survive winds of up to a hundred miles an hour, but cattle hooves break the crust,’ says Jayne Belnap, a soil ecologist at the US Geographical Survey, Utah. The scale of the dust clouds created by the livestock invasion has until now been largely unknown. When Neff first discovered dust in Colorado lake sediments laid down in the 19th century, he was initially unsure where it came from. Maybe it had crossed the Pacific from China’s Gobi Desert.</p>
+                <h3>H</h3>
+                <p>But after investigating the size and chemical composition of the dust, Neff was clear that it mostly came from the American Southwest, mainly Arizona and New Mexico. Now, with the soil crusts gone, dust clouds still head north and are having significant ecological effects in the Colorado mountains. They carry nutrients with them into areas which previously evolved and survived without them. But perhaps the most dramatic impact of the dust has been on snowfields in the Rocky Mountain Range. Even a thin sprinkling of dark material means snow absorbs more solar radiation, meaning that snowmelt occurs far more rapidly during springtime. The impact on the ski tourism industry is obvious.</p>
+                <h3>I</h3>
+                <p>The loss of snow and the shrinking of glaciers across the American West in the past century has been dramatic. Glacier National Park in Montana, for example, has lost three quarters of its snow cover since 1910. All this is frequently attributed to global warming. While this almost certainly plays a role, Neff’s findings suggest that dust may also contribute.</p>
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+        <!-- questions panel -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header">
+                <span>QUESTIONS 1-13</span>
+                <span class="answer-badge" id="answeredCount">0/13 answered</span>
+            </div>
+            <div class="questions-list font-medium" id="questionsContent">
+                <h3>Questions 1-7</h3>
+                <p><em>Do the following statements agree with the information in Reading Passage 1?</em></p>
+                <div class="note-box">
+                    <p><strong>TRUE</strong> if the statement agrees with the information<br>
+                    <strong>FALSE</strong> if the statement contradicts the information<br>
+                    <strong>NOT GIVEN</strong> if there is no information on this</p>
+                </div>
+                <ol style="list-style-type:none; padding-left:0;">
+                    <!-- Q1 -->
+                    <li class="question-item" id="q1-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">1.</span><span class="tf-statement">Jason Neff found that dust deposition in the San Juan mountains rose sharply between 1860 and 1900.</span><span class="eye-icon" data-question="1">👁️</span></div>
+                        <div class="tf-group" id="q1-group">
+                            <label class="tf-option"><input type="radio" name="q1" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q1" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q1" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <!-- Q2 -->
+                    <li class="question-item" id="q2-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">2.</span><span class="tf-statement">The Anasazi civilization collapsed because of extremely dusty conditions.</span><span class="eye-icon" data-question="2">👁️</span></div>
+                        <div class="tf-group" id="q2-group">
+                            <label class="tf-option"><input type="radio" name="q2" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q2" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q2" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <!-- Q3 -->
+                    <li class="question-item" id="q3-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">3.</span><span class="tf-statement">Before European settlers arrived, the American Southwest was home to large herds of bison.</span><span class="eye-icon" data-question="3">👁️</span></div>
+                        <div class="tf-group" id="q3-group">
+                            <label class="tf-option"><input type="radio" name="q3" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q3" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q3" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <!-- Q4 -->
+                    <li class="question-item" id="q4-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">4.</span><span class="tf-statement">Settlers hunted the bison of the Great Plains to extinction.</span><span class="eye-icon" data-question="4">👁️</span></div>
+                        <div class="tf-group" id="q4-group">
+                            <label class="tf-option"><input type="radio" name="q4" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q4" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q4" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <!-- Q5 -->
+                    <li class="question-item" id="q5-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">5.</span><span class="tf-statement">The cost of building railroads in the West was largely covered by British investors.</span><span class="eye-icon" data-question="5">👁️</span></div>
+                        <div class="tf-group" id="q5-group">
+                            <label class="tf-option"><input type="radio" name="q5" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q5" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q5" value="NOT GIVEN" data-answer="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <!-- Q6 -->
+                    <li class="question-item" id="q6-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">6.</span><span class="tf-statement">The Aztec Land and Cattle Company managed its land in a sustainable way.</span><span class="eye-icon" data-question="6">👁️</span></div>
+                        <div class="tf-group" id="q6-group">
+                            <label class="tf-option"><input type="radio" name="q6" value="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q6" value="FALSE" data-answer="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q6" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                    <!-- Q7 -->
+                    <li class="question-item" id="q7-item" style="margin-bottom:20px;">
+                        <div class="question-wrapper"><span class="question-number">7.</span><span class="tf-statement">Much of the land once owned by the Aztec Land and Cattle Company remains barren today.</span><span class="eye-icon" data-question="7">👁️</span></div>
+                        <div class="tf-group" id="q7-group">
+                            <label class="tf-option"><input type="radio" name="q7" value="TRUE" data-answer="TRUE"> <span class="tf-text">TRUE</span></label>
+                            <label class="tf-option"><input type="radio" name="q7" value="FALSE"> <span class="tf-text">FALSE</span></label>
+                            <label class="tf-option"><input type="radio" name="q7" value="NOT GIVEN"> <span class="tf-text">NOT GIVEN</span></label>
+                        </div>
+                    </li>
+                </ol>
+
+                <h3>Questions 8-13</h3>
+                <p><em>Complete the notes below.</em><br><strong>Write NO MORE THAN TWO WORDS from the passage for each answer.</strong></p>
+
+                <!-- NOTE LIST – layout chính xác như ảnh và code mẫu -->
+                <div class="note-list">
+                    <p style="font-weight:600; color:#1e3a5f;">American Southwest: 1860s to present day</p>
+                    <p>1862 – American Homestead Act was passed to encourage settlement in the West.</p>
+                    <p>1930s – Laws were passed to control the size of <span class="bold-num">8</span> <input class="fill-input" id="q8" data-answer="cattle herds"> <span class="eye-icon" data-question="8">👁️</span> .</p>
+
+                    <p style="margin-top:15px;"><strong>Today Jayne Belnap believes:</strong></p>
+                    <ul class="indent-list">
+                        <li>- soil was not affected by high <span class="bold-num">9</span> <input class="fill-input" id="q9" data-answer="winds"> <span class="eye-icon" data-question="9">👁️</span> </li>
+                        <li>- soil was seriously affected by cattle hooves.</li>
+                    </ul>
+
+                    <p style="margin-top:15px;"><strong>Jason Neff:</strong></p>
+                    <ul class="indent-list">
+                        <li>- found that <span class="bold-num">10</span> <input class="fill-input" id="q10" data-answer="lake sediments"> <span class="eye-icon" data-question="10">👁️</span> in the Colorado region contained dust.</li>
+                        <li>- examined the dust for its chemical content as well as its <span class="bold-num">11</span> <input class="fill-input" id="q11" data-answer="size"> <span class="eye-icon" data-question="11">👁️</span> </li>
+                        <li>- concluded that the dust was from the American Southwest.</li>
+                        <li>- found that dust affects mountain environments by bringing in <span class="bold-num">12</span> <input class="fill-input" id="q12" data-answer="nutrients"> <span class="eye-icon" data-question="12">👁️</span>  that are not normally found there, causing faster seasonal snowmelt</li>
+                        <li>- argues that dust is partly to blame for the gradual disappearance of some <span class="bold-num">13</span> <input class="fill-input" id="q13" data-answer="glaciers"> <span class="eye-icon" data-question="13">👁️</span>  and snow.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bottom bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/13</div>
+        <div class="result-stats" id="resultStats" style="display:none;"></div>
+    </div>
+
+    <!-- explanation panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header">
+            <span id="explanationTitle">Giải thích câu hỏi</span>
+            <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+        </div>
+        <div class="explanation-content" id="explanationText">Nhấn vào biểu tượng con mắt để xem giải thích.</div>
+    </div>
+
+    <!-- right-click context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div onclick="applyHighlight('yellow')">Highlight vàng</div>
+        <div onclick="applyHighlight('green')">Highlight xanh lá</div>
+        <div onclick="applyHighlight('pink')">Highlight hồng</div>
+        <div onclick="removeHighlight()">Xóa highlight đang chọn</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- GLOBALS ----------
+        let selectedRange = null, selectedTarget = null, currentHighlightedQuestion = null;
+        let examSubmitted = false, explanationMode = false;
+        let startTime = Date.now(), timerInterval;
+        let readingMode = false;
+
+        const answerKey = {
+            q1: 'TRUE', q2: 'FALSE', q3: 'FALSE', q4: 'NOT GIVEN', q5: 'NOT GIVEN', q6: 'FALSE', q7: 'TRUE',
+            q8: 'cattle herds', q9: 'winds', q10: 'lake sediments', q11: 'size', q12: 'nutrients', q13: 'glaciers'
+        };
+
+        // answer locations for highlight (exact substrings from passage, no trailing period)
+        const answerLocations = {
+            q1: { text: "from about 1860 to 1900, dust deposition rates shot up", keywords: ["1860 to 1900", "shot up"] },
+            q2: { text: "There was a near-permanent drought between 900 and 1300 which was so intense that it destroyed a series of native American civilizations, including the Anasazi", keywords: ["drought", "destroyed", "not dusty"] },
+            q3: { text: "Unlike most other parts of the US, there were few grazers in the American Southwest until the Europeans came. No bison and few antelope or deer", keywords: ["few grazers", "No bison"] },
+            q4: { text: "In the Great Plains to the east and north, bison roamed in vast herds", keywords: ["bison", "Great Plains"] },
+            q5: { text: "The invasion was sudden, funded by a bubble of speculative investment, much of it from Britain", keywords: ["funded", "speculative investment", "Britain"] },
+            q6: { text: "it was only interested in quick profits and had little incentive to protect the soils from overgrazing", keywords: ["little incentive", "protect the soils"] },
+            q7: { text: "Such was the damage to the grasslands that even now few of the pastures have recovered", keywords: ["even now few of the pastures have recovered"] },
+            q8: { text: "It was only in the 1930s, with the passage of the Taylor Grazing Act, that federal authorities finally sought to limit cattle herds", keywords: ["limit cattle herds"] },
+            q9: { text: "These crusts can survive winds of up to a hundred miles an hour, but cattle hooves break the crust", keywords: ["survive winds", "up to a hundred miles an hour"] },
+            q10: { text: "When Neff first discovered dust in Colorado lake sediments laid down in the 19th century", keywords: ["discovered dust in Colorado lake sediments"] },
+            q11: { text: "after investigating the size and chemical composition of the dust", keywords: ["size and chemical composition"] },
+            q12: { text: "They carry nutrients with them into areas which previously evolved and survived without them", keywords: ["carry nutrients"] },
+            q13: { text: "The loss of snow and the shrinking of glaciers across the American West in the past century has been dramatic. Glacier National Park in Montana, for example, has lost three quarters of its snow cover since 1910. All this is frequently attributed to global warming. While this almost certainly plays a role, Neff’s findings suggest that dust may also contribute", keywords: ["shrinking of glaciers", "dust may also contribute"] }
+        };
+
+        const explanations = {
+            q1: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> Đoạn B: 'from about 1860 to 1900, dust deposition rates shot up.' → tăng mạnh, khớp với 'rose sharply'.",
+            q2: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn C: hạn hán (drought) phá hủy nền văn minh Anasazi, nhưng 'it was not dusty' → không phải do bụi.",
+            q3: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn D: 'there were few grazers ... No bison and few antelope or deer' → không có đàn bò rừng lớn.",
+            q4: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Đoạn E có nói bison ở Great Plains, nhưng không đề cập việc chúng bị săn đến tuyệt chủng.",
+            q5: "<strong>Đáp án: NOT GIVEN</strong><br><br><strong>Giải thích:</strong> Đoạn E: đầu tư từ Anh, nhưng không nói chi phí đường sắt do ai trả.",
+            q6: "<strong>Đáp án: FALSE</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'little incentive to protect the soils' → không quan tâm bảo vệ đất.",
+            q7: "<strong>Đáp án: TRUE</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'even now few of the pastures have recovered' → đất vẫn cằn cỗi.",
+            q8: "<strong>Đáp án: cattle herds</strong><br><br><strong>Giải thích:</strong> Đoạn F: 'limit cattle herds' là mục đích của Taylor Grazing Act.",
+            q9: "<strong>Đáp án: winds</strong><br><br><strong>Giải thích:</strong> Đoạn G: crusts 'can survive winds of up to a hundred miles an hour' → đất không bị ảnh hưởng bởi gió lớn.",
+            q10: "<strong>Đáp án: lake sediments</strong><br><br><strong>Giải thích:</strong> Đoạn G: 'dust in Colorado lake sediments'.",
+            q11: "<strong>Đáp án: size</strong><br><br><strong>Giải thích:</strong> Đoạn H: 'investigating the size and chemical composition'.",
+            q12: "<strong>Đáp án: nutrients</strong><br><br><strong>Giải thích:</strong> Đoạn H: 'carry nutrients' vào vùng núi.",
+            q13: "<strong>Đáp án: glaciers</strong><br><br><strong>Giải thích:</strong> Đoạn I: 'shrinking of glaciers' và 'dust may also contribute'."
+        };
+
+        // ---------- helper functions (giữ nguyên logic từ bản gốc) ----------
+        function startTimer() {
+            let timeLeft = 3600;
+            const timerEl = document.getElementById('timerDisplay');
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0 && !examSubmitted) {
+                    timeLeft--;
+                    const mins = Math.floor(timeLeft/60), secs = timeLeft%60;
+                    timerEl.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                } else if (examSubmitted) clearInterval(timerInterval);
+            },1000);
+        }
+
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(b=>b.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase()+size.slice(1)}`).classList.add('active');
+            document.getElementById('readingContent').className = `reading-text font-${size}`;
+            document.getElementById('questionsContent').className = `questions-list font-${size}`;
+        }
+
+        function createNavButtons() {
+            const nav = document.getElementById('navButtons');
+            nav.innerHTML = '';
+            for(let i=1;i<=13;i++) {
+                let btn = document.createElement('button');
+                btn.className = 'nav-btn unanswered';
+                btn.textContent = i;
+                btn.dataset.question = i;
+                btn.addEventListener('click', function() {
+                    scrollToQuestion(this.dataset.question);
+                    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                nav.appendChild(btn);
+            }
+        }
+
+        function scrollToQuestion(qNum) {
+            if(qNum <=7) {
+                let el = document.getElementById(`q${qNum}-item`);
+                if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+            } else {
+                let inp = document.getElementById(`q${qNum}`);
+                if(inp) inp.scrollIntoView({behavior:'smooth', block:'center'});
+            }
+        }
+
+        function updateNavAndCount() {
+            let answered=0;
+            for(let i=1;i<=7;i++) {
+                if(document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+            }
+            for(let i=8;i<=13;i++) {
+                let inp = document.getElementById(`q${i}`);
+                if(inp && inp.value.trim()!=='') answered++;
+            }
+            document.getElementById('answeredCount').textContent = `${answered}/13 answered`;
+            document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/13`;
+
+            for(let i=1;i<=13;i++) {
+                let btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+                if(!btn) continue;
+                let isAnswered = false;
+                if(i<=7) isAnswered = !!document.querySelector(`input[name="q${i}"]:checked`);
+                else {
+                    let inp = document.getElementById(`q${i}`);
+                    isAnswered = !!(inp && inp.value.trim()!=='');
+                }
+                btn.classList.remove('answered','unanswered');
+                btn.classList.add(isAnswered?'answered':'unanswered');
+            }
+        }
+
+        // right‑click highlight
+        const readingEl = document.getElementById('readingContent');
+        const questionsEl = document.getElementById('questionsContent');
+        const contextMenu = document.getElementById('contextMenu');
+
+        function showContextMenu(e, target) {
+            e.preventDefault();
+            let sel = window.getSelection();
+            if(sel.toString().trim()==='') return;
+            selectedRange = sel.getRangeAt(0);
+            selectedTarget = target;
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX+'px';
+            contextMenu.style.top = e.pageY+'px';
+        }
+        readingEl.addEventListener('contextmenu', (e)=>showContextMenu(e,'reading'));
+        questionsEl.addEventListener('contextmenu', (e)=>showContextMenu(e,'questions'));
+        document.addEventListener('click', ()=>contextMenu.style.display='none');
+
+        window.applyHighlight = function(color) {
+            if(!selectedRange) return;
+            try {
+                let span = document.createElement('span');
+                span.className = `highlight-${color}`;
+                let range = selectedRange.cloneRange();
+                window.getSelection().removeAllRanges();
+                let contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+            } catch(e) { alert('Không thể highlight đoạn này.'); }
+            contextMenu.style.display='none';
+            selectedRange=null;
+        };
+        window.removeHighlight = function() {
+            if(!selectedRange) return;
+            let highlights = document.querySelectorAll('.highlight-yellow,.highlight-green,.highlight-pink');
+            highlights.forEach(h=>{
+                if(selectedRange.intersectsNode(h)) {
+                    let parent = h.parentNode;
+                    while(h.firstChild) parent.insertBefore(h.firstChild, h);
+                    parent.removeChild(h);
+                }
+            });
+            window.getSelection().removeAllRanges();
+            contextMenu.style.display='none';
+            selectedRange=null;
+        };
+
+        // highlight answer location
+        function clearAllHighlights() {
+            document.querySelectorAll('.dynamic-highlight,.keyword-highlight').forEach(el => {
+                let parent = el.parentNode;
+                if(parent) {
+                    while(el.firstChild) parent.insertBefore(el.firstChild, el);
+                    parent.removeChild(el);
+                }
+            });
+            document.querySelectorAll('.question-highlight').forEach(el=>el.classList.remove('question-highlight'));
+            document.querySelectorAll('.eye-icon.active').forEach(el=>el.classList.remove('active'));
+            currentHighlightedQuestion = null;
+        }
+
+        function findNodeAndOffset(node, targetPos, current={value:0}) {
+            if(node.nodeType===Node.TEXT_NODE) {
+                let len = node.textContent.length;
+                if(current.value+len > targetPos) return {node, offset: targetPos - current.value};
+                current.value += len;
+            } else {
+                for(let child of node.childNodes) {
+                    let res = findNodeAndOffset(child, targetPos, current);
+                    if(res) return res;
+                }
+            }
+            return null;
+        }
+
+        function highlightAnswerLocation(qNum) {
+            clearAllHighlights();
+            let loc = answerLocations[`q${qNum}`];
+            if(!loc) return false;
+            if(qNum<=7) document.getElementById(`q${qNum}-item`)?.classList.add('question-highlight');
+            else {
+                let inp = document.getElementById(`q${qNum}`);
+                if(inp) inp.closest('li')?.classList.add('question-highlight');
+            }
+            let eye = document.querySelector(`.eye-icon[data-question="${qNum}"]`);
+            if(eye) eye.classList.add('active');
+
+            let reading = document.getElementById('readingContent');
+            let paras = reading.getElementsByTagName('p');
+            let found = false;
+            for(let p of paras) {
+                if(loc.text && p.textContent.includes(loc.text)) {
+                    try {
+                        let text = p.textContent;
+                        let startIdx = text.indexOf(loc.text);
+                        let endIdx = startIdx + loc.text.length;
+                        let current = {value:0};
+                        let startNode = findNodeAndOffset(p, startIdx, current);
+                        current = {value:0};
+                        let endNode = findNodeAndOffset(p, endIdx, current);
+                        if(startNode && endNode) {
+                            let range = document.createRange();
+                            range.setStart(startNode.node, startNode.offset);
+                            range.setEnd(endNode.node, endNode.offset);
+                            let span = document.createElement('span');
+                            span.className = 'dynamic-highlight';
+                            span.appendChild(range.extractContents());
+                            range.insertNode(span);
+                            setTimeout(() => {
+                                if(loc.keywords) {
+                                    let html = span.innerHTML;
+                                    loc.keywords.forEach(kw => {
+                                        let escaped = kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+                                        let regex = new RegExp(`(${escaped})`,'gi');
+                                        html = html.replace(regex,'<span class="keyword-highlight">$1</span>');
+                                    });
+                                    span.innerHTML = html;
+                                }
+                                span.scrollIntoView({behavior:'smooth', block:'center'});
+                            },50);
+                            found=true;
+                            break;
+                        }
+                    } catch(e) {}
+                }
+            }
+            if(!found && loc.keywords) {
+                for(let p of paras) {
+                    for(let kw of loc.keywords) {
+                        if(kw && p.textContent.includes(kw)) {
+                            try {
+                                let range = document.createRange();
+                                range.selectNodeContents(p);
+                                let span = document.createElement('span');
+                                span.className = 'dynamic-highlight';
+                                span.appendChild(range.extractContents());
+                                range.insertNode(span);
+                                setTimeout(()=>span.scrollIntoView({behavior:'smooth'}),300);
+                                found=true;
+                                break;
+                            } catch(e) {}
+                        }
+                    } if(found) break;
+                }
+            }
+            return found;
+        }
+
+        function showExplanation(qNum) {
+            if(!explanationMode && !examSubmitted) return;
+            let expKey = `q${qNum}`;
+            if(explanations[expKey]) {
+                document.getElementById('explanationPanel').classList.add('show');
+                document.getElementById('explanationTitle').textContent = `Giải thích câu ${qNum}`;
+                let html = explanations[expKey];
+                if(examSubmitted) {
+                    let user = getUserAnswer(qNum);
+                    let correct = answerKey[`q${qNum}`];
+                    let isCorrect = user && user.toString().toLowerCase().trim() === correct.toString().toLowerCase().trim();
+                    html += `<div class="answer-feedback ${isCorrect?'correct':'incorrect'}"><strong>Câu trả lời của bạn:</strong> ${user||'(chưa có)'}<br>`;
+                    if(!isCorrect) html += `<strong>Đáp án đúng:</strong> ${correct}`;
+                    html += `</div>`;
+                }
+                document.getElementById('explanationText').innerHTML = html;
+                clearAllHighlights();
+                setTimeout(()=>highlightAnswerLocation(qNum),100);
+                if(explanationMode && examSubmitted) {
+                    document.querySelectorAll('.correct-answer-badge').forEach(b=>b.remove());
+                    if(qNum<=7) {
+                        let item = document.getElementById(`q${qNum}-item`);
+                        if(item) {
+                            let badge = document.createElement('span');
+                            badge.className = 'correct-answer-badge';
+                            badge.textContent = answerKey[`q${qNum}`];
+                            item.querySelector('.question-wrapper').appendChild(badge);
+                        }
+                    } else {
+                        let inp = document.getElementById(`q${qNum}`);
+                        if(inp) {
+                            let badge = document.createElement('span');
+                            badge.className = 'correct-answer-badge';
+                            badge.textContent = answerKey[`q${qNum}`];
+                            inp.parentNode.appendChild(badge);
+                        }
+                    }
+                }
+            }
+        }
+
+        function getUserAnswer(qNum) {
+            if(qNum<=7) {
+                let sel = document.querySelector(`input[name="q${qNum}"]:checked`);
+                return sel?sel.value:null;
+            } else {
+                let inp = document.getElementById(`q${qNum}`);
+                return inp?inp.value.trim():null;
+            }
+        }
+
+        function markAnswers() {
+            for(let i=1;i<=7;i++) {
+                let group = document.getElementById(`q${i}-group`);
+                if(!group) continue;
+                let options = group.querySelectorAll('.tf-option');
+                let selected = document.querySelector(`input[name="q${i}"]:checked`);
+                let correct = answerKey[`q${i}`];
+                options.forEach(opt => {
+                    opt.classList.remove('correct','incorrect');
+                    let radio = opt.querySelector('input');
+                    if(radio.value === correct) opt.classList.add('correct');
+                    if(selected && radio.value===selected.value && radio.value!==correct) opt.classList.add('incorrect');
+                });
+            }
+            for(let i=8;i<=13;i++) {
+                let inp = document.getElementById(`q${i}`);
+                if(inp) {
+                    let user = inp.value.trim().toLowerCase();
+                    let correct = answerKey[`q${i}`].toLowerCase();
+                    inp.classList.remove('correct','incorrect');
+                    let wrapper = inp.parentNode;
+                    let oldBadge = wrapper.querySelector('.correct-answer-badge');
+                    if(oldBadge) oldBadge.remove();
+                    if(user === correct) inp.classList.add('correct');
+                    else {
+                        inp.classList.add('incorrect');
+                        let badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = answerKey[`q${i}`];
+                        wrapper.appendChild(badge);
+                    }
+                }
+            }
+        }
+
+        function calculateResults() {
+            let correct=0, total=13;
+            for(let i=1;i<=7;i++) {
+                let sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if(sel && sel.value === answerKey[`q${i}`]) correct++;
+            }
+            for(let i=8;i<=13;i++) {
+                let inp = document.getElementById(`q${i}`);
+                if(inp && inp.value.trim().toLowerCase() === answerKey[`q${i}`].toLowerCase()) correct++;
+            }
+            let timeTaken = Math.floor((Date.now()-startTime)/1000);
+            let m = Math.floor(timeTaken/60), s = timeTaken%60;
+            return {correct, total, percent: Math.round(correct/total*100), time: `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`};
+        }
+
+        function saveToDashboard(correct) {
+            let data = { passageId:1, name:'Dust and the American West', totalQuestions:13, correctCount:correct, timeSpent:document.getElementById('timerDisplay').textContent, details:[] };
+            for(let i=1;i<=7;i++) {
+                let sel = document.querySelector(`input[name="q${i}"]:checked`);
+                let user = sel?sel.value:'(trống)';
+                data.details.push({question:i, user, correct:answerKey[`q${i}`], isCorrect:user===answerKey[`q${i}`]});
+            }
+            for(let i=8;i<=13;i++) {
+                let inp = document.getElementById(`q${i}`);
+                let user = inp?inp.value.trim():'(trống)';
+                data.details.push({question:i, user, correct:answerKey[`q${i}`], isCorrect:user.toLowerCase()===answerKey[`q${i}`].toLowerCase()});
+            }
+            localStorage.setItem('ielts_vol7_test8_passage_1', JSON.stringify(data));
+        }
+
+        // event listeners
+        document.querySelectorAll('.fill-input, input[type="radio"]').forEach(el => {
+            el.addEventListener('input', updateNavAndCount);
+            el.addEventListener('change', updateNavAndCount);
+        });
+
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                let q = this.dataset.question;
+                showExplanation(q);
+            });
+        });
+
+        document.getElementById('closeExplanation').addEventListener('click', ()=>{
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            if(examSubmitted) return;
+            let unanswered = [];
+            for(let i=1;i<=13;i++) {
+                let ans = false;
+                if(i<=7) ans = !!document.querySelector(`input[name="q${i}"]:checked`);
+                else ans = document.getElementById(`q${i}`)?.value.trim() !== '';
+                if(!ans) unanswered.push(i);
+            }
+            if(unanswered.length && !confirm(`Bạn còn ${unanswered.length} câu chưa làm. Nộp bài?`)) return;
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            markAnswers();
+            let res = calculateResults();
+            document.getElementById('resultStats').style.display = 'inline-block';
+            document.getElementById('resultStats').textContent = `Kết quả: ${res.correct}/${res.total} (${res.percent}%) - ${res.time}`;
+            document.getElementById('explainBtn').disabled = false;
+            this.disabled = true;
+            this.textContent = 'Đã nộp';
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = 'KẾT QUẢ';
+            document.getElementById('explanationText').innerHTML = `<h4>Đúng ${res.correct}/${res.total} (${res.percent}%)</h4><p>Thời gian: ${res.time}</p><p>Nhấn "Xem giải thích" để xem chi tiết.</p>`;
+            saveToDashboard(res.correct);
+        });
+
+        document.getElementById('explainBtn').addEventListener('click', function() {
+            if(!examSubmitted) return;
+            explanationMode = true;
+            document.querySelectorAll('.eye-icon').forEach(ic=>ic.style.display='inline-block');
+            this.disabled = true;
+            this.textContent = 'Đang xem giải thích';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+            document.querySelectorAll('.correct-answer-badge').forEach(b=>b.remove());
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            if(!confirm('Reset tất cả?')) return;
+            examSubmitted = false; explanationMode = false;
+            startTime = Date.now();
+            clearInterval(timerInterval); startTimer();
+            for(let i=1;i<=7;i++) {
+                document.querySelectorAll(`input[name="q${i}"]`).forEach(r=>r.checked=false);
+                let g = document.getElementById(`q${i}-group`);
+                if(g) g.querySelectorAll('.tf-option').forEach(o=>o.classList.remove('correct','incorrect'));
+            }
+            for(let i=8;i<=13;i++) {
+                let inp = document.getElementById(`q${i}`);
+                if(inp) {
+                    inp.value = '';
+                    inp.classList.remove('correct','incorrect');
+                    let b = inp.parentNode.querySelector('.correct-answer-badge');
+                    if(b) b.remove();
+                }
+            }
+            document.querySelectorAll('.eye-icon').forEach(ic=>ic.style.display='none');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Nộp bài';
+            document.getElementById('explainBtn').disabled = true;
+            document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            document.getElementById('resultStats').style.display = 'none';
+            document.getElementById('explanationPanel').classList.remove('show');
+            clearAllHighlights();
+            document.querySelectorAll('.highlight-yellow,.highlight-green,.highlight-pink').forEach(el=>{
+                let p = el.parentNode;
+                if(p) { while(el.firstChild) p.insertBefore(el.firstChild, el); p.removeChild(el); }
+            });
+            updateNavAndCount();
+        });
+
+        document.getElementById('readingModeToggle').addEventListener('click', ()=>{
+            readingMode = !readingMode;
+            document.getElementById('testWrapper').classList.toggle('reading-mode', readingMode);
+            document.getElementById('toggleSwitch').classList.toggle('active', readingMode);
+        });
+
+        document.getElementById('fontSmall').addEventListener('click', ()=>setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', ()=>setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', ()=>setFontSize('large'));
+
+        const readingPanel = document.getElementById('readingPanel'), questionsPanel = document.getElementById('questionsPanel'), resizer = document.getElementById('resizer');
+        let isResizing = false;
+        resizer.addEventListener('mousedown', (e)=>{ isResizing = true; document.body.style.cursor = 'col-resize'; });
+        document.addEventListener('mousemove', (e)=>{
+            if(!isResizing) return;
+            let main = document.getElementById('mainArea').getBoundingClientRect();
+            let w = e.clientX - main.left - 4;
+            if(w<250) w=250; if(w>main.width-250) w=main.width-250;
+            readingPanel.style.width = w + 'px';
+            questionsPanel.style.width = (main.width - w - 8) + 'px';
+        });
+        document.addEventListener('mouseup', ()=>{ isResizing = false; document.body.style.cursor = 'default'; });
+
+        createNavButtons();
+        updateNavAndCount();
+        startTimer();
+        document.querySelectorAll('.eye-icon').forEach(ic=>ic.style.display='none');
+    })();
+</script>
+</body>
+</html>
