@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening · Vol 7 Test 1 Section 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        body {
+            background: #1a1a2a;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .test-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            background: #f5f3ee;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header with audio player */
+        .ielts-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e6b422;
+            flex-wrap: wrap;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .ielts-logo {
+            background: #e6b422;
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 24px;
+            padding: 4px 18px;
+            border-radius: 40px;
+        }
+        .candidate {
+            background: #2d4b77;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #0f2a44;
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid #e6b422;
+        }
+        .audio-controls audio {
+            height: 40px;
+            width: 400px; /* Dài hơn */
+            border-radius: 20px;
+        }
+        .speed-select {
+            background: #1e3a5f;
+            color: white;
+            border: 1px solid #e6b422;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+        .speed-select option {
+            background: #1e3a5f;
+        }
+        .volume-icon {
+            font-size: 20px;
+            cursor: pointer;
+            color: #e6b422;
+        }
+        .font-controls {
+            display: flex;
+            gap: 5px;
+            background: #2d4b77;
+            padding: 3px;
+            border-radius: 30px;
+        }
+        .font-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .font-btn:hover { background: #3e5f8a; }
+        .font-btn.active { background: #e6b422; color: #1e3a5f; }
+
+        /* Question navigator (1-10) */
+        .question-nav {
+            background: #d2cbbc;
+            padding: 6px 20px;
+            border-bottom: 2px solid #b0aa9a;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn {
+            width: 32px; height: 32px;
+            border-radius: 6px;
+            border: 2px solid #1e3a5f;
+            background: white;
+            color: #1e3a5f;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover { background: #e6b422; }
+        .nav-btn.answered { background: #4CAF50; color: white; border-color: #2e7d32; }
+        .nav-btn.unanswered { background: #e0e0e0; color: #757575; border-color: #9e9e9e; }
+        .nav-btn.active { border: 3px solid #e6b422; transform: scale(1.05); }
+
+        /* Main area: linh hoạt, ban đầu transcript ẩn */
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .transcript-panel {
+            width: 0; /* Ẩn hoàn toàn ban đầu */
+            background: #fffcf5;
+            border-right: 2px solid #b0aa9a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.2s ease;
+        }
+        .questions-panel {
+            width: 100%;
+            background: #f8f6f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.2s ease;
+        }
+        /* Khi có class show-transcript thì thay đổi kích thước */
+        .main-area.show-transcript .transcript-panel {
+            width: 45%;
+        }
+        .main-area.show-transcript .questions-panel {
+            width: 55%;
+        }
+        .resizer {
+            width: 8px;
+            background: #b0aa9a;
+            cursor: col-resize;
+            display: none; /* ẩn khi transcript ẩn */
+        }
+        .main-area.show-transcript .resizer {
+            display: block;
+        }
+        .resizer:hover { background: #e6b422; }
+
+        .panel-header {
+            background: #d2cbbc;
+            padding: 8px 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+            border-bottom: 1px solid #b0aa9a;
+            display: flex;
+            justify-content: space-between;
+        }
+        .transcript-content, .questions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.7;
+        }
+        /* Font sizes */
+        .font-small { font-size: 13px; }
+        .font-medium { font-size: 15px; }
+        .font-large { font-size: 17px; }
+
+        /* Căn giữa nội dung câu hỏi khi chưa nộp bài - giống ảnh */
+        .questions-list.centered {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+        }
+        .questions-list.centered > div {
+            width: 100%;
+            max-width: 750px; /* Giới hạn chiều rộng để căn giữa đẹp */
+            margin: 0 auto;
+        }
+
+        /* Notes box giống ảnh, với dấu chấm thay cho placeholder */
+        .notes-box {
+            background: #f0ebe0;
+            border-left: 4px solid #e6b422;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .notes-box p { margin: 8px 0; }
+        .notes-box h3, .notes-box h4 { margin: 12px 0 6px; }
+        .blank-line {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 4px;
+            position: relative;
+        }
+        .fill-input {
+            padding: 5px 10px;
+            border: 1px solid #9a8c7a;
+            border-radius: 5px;
+            width: 120px;
+            font-size: 14px;
+            background: white;
+            /* Không có placeholder */
+        }
+        .fill-input.correct { border: 2px solid #4CAF50; background: #e8f5e8; }
+        .fill-input.incorrect { border: 2px solid #f44336; background: #ffebee; }
+
+        .correct-answer-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+            text-transform: uppercase; /* IN HOA TOÀN BỘ */
+        }
+
+        .eye-icon {
+            display: none;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+        }
+        .eye-icon:hover { opacity: 1; color: #e6b422; }
+
+        .bottom-bar {
+            background: #d2cbbc;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #b0aa9a;
+            align-items: center;
+        }
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #1e3a5f; color: white; }
+        .btn-primary:hover { background: #2d4b77; }
+        .btn-primary:disabled { background: #9aaec2; cursor: not-allowed; }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-success:disabled { background: #a5d6a7; }
+        .btn-danger { background: #f44336; color: white; }
+        .progress { background: white; border-radius: 20px; padding: 4px 12px; font-weight: 600; color: #1e3a5f; }
+
+        .explanation-panel {
+            background: #fffef9; border-left: 4px solid #e6b422; padding: 12px 20px; margin: 0 20px 12px 20px; border-radius: 8px; display: none;
+        }
+        .explanation-panel.show { display: block; }
+        .explanation-header { font-weight: 700; color: #1e3a5f; display: flex; justify-content: space-between; }
+        .close-btn { cursor: pointer; }
+
+        /* highlight trong transcript: nền vàng cho cả đoạn, keyword gạch chân cam */
+        .transcript-highlight {
+            background-color: #f9e79f !important;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+        .keyword-highlight {
+            text-decoration: underline;
+            text-decoration-color: #e67e22;
+            text-decoration-thickness: 3px;
+            background-color: #fff3cd;
+            font-weight: 600;
+        }
+        .scroll-highlight {
+            animation: highlightFlash 1s ease;
+        }
+        @keyframes highlightFlash {
+            0% { background-color: #f9e79f; }
+            50% { background-color: #f1c40f; }
+            100% { background-color: #f9e79f; }
+        }
+    </style>
+</head>
+<body>
+<div class="test-wrapper" id="testWrapper">
+    <!-- Header with audio player + speed control, thanh audio dài 400px -->
+    <div class="ielts-header">
+        <div class="brand">
+            <div class="ielts-logo">IELTS</div>
+            <div class="candidate">Vol 7 · Listening Test 1 · Section 1</div>
+            <div class="audio-controls">
+                <!-- File audio đặt tên: audio-vol7-test1-sec1 (có thể thay bằng file cục bộ) -->
+                <audio id="listeningAudio" controls>
+                    <source src="audio-vol7-test1-sec1.mp3" type="audio/mpeg">
+                    <!-- Fallback: dùng link mẫu nếu không có file -->
+                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                </audio>
+                <select class="speed-select" id="speedSelect">
+                    <option value="0.7">0.7x</option>
+                    <option value="0.9">0.9x</option>
+                    <option value="1.0" selected>1x</option>
+                    <option value="1.1">1.1x</option>
+                    <option value="1.25">1.25x</option>
+                </select>
+                <span class="volume-icon">🔊</span>
+            </div>
+        </div>
+        <div class="font-controls">
+            <button class="font-btn" id="fontSmall">A-</button>
+            <button class="font-btn" id="fontMedium">A</button>
+            <button class="font-btn active" id="fontLarge">A+</button>
+        </div>
+    </div>
+
+    <!-- Question navigator (1-10) -->
+    <div class="question-nav">
+        <span style="font-weight:600; color:#1e3a5f;">Câu 1-10:</span>
+        <div class="nav-buttons" id="navButtons"></div>
+    </div>
+
+    <!-- Main area: ban đầu không có transcript, chỉ có questions panel full -->
+    <div class="main-area" id="mainArea">
+        <!-- Transcript panel (ẩn hoàn toàn ban đầu) - đã bỏ icon -->
+        <div class="transcript-panel" id="transcriptPanel">
+            <div class="panel-header">
+                <span>TRANSCRIPT</span>
+            </div>
+            <div class="transcript-content font-large" id="transcriptContent">
+                <!-- Sẽ được điền sau khi nộp bài -->
+            </div>
+        </div>
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Questions panel (luôn hiển thị) -->
+        <div class="questions-panel" id="questionsPanel">
+            <div class="panel-header">
+                <span>QUESTIONS 1-10</span>
+                <span class="answer-badge" id="answeredCount">0/10 answered</span>
+            </div>
+            <div class="questions-list font-large centered" id="questionsContent">
+                <div>
+                    <h3>SECTION 1 Questions 1-10</h3>
+                    <p><em>Complete the notes below. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.</em></p>
+                    
+                    <!-- Nội dung giống hệt ảnh, có số câu in đậm trước ô điền -->
+                    <div class="notes-box">
+                        <p><strong>Wedding arrangements – Clarence House Hotel</strong></p>
+                        <p><strong>Available date:</strong> 1st June</p>
+                        
+                        <p><strong>The Oxford Suite has:</strong><br>
+                        - a dining room with a good view of the <strong>1</strong> <span class="blank-line"><input class="fill-input" id="q1" data-answer="city"> <span class="eye-icon" data-question="1">👁️</span></span><br>
+                        - a private garden for <strong>2</strong> <span class="blank-line"><input class="fill-input" id="q2" data-answer="photos"> <span class="eye-icon" data-question="2">👁️</span></span> and for the wedding ceremony<br>
+                        - an area suitable for dancing</p>
+                        
+                        <p><strong>The wedding package includes:</strong><br>
+                        - use of the Oxford Suite<br>
+                        - a three-course meal<br>
+                        - room arranged with <strong>3</strong> <span class="blank-line"><input class="fill-input" id="q3" data-answer="round"> <span class="eye-icon" data-question="3">👁️</span></span> tables<br>
+                        - table <strong>4</strong> <span class="blank-line"><input class="fill-input" id="q4" data-answer="decorations"> <span class="eye-icon" data-question="4">👁️</span></span> included<br>
+                        - white tablecloths and chairs<br>
+                        - personalized printed <strong>5</strong> <span class="blank-line"><input class="fill-input" id="q5" data-answer="menu"> <span class="eye-icon" data-question="5">👁️</span></span><br>
+                        - a late-evening buffet with a choice of <strong>6</strong> <span class="blank-line"><input class="fill-input" id="q6" data-answer="sandwiches"> <span class="eye-icon" data-question="6">👁️</span></span> and hot drinks</p>
+                        
+                        <p><strong>Music:</strong> hotel will organise a band (not included in price)<br>
+                        <strong>Total cost of package:</strong> £ <strong>7</strong> <span class="blank-line"><input class="fill-input" id="q7" data-answer="5995"> <span class="eye-icon" data-question="7">👁️</span></span><br>
+                        <strong>Can also recommend a</strong> <strong>8</strong> <span class="blank-line"><input class="fill-input" id="q8" data-answer="cake"> <span class="eye-icon" data-question="8">👁️</span></span> supplier (new company)<br>
+                        <strong>Wedding coordinator:</strong> Sarah <strong>9</strong> <span class="blank-line"><input class="fill-input" id="q9" data-answer="izard"> <span class="eye-icon" data-question="9">👁️</span></span><br>
+                        <strong>Date arranged for visit:</strong> <strong>10</strong> <span class="blank-line"><input class="fill-input" id="q10" data-answer="15 october"> <span class="eye-icon" data-question="10">👁️</span></span> at 11.30 am</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" id="submitBtn">Nộp bài</button>
+        <button class="btn btn-success" id="explainBtn" disabled>Xem giải thích</button>
+        <button class="btn btn-danger" id="resetBtn">Reset tất cả</button>
+        <div class="progress" id="progressDisplay">Đã làm: 0/10</div>
+    </div>
+
+    <!-- Explanation panel -->
+    <div class="explanation-panel" id="explanationPanel">
+        <div class="explanation-header">
+            <span id="explanationTitle">Giải thích</span>
+            <span class="close-btn" id="closeExplanation">✕ Đóng</span>
+        </div>
+        <div class="explanation-content" id="explanationText"></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- ANSWER KEY (chữ thường để so sánh) ----------
+        const answerKey = {
+            q1: 'city', q2: 'photos', q3: 'round', q4: 'decorations', q5: 'menu',
+            q6: 'sandwiches', q7: '5995', q8: 'cake', q9: 'izard', q10: '15 october'
+        };
+
+        // ---------- Đáp án hiển thị (IN HOA TOÀN BỘ) ----------
+        const displayAnswers = {
+            q1: 'CITY', q2: 'PHOTOS', q3: 'ROUND', q4: 'DECORATIONS', q5: 'MENU',
+            q6: 'SANDWICHES', q7: '5995', q8: 'CAKE', q9: 'IZARD', q10: '15 OCTOBER'
+        };
+
+        // ---------- GIẢI THÍCH CHI TIẾT (kèm câu trong transcript) ----------
+        const detailedExplanations = {
+            q1: "Người phụ nữ nói: 'You could see right across the <strong>city</strong>.' Vì vậy đáp án là <strong>CITY</strong>.",
+            q2: "Người phụ nữ hỏi: 'So, we could have the <strong>photos</strong> there?' và người quản lý xác nhận. Đáp án: <strong>PHOTOS</strong>.",
+            q3: "Người quản lý nhắc lại: 'I seem to remember you have <strong>round</strong> tables?' Đáp án: <strong>ROUND</strong>.",
+            q4: "Người quản lý hỏi: 'And what about <strong>decorations</strong> on the tables?' và được trả lời là đã bao gồm. Đáp án: <strong>DECORATIONS</strong>.",
+            q5: "Người quản lý nói: 'individually designed <strong>menu</strong> specially printed for you.' Đáp án: <strong>MENU</strong>.",
+            q6: "Người quản lý mô tả buffet: 'just a selection of <strong>sandwiches</strong> together with tea or coffee.' Đáp án: <strong>SANDWICHES</strong>.",
+            q7: "Người quản lý báo giá: 'Five thousand nine hundred and ninety-five pounds' – <strong>5995</strong>.",
+            q8: "Người phụ nữ hỏi: 'someone who can make me a really special <strong>cake</strong>?' Đáp án: <strong>CAKE</strong>.",
+            q9: "Người quản lý giới thiệu: 'coordinator's name is Sarah <strong>Izard</strong> (I-Z-A-R-D).' Đáp án: <strong>IZARD</strong>.",
+            q10: "Người phụ nữ chọn ngày: 'or the <strong>15th of October</strong>. That would be better.' Đáp án: <strong>15 OCTOBER</strong>."
+        };
+
+        // ---------- FULL TRANSCRIPT (với các span có data-q để highlight) ----------
+        const transcriptHTML = `
+            <p><strong>Hotel manager:</strong> Hello, Clarence House.</p>
+            <p><strong>Woman:</strong> Oh, hello. Um, I'm getting married next year and I understand you're licensed to hold weddings at the hotel?</p>
+            <p><strong>Manager:</strong> Yes, we are. Can I ask what date you were thinking of?</p>
+            <p><strong>Woman:</strong> Either the 1st or the 7th of June?</p>
+            <p><strong>Manager:</strong> Right, let me see. Oh, I'm afraid we already have a booking for the 7th but we still have availability on June the 1st.</p>
+            <p><strong>Woman:</strong> That would be fine. So, how many guests are you going to be inviting?</p>
+            <p><strong>Manager:</strong> About 80.</p>
+            <p><strong>Woman:</strong> So, for that number, we'd recommend the Oxford Suite. I don't know if you've been to the hotel?</p>
+            <p><strong>Manager:</strong> Yes, in fact, I went to a wedding there a few years ago and I was really impressed.</p>
+            <p><strong>Woman:</strong> Very good. I think we were in the Oxford Suite then. The room where we were eating had big windows with really good views. You could see right across the <span class="highlightable" data-q="1">city</span>.</p>
+            <p><strong>Manager:</strong> That's it. And you'd have exclusive access to the garden. It'll be at its best in June.</p>
+            <p><strong>Woman:</strong> So, we could have the <span class="highlightable" data-q="2">photos</span> there?</p>
+            <p><strong>Manager:</strong> Sure. In fact, you can even have the ceremony there if you want. It makes a lovely background.</p>
+            <p><strong>Woman:</strong> Oh, I hadn't thought of that. And is there somewhere for dancing?</p>
+            <p><strong>Manager:</strong> Yes, there's plenty of space in the middle of the dining room.</p>
+            <p><strong>Woman:</strong> Oh yeah, I remember now. So, just to give you an idea, would you like me to tell you about our special wedding package?</p>
+            <p><strong>Manager:</strong> Sure. Right. So, for 80 guests, you'd have the exclusive use of the Oxford Suite, as I said, and then a meal, that would be a sit-down meal with three courses. And how's the room arranged? I seem to remember you have <span class="highlightable" data-q="3">round</span> tables?</p>
+            <p><strong>Woman:</strong> That's right. Most people prefer them to long tables.</p>
+            <p><strong>Manager:</strong> And what about <span class="highlightable" data-q="4">decorations</span> on the tables?</p>
+            <p><strong>Woman:</strong> They're included in the package. And we have white linen tablecloths and white chair covers. And we also include an individually designed <span class="highlightable" data-q="5">menu</span> specially printed for you. It's something that people can take away to remember the occasion.</p>
+            <p><strong>Manager:</strong> That's something we've just started doing this year. And then, towards the end of the evening, we bring in a buffet. Nothing too complicated, just a selection of <span class="highlightable" data-q="6">sandwiches</span> together with tea or coffee. That's always very popular.</p>
+            <p><strong>Woman:</strong> Right. And we'll want some music. Is that included in the package?</p>
+            <p><strong>Manager:</strong> No, but we could probably get you a DJ. Or we know of a very good band if you'd prefer that.</p>
+            <p><strong>Woman:</strong> Yes, that'd be better actually. So, apart from the music, you said that's an all-inclusive package. So how much does that package come to?</p>
+            <p><strong>Manager:</strong> <span class="highlightable" data-q="7">Five thousand nine hundred and ninety-five pounds</span>.</p>
+            <p><strong>Woman:</strong> That's a bit more than the package they quoted for me at the Stanley Hotel. Theirs was four thousand five hundred pounds.</p>
+            <p><strong>Manager:</strong> Yes. But I think if you look at what you're getting for the money, you'll find we're the best value. And it is a big day after all. Oh, and I nearly forgot. I'm looking for someone who can make me a really special <span class="highlightable" data-q="8">cake</span>. Can you suggest one?</p>
+            <p><strong>Woman:</strong> Certainly. There's a new company that we've started using. They're very good. In fact, our wedding coordinator will be able to give you all sorts of advice. We can offer you a free consultation and a tour of the venue.</p>
+            <p><strong>Manager:</strong> Yes, well, I'd definitely be interested.</p>
+            <p><strong>Woman:</strong> Right. Well, the coordinator's name is Sarah <span class="highlightable" data-q="9">Izard</span>. That's I-Z-A-R-D. Now, when would you like to meet her? She's available from nine to five most weekdays, or later if that's more convenient.</p>
+            <p><strong>Manager:</strong> I'm free on the 12th of October, in the morning sometime, or the <span class="highlightable" data-q="10">15th of October</span>. That would be better, thanks.</p>
+            <p><strong>Woman:</strong> Should we say 11.30?</p>
+            <p><strong>Manager:</strong> Fine. And can I just take your name and a contact number?</p>
+            <p><strong>Woman:</strong> Sure. It's Debbie...</p>
+            <p style="color:#666; margin-top:15px;"><em>(That is the end of Part One.)</em></p>
+        `;
+
+        // ---------- STATE ----------
+        let examSubmitted = false;
+        let explanationMode = false;
+        const audio = document.getElementById('listeningAudio');
+        const speedSelect = document.getElementById('speedSelect');
+
+        // Speed control
+        speedSelect.addEventListener('change', function() {
+            audio.playbackRate = parseFloat(this.value);
+        });
+
+        // Helper: get user answer (normalized)
+        function getUserAnswer(q) {
+            const inp = document.getElementById(`q${q}`);
+            return inp ? inp.value.trim().toLowerCase() : null;
+        }
+
+        // Update nav buttons và counter
+        function updateAnswerCount() {
+            let answered = 0;
+            for (let i = 1; i <= 10; i++) if (getUserAnswer(i)) answered++;
+            document.getElementById('answeredCount').textContent = `${answered}/10 answered`;
+            document.getElementById('progressDisplay').textContent = `Đã làm: ${answered}/10`;
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.querySelector(`.nav-btn[data-question="${i}"]`);
+                if (btn) {
+                    btn.classList.remove('answered', 'unanswered');
+                    btn.classList.add(getUserAnswer(i) ? 'answered' : 'unanswered');
+                }
+            }
+        }
+
+        // Tạo navigation buttons
+        function createNavButtons() {
+            const nav = document.getElementById('navButtons');
+            nav.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn unanswered';
+                btn.textContent = i;
+                btn.dataset.question = i;
+                btn.addEventListener('click', function() {
+                    const q = this.dataset.question;
+                    document.getElementById(`q${q}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                nav.appendChild(btn);
+            }
+        }
+
+        // Mark answers sau khi nộp bài (hiển thị badge IN HOA)
+        function markAnswers() {
+            for (let i = 1; i <= 10; i++) {
+                const inp = document.getElementById(`q${i}`);
+                if (!inp) continue;
+                const user = inp.value.trim().toLowerCase();
+                const correct = answerKey[`q${i}`];
+                inp.classList.remove('correct', 'incorrect');
+                const wrapper = inp.closest('.blank-line');
+                const oldBadge = wrapper?.querySelector('.correct-answer-badge');
+                if (oldBadge) oldBadge.remove();
+                if (user === correct) {
+                    inp.classList.add('correct');
+                } else {
+                    inp.classList.add('incorrect');
+                    if (wrapper) {
+                        const badge = document.createElement('span');
+                        badge.className = 'correct-answer-badge';
+                        badge.textContent = displayAnswers[`q${i}`]; // Hiển thị IN HOA
+                        wrapper.appendChild(badge);
+                    }
+                }
+            }
+        }
+
+        // Hiển thị giải thích và highlight transcript: nền vàng cho cả đoạn, gạch chân keyword
+        function showExplanation(questionNum) {
+            if (!explanationMode && !examSubmitted) return;
+            
+            // Xóa highlight cũ
+            document.querySelectorAll('.transcript-highlight').forEach(el => {
+                el.classList.remove('transcript-highlight');
+            });
+            document.querySelectorAll('.keyword-highlight').forEach(el => {
+                el.classList.remove('keyword-highlight');
+            });
+
+            const highlightSpan = document.querySelector(`.highlightable[data-q="${questionNum}"]`);
+            if (highlightSpan) {
+                // Tìm paragraph cha và highlight nền vàng
+                const parentP = highlightSpan.closest('p');
+                if (parentP) {
+                    parentP.classList.add('transcript-highlight');
+                }
+                // Gạch chân keyword
+                highlightSpan.classList.add('keyword-highlight');
+                // Cuộn đến
+                highlightSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                highlightSpan.classList.add('scroll-highlight');
+                setTimeout(() => highlightSpan.classList.remove('scroll-highlight'), 1000);
+            }
+
+            // Hiển thị giải thích chi tiết
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = `Giải thích câu ${questionNum}`;
+            let html = detailedExplanations[`q${questionNum}`] || `<strong>Đáp án: ${displayAnswers[`q${questionNum}`]}</strong><br>`;
+            if (examSubmitted) {
+                const user = getUserAnswer(questionNum) || '(chưa có)';
+                const correct = answerKey[`q${questionNum}`];
+                const isCorrect = user === correct;
+                html += `<div class="${isCorrect ? 'correct' : 'incorrect'}" style="margin-top:10px;padding:10px; background:${isCorrect ? '#e8f5e8' : '#ffebee'}; border-radius:5px;">`;
+                html += `<strong>Câu trả lời của bạn:</strong> ${user}<br>`;
+                if (!isCorrect) html += `<strong>Đáp án đúng:</strong> ${displayAnswers[`q${questionNum}`]}`;
+                else html += `<strong>✅ Đúng!</strong>`;
+                html += `</div>`;
+            }
+            document.getElementById('explanationText').innerHTML = html;
+        }
+
+        // Reset tất cả
+        function resetAll() {
+            examSubmitted = false;
+            explanationMode = false;
+            for (let i = 1; i <= 10; i++) {
+                const inp = document.getElementById(`q${i}`);
+                if (inp) {
+                    inp.value = '';
+                    inp.classList.remove('correct', 'incorrect');
+                    const wrapper = inp.closest('.blank-line');
+                    if (wrapper) {
+                        const badge = wrapper.querySelector('.correct-answer-badge');
+                        if (badge) badge.remove();
+                    }
+                }
+            }
+            // Ẩn transcript
+            const mainArea = document.getElementById('mainArea');
+            mainArea.classList.remove('show-transcript');
+            document.getElementById('transcriptContent').innerHTML = ''; // xóa nội dung
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+            // Xóa highlight
+            document.querySelectorAll('.transcript-highlight').forEach(el => el.classList.remove('transcript-highlight'));
+            document.querySelectorAll('.keyword-highlight').forEach(el => el.classList.remove('keyword-highlight'));
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Nộp bài';
+            document.getElementById('explainBtn').disabled = true;
+            document.getElementById('explainBtn').textContent = 'Xem giải thích';
+            document.getElementById('explanationPanel').classList.remove('show');
+            updateAnswerCount();
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        document.querySelectorAll('.fill-input').forEach(inp => inp.addEventListener('input', updateAnswerCount));
+
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            if (examSubmitted) return;
+            let unanswered = [];
+            for (let i = 1; i <= 10; i++) if (!getUserAnswer(i)) unanswered.push(i);
+            if (unanswered.length > 0 && !confirm(`Bạn còn ${unanswered.length} câu chưa làm. Nộp bài?`)) return;
+
+            examSubmitted = true;
+            // Hiện transcript
+            const mainArea = document.getElementById('mainArea');
+            mainArea.classList.add('show-transcript');
+            document.getElementById('transcriptContent').innerHTML = transcriptHTML;
+            markAnswers();
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = 'Đã nộp bài';
+            document.getElementById('explainBtn').disabled = false;
+            // Hiện eye icons
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'inline-block');
+            // Hiện kết quả
+            let correctCount = 0;
+            for (let i = 1; i <= 10; i++) if (getUserAnswer(i) === answerKey[`q${i}`]) correctCount++;
+            document.getElementById('explanationPanel').classList.add('show');
+            document.getElementById('explanationTitle').textContent = 'KẾT QUẢ';
+            document.getElementById('explanationText').innerHTML = `
+                <h4>Bạn đã nộp bài</h4>
+                <p><strong>Đúng:</strong> ${correctCount}/10</p>
+                <p>Nhấn vào biểu tượng 👁️ để xem vị trí đáp án trong transcript.</p>
+            `;
+        });
+
+        document.getElementById('explainBtn').addEventListener('click', function() {
+            if (!examSubmitted) return;
+            explanationMode = true;
+            document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'inline-block');
+            this.disabled = true;
+            this.textContent = 'Đang xem giải thích';
+            document.getElementById('explanationPanel').classList.remove('show');
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            if (confirm('Reset tất cả câu trả lời?')) resetAll();
+        });
+
+        document.getElementById('closeExplanation').addEventListener('click', function() {
+            document.getElementById('explanationPanel').classList.remove('show');
+            document.querySelectorAll('.transcript-highlight').forEach(el => el.classList.remove('transcript-highlight'));
+            document.querySelectorAll('.keyword-highlight').forEach(el => el.classList.remove('keyword-highlight'));
+        });
+
+        // Eye icon clicks
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const q = this.dataset.question;
+                showExplanation(q);
+            });
+        });
+
+        // Font size (mặc định là large, nhưng vẫn cho phép chuyển)
+        function setFontSize(size) {
+            document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`font${size.charAt(0).toUpperCase()+size.slice(1)}`).classList.add('active');
+            document.querySelectorAll('.transcript-content, .questions-list').forEach(el => {
+                el.className = `transcript-content font-${size}`;
+                if (el.classList.contains('questions-list')) {
+                    el.classList.add('centered');
+                }
+            });
+        }
+        document.getElementById('fontSmall').addEventListener('click', () => setFontSize('small'));
+        document.getElementById('fontMedium').addEventListener('click', () => setFontSize('medium'));
+        document.getElementById('fontLarge').addEventListener('click', () => setFontSize('large'));
+
+        // Resizer (chỉ hoạt động khi transcript hiện)
+        const transcriptPanel = document.getElementById('transcriptPanel');
+        const questionsPanel = document.getElementById('questionsPanel');
+        const resizer = document.getElementById('resizer');
+        let isResizing = false;
+        resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'col-resize'; });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const mainArea = document.getElementById('mainArea');
+            const rect = mainArea.getBoundingClientRect();
+            let leftWidth = e.clientX - rect.left - 4;
+            if (leftWidth < 250) leftWidth = 250;
+            if (leftWidth > rect.width - 250) leftWidth = rect.width - 250;
+            transcriptPanel.style.width = leftWidth + 'px';
+            questionsPanel.style.width = (rect.width - leftWidth - 8) + 'px';
+        });
+        document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = 'default'; });
+
+        // Khởi tạo
+        createNavButtons();
+        updateAnswerCount();
+        document.querySelectorAll('.eye-icon').forEach(icon => icon.style.display = 'none');
+        // Đảm bảo font large và centered
+        setFontSize('large');
+    })();
+</script>
+</body>
+</html>
