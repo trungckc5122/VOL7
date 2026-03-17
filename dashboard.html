@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Reading Dashboard - Vol/Test Selector</title>
+    <title>IELTS Reading & Listening Dashboard</title>
     <style>
+        /* (giữ nguyên toàn bộ style cũ, chỉ thêm một vài class mới nếu cần) */
         * {
             margin: 0;
             padding: 0;
@@ -112,6 +113,29 @@
             color: #e6b422;
         }
 
+        /* Mode toggle */
+        .mode-toggle {
+            display: flex;
+            background: #1e3a5f;
+            border-radius: 40px;
+            padding: 4px;
+            border: 1px solid #e6b422;
+        }
+        .mode-btn {
+            padding: 6px 20px;
+            border-radius: 30px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: #e6b422;
+            color: #1e3a5f;
+        }
+
         .dashboard-content {
             padding: 30px;
         }
@@ -193,6 +217,7 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .overall-header h2 {
@@ -261,6 +286,7 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #e6b422;
             padding-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -328,6 +354,7 @@
             gap: 15px;
             margin-top: 20px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -380,14 +407,21 @@
             color: #1e3a5f;
             font-size: 14px;
         }
+
+        /* Ẩn thời gian khi ở mode listening */
+        .mode-listening .time-badge,
+        .mode-listening .stat-box.highlight,
+        .mode-listening .passage-card .stats .stat-value.time {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="dashboard-container" id="dashboardContainer">
         <!-- Header -->
         <div class="dashboard-header">
-            <h1>IELTS Reading Dashboard</h1>
-            <p>Quản lý kết quả luyện tập Reading theo từng Vol và Test</p>
+            <h1>IELTS Reading & Listening Dashboard</h1>
+            <p>Quản lý kết quả luyện tập Reading và Listening theo từng Vol và Test</p>
             <div class="test-info">
                 <div class="info-card">
                     <span class="label">Tổng số câu / test</span>
@@ -395,7 +429,7 @@
                 </div>
                 <div class="info-card">
                     <span class="label">Thời gian tối đa / test</span>
-                    <span class="value">60 phút</span>
+                    <span class="value" id="maxTime">60 phút</span>
                 </div>
                 <div class="info-card">
                     <span class="label">Cập nhật</span>
@@ -404,7 +438,7 @@
             </div>
         </div>
 
-        <!-- Selector Bar -->
+        <!-- Selector Bar + Mode Toggle -->
         <div class="selector-bar">
             <div class="selector-item">
                 <label for="volSelect">Vol:</label>
@@ -414,17 +448,22 @@
                 <label for="testSelect">Test:</label>
                 <select id="testSelect"></select>
             </div>
+            <!-- Mode toggle -->
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="modeReading">Reading</button>
+                <button class="mode-btn" id="modeListening">Listening</button>
+            </div>
             <div style="flex:1; text-align:right; color:#e6b422;">
                 <span id="selectedDisplay">Vol 7 - Test 3</span>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="dashboard-content">
+        <div class="dashboard-content" id="dashboardContent">
             <!-- Overall Section -->
             <div class="overall-section">
                 <div class="overall-header">
-                    <h2>Kết quả tổng thể</h2>
+                    <h2 id="overallTitle">Kết quả tổng thể (Reading)</h2>
                     <div class="band-badge" id="overallBand">—</div>
                 </div>
                 <div class="stats-grid">
@@ -436,49 +475,25 @@
                         <div class="stat-number" id="totalPercent">0%</div>
                         <div class="stat-label">Tỷ lệ đúng</div>
                     </div>
-                    <div class="stat-box highlight">
+                    <div class="stat-box highlight" id="timeStatBox">
                         <div class="stat-number" id="totalTime">00:00</div>
                         <div class="stat-label">Tổng thời gian đã làm</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Passage Summary Cards -->
-            <h2 style="color: #1e3a5f; margin-bottom: 15px;">Chi tiết từng bài đọc</h2>
+            <!-- Summary Cards (Passage/Section) -->
+            <h2 style="color: #1e3a5f; margin-bottom: 15px;" id="cardsTitle">Chi tiết từng bài đọc</h2>
             <div class="summary-cards" id="passageCards"></div>
 
             <!-- Detail Tabs -->
             <div class="detail-section">
-                <div class="detail-tabs">
-                    <button class="tab-btn active" onclick="showTab(1)">Passage 1</button>
-                    <button class="tab-btn" onclick="showTab(2)">Passage 2</button>
-                    <button class="tab-btn" onclick="showTab(3)">Passage 3</button>
+                <div class="detail-tabs" id="detailTabs">
+                    <!-- Sẽ được tạo động bằng JS -->
                 </div>
 
-                <!-- Passage 1 Details -->
-                <div class="tab-pane active" id="tab1">
-                    <h4 style="margin-bottom: 15px; color: #1e3a5f;"><span id="passage1Name">Passage 1</span> (Câu 1-13)</h4>
-                    <table class="answer-table" id="passage1Table">
-                        <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
-                        <tbody id="passage1Body"></tbody>
-                    </table>
-                </div>
-                <!-- Passage 2 Details -->
-                <div class="tab-pane" id="tab2">
-                    <h4 style="margin-bottom: 15px; color: #1e3a5f;"><span id="passage2Name">Passage 2</span> (Câu 14-26)</h4>
-                    <table class="answer-table" id="passage2Table">
-                        <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
-                        <tbody id="passage2Body"></tbody>
-                    </table>
-                </div>
-                <!-- Passage 3 Details -->
-                <div class="tab-pane" id="tab3">
-                    <h4 style="margin-bottom: 15px; color: #1e3a5f;"><span id="passage3Name">Passage 3</span> (Câu 27-40)</h4>
-                    <table class="answer-table" id="passage3Table">
-                        <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
-                        <tbody id="passage3Body"></tbody>
-                    </table>
-                </div>
+                <!-- Các tab pane sẽ được tạo động trong JS khi render -->
+                <div id="tabPanesContainer"></div>
             </div>
 
             <!-- Action Buttons -->
@@ -492,31 +507,44 @@
 
         <!-- Footer -->
         <div class="footer">
-            IELTS Reading Dashboard | Dữ liệu được lưu trên trình duyệt của bạn
+            IELTS Reading & Listening Dashboard | Dữ liệu được lưu trên trình duyệt của bạn
         </div>
     </div>
 
     <script>
         // ==================== CẤU HÌNH ====================
-        const TOTAL_TIME_PER_PASSAGE = 3600; // 60 phút = 3600 giây
+        const TOTAL_TIME_PER_PASSAGE = 3600; // 60 phút = 3600 giây (chỉ dùng cho Reading)
 
-        // Tên các passage (có thể tuỳ chỉnh)
-        const PASSAGE_NAMES = {
+        // Tên các passage/section (có thể tuỳ chỉnh)
+        const READING_NAMES = {
             1: 'The development of plastics',
             2: 'Lean Production',
             3: 'The Animal Connection'
         };
+        const LISTENING_NAMES = {
+            1: 'Section 1',
+            2: 'Section 2',
+            3: 'Section 3',
+            4: 'Section 4'
+        };
 
-        // Số câu cho mỗi passage
-        const PASSAGE_QUESTIONS = {
+        // Số câu cho mỗi passage/section
+        const READING_QUESTIONS = {
             1: { start: 1, end: 13 },
             2: { start: 14, end: 26 },
             3: { start: 27, end: 40 }
+        };
+        const LISTENING_QUESTIONS = {
+            1: { start: 1, end: 10 },
+            2: { start: 11, end: 20 },
+            3: { start: 21, end: 30 },
+            4: { start: 31, end: 40 }
         };
 
         // ==================== BIẾN TOÀN CỤC ====================
         let currentVol = 7;
         let currentTest = 3;
+        let currentMode = 'reading'; // 'reading' hoặc 'listening'
 
         // ==================== HÀM TIỆN ÍCH ====================
         function formatTime(seconds) {
@@ -527,9 +555,7 @@
         }
 
         function parseTimeString(timeStr) {
-            if (!timeStr || timeStr === '00:00' || timeStr === '0:00') return TOTAL_TIME_PER_PASSAGE; // Mặc định là 60 phút (chưa làm)
-            
-            // Xử lý định dạng MM:SS
+            if (!timeStr || timeStr === '00:00' || timeStr === '0:00') return TOTAL_TIME_PER_PASSAGE;
             const parts = timeStr.split(':');
             if (parts.length === 2) {
                 const mins = parseInt(parts[0]) || 0;
@@ -539,7 +565,8 @@
             return TOTAL_TIME_PER_PASSAGE;
         }
 
-        function calculateBandScore(correctCount) {
+        // ==================== HÀM TÍNH BAND ĐIỂM ====================
+        function calculateReadingBandScore(correctCount) {
             if (correctCount >= 39) return 9.0;
             if (correctCount >= 37) return 8.5;
             if (correctCount >= 35) return 8.0;
@@ -557,20 +584,44 @@
             return 1.0;
         }
 
-        // ==================== TẠO KEY LƯU TRỮ ====================
-        function getStorageKey(passage) {
-            return `ielts_vol${currentVol}_test${currentTest}_passage_${passage}`;
+        function calculateListeningBandScore(correctCount) {
+            // Bảng điểm IELTS Listening chính xác theo ảnh cung cấp
+            if (correctCount >= 39) return 9.0;
+            if (correctCount >= 37) return 8.5;
+            if (correctCount >= 35) return 8.0;
+            if (correctCount >= 33) return 7.5;
+            if (correctCount >= 30) return 7.0;
+            if (correctCount >= 27) return 6.5;
+            if (correctCount >= 23) return 6.0;
+            if (correctCount >= 20) return 5.5;
+            if (correctCount >= 16) return 5.0;
+            if (correctCount >= 13) return 4.5;
+            if (correctCount >= 10) return 4.0;
+            if (correctCount >= 7) return 3.5;
+            if (correctCount >= 5) return 3.0;
+            if (correctCount >= 3) return 2.5;
+            // Dưới 3 câu đúng: 1.0
+            return 1.0;
+        }
+
+        // ==================== TẠO KEY LƯU TRỮ THEO MODE ====================
+        function getStorageKey(part) { // part là số thứ tự passage/section (1-3 hoặc 1-4)
+            if (currentMode === 'reading') {
+                return `ielts_vol${currentVol}_test${currentTest}_passage_${part}`;
+            } else {
+                return `ielts_listen_vol${currentVol}_test${currentTest}_section_${part}`;
+            }
         }
 
         // ==================== LẤY DỮ LIỆU TỪ LOCALSTORAGE ====================
-        function getPassageData(passage) {
-            const key = getStorageKey(passage);
+        function getPartData(part) {
+            const key = getStorageKey(part);
             const data = localStorage.getItem(key);
             if (data) {
                 try {
                     return JSON.parse(data);
                 } catch (e) {
-                    console.error(`Lỗi parse dữ liệu passage ${passage}:`, e);
+                    console.error(`Lỗi parse dữ liệu ${currentMode} part ${part}:`, e);
                     return null;
                 }
             }
@@ -578,47 +629,42 @@
         }
 
         function loadAllData() {
-            const passages = [];
+            const parts = [];
             let totalCorrect = 0;
             let totalQuestions = 0;
             let totalElapsedSeconds = 0;
             let hasAnyData = false;
 
-            for (let p = 1; p <= 3; p++) {
-                const data = getPassageData(p);
+            const partCount = (currentMode === 'reading') ? 3 : 4;
+            const questionsMap = (currentMode === 'reading') ? READING_QUESTIONS : LISTENING_QUESTIONS;
+
+            for (let p = 1; p <= partCount; p++) {
+                const data = getPartData(p);
                 
                 if (data) {
                     hasAnyData = true;
                     
-                    // THỜI GIAN ĐÃ LÀM = 60 phút - thời gian còn lại
-                    // Nếu không có timeSpent hoặc timeSpent không hợp lệ, coi như chưa làm (thời gian còn lại = 60 phút)
-                    let remainingSeconds = TOTAL_TIME_PER_PASSAGE; // Mặc định chưa làm
-                    
-                    if (data.timeSpent && typeof data.timeSpent === 'string' && data.timeSpent !== '') {
-                        // Parse thời gian CÒN LẠI từ đồng hồ đếm ngược
-                        const parsed = parseTimeString(data.timeSpent);
-                        // parsed trả về số giây còn lại, nếu nhỏ hơn TOTAL_TIME_PER_PASSAGE thì mới dùng
-                        if (parsed >= 0 && parsed <= TOTAL_TIME_PER_PASSAGE) {
-                            remainingSeconds = parsed;
+                    // Xử lý thời gian (chỉ reading mới có)
+                    let elapsedSeconds = 0;
+                    if (currentMode === 'reading' && data.timeSpent) {
+                        let remainingSeconds = parseTimeString(data.timeSpent);
+                        if (remainingSeconds >= 0 && remainingSeconds <= TOTAL_TIME_PER_PASSAGE) {
+                            elapsedSeconds = TOTAL_TIME_PER_PASSAGE - remainingSeconds;
                         }
                     }
-                    
-                    // Thời gian đã làm = Tổng thời gian - thời gian còn lại
-                    let elapsedSeconds = TOTAL_TIME_PER_PASSAGE - remainingSeconds;
-                    if (elapsedSeconds < 0) elapsedSeconds = 0;
 
-                    passages.push({
+                    parts.push({
                         ...data,
-                        passageId: p,
+                        partId: p,
                         elapsedSeconds,
                         elapsedTime: formatTime(elapsedSeconds)
                     });
 
                     totalCorrect += data.correctCount || 0;
-                    totalQuestions += data.totalQuestions || (PASSAGE_QUESTIONS[p].end - PASSAGE_QUESTIONS[p].start + 1);
- totalElapsedSeconds += elapsedSeconds;
+                    totalQuestions += data.totalQuestions || (questionsMap[p].end - questionsMap[p].start + 1);
+                    totalElapsedSeconds += elapsedSeconds;
                 } else {
-                    passages.push(null);
+                    parts.push(null);
                 }
             }
 
@@ -627,7 +673,7 @@
             }
 
             return {
-                passages,
+                parts,
                 totalCorrect,
                 totalQuestions,
                 totalElapsedSeconds,
@@ -635,46 +681,53 @@
             };
         }
 
-        // ==================== HIỂN THỊ CARD PASSAGE ====================
-        function renderPassageCards(data) {
+        // ==================== HIỂN THỊ CARD ====================
+        function renderCards(data) {
             const container = document.getElementById('passageCards');
+            const partCount = (currentMode === 'reading') ? 3 : 4;
+            const names = (currentMode === 'reading') ? READING_NAMES : LISTENING_NAMES;
             let html = '';
 
-            for (let p = 1; p <= 3; p++) {
-                const passage = data.passages[p-1];
-                const name = PASSAGE_NAMES[p];
+            for (let p = 1; p <= partCount; p++) {
+                const part = data.parts[p-1];
+                const name = names[p];
                 
-                if (passage) {
-                    const correctPercent = passage.totalQuestions > 0 
-                        ? Math.round((passage.correctCount / passage.totalQuestions) * 100) 
+                if (part) {
+                    const correctPercent = part.totalQuestions > 0 
+                        ? Math.round((part.correctCount / part.totalQuestions) * 100) 
                         : 0;
-                    const displayTime = passage.elapsedTime || '00:00';
                     
                     html += `
                         <div class="passage-card">
-                            <h3>Passage ${p}: ${name}</h3>
+                            <h3>${currentMode === 'reading' ? 'Passage' : 'Section'} ${p}: ${name}</h3>
                             <div class="stats">
                                 <span class="stat-label">Số câu đúng:</span>
-                                <span class="stat-value">${passage.correctCount}/${passage.totalQuestions}</span>
+                                <span class="stat-value">${part.correctCount}/${part.totalQuestions}</span>
                             </div>
                             <div class="stats">
                                 <span class="stat-label">Tỷ lệ:</span>
                                 <span class="stat-value">${correctPercent}%</span>
                             </div>
+                            ${currentMode === 'reading' ? `
                             <div class="stats">
                                 <span class="stat-label">Thời gian đã làm:</span>
-                                <span class="stat-value">${displayTime}</span>
+                                <span class="stat-value time">${part.elapsedTime}</span>
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <span class="correct-badge">${passage.correctCount} đúng</span>
-                                <span class="time-badge">${displayTime}</span>
+                                <span class="correct-badge">${part.correctCount} đúng</span>
+                                <span class="time-badge">${part.elapsedTime}</span>
                             </div>
+                            ` : `
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <span class="correct-badge">${part.correctCount} đúng</span>
+                            </div>
+                            `}
                         </div>
                     `;
                 } else {
                     html += `
                         <div class="passage-card">
-                            <h3>Passage ${p}: ${name}</h3>
+                            <h3>${currentMode === 'reading' ? 'Passage' : 'Section'} ${p}: ${name}</h3>
                             <div class="no-data">
                                 Chưa có dữ liệu<br>
                                 <small style="font-size: 12px;">Hãy làm bài và nộp để lưu kết quả</small>
@@ -687,35 +740,58 @@
             container.innerHTML = html;
         }
 
-        // ==================== HIỂN THỊ CHI TIẾT ĐÁP ÁN ====================
-        function renderAnswerDetails(data) {
-            for (let p = 1; p <= 3; p++) {
-                const passage = data.passages[p-1];
-                const tbody = document.getElementById(`passage${p}Body`);
-                const nameSpan = document.getElementById(`passage${p}Name`);
-                if (nameSpan) nameSpan.textContent = PASSAGE_NAMES[p];
+        // ==================== TẠO CÁC TAB VÀ BẢNG CHI TIẾT ====================
+        function renderTabsAndTables(data) {
+            const partCount = (currentMode === 'reading') ? 3 : 4;
+            const tabContainer = document.getElementById('detailTabs');
+            const panesContainer = document.getElementById('tabPanesContainer');
+            
+            // Tạo các nút tab
+            let tabsHtml = '';
+            for (let p = 1; p <= partCount; p++) {
+                const activeClass = p === 1 ? 'active' : '';
+                tabsHtml += `<button class="tab-btn ${activeClass}" onclick="showTab(${p})">${currentMode === 'reading' ? 'Passage' : 'Section'} ${p}</button>`;
+            }
+            tabContainer.innerHTML = tabsHtml;
 
-                if (passage && passage.details && passage.details.length > 0) {
-                    let html = '';
-                    const sortedDetails = [...passage.details].sort((a, b) => a.question - b.question);
-                    
+            // Tạo các tab pane
+            let panesHtml = '';
+            for (let p = 1; p <= partCount; p++) {
+                const activeClass = p === 1 ? 'active' : '';
+                const part = data.parts[p-1];
+                const name = (currentMode === 'reading' ? READING_NAMES : LISTENING_NAMES)[p];
+                const startEnd = (currentMode === 'reading' ? READING_QUESTIONS : LISTENING_QUESTIONS)[p];
+                
+                let tableBody = '';
+                if (part && part.details && part.details.length > 0) {
+                    const sortedDetails = [...part.details].sort((a, b) => a.question - b.question);
                     sortedDetails.forEach(detail => {
                         const isCorrect = detail.isCorrect;
                         const rowClass = isCorrect ? 'correct' : 'incorrect';
                         const resultText = isCorrect ? 'Đúng' : 'Sai';
                         
-                        html += `<tr>
+                        tableBody += `<tr>
                             <td><strong>${detail.question}</strong></td>
                             <td>${detail.user || '(trống)'}</td>
                             <td>${detail.correct}</td>
                             <td class="${rowClass}">${resultText}</td>
                         </tr>`;
                     });
-                    tbody.innerHTML = html;
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px;">Chưa có dữ liệu chi tiết cho passage này</td></tr>`;
+                    tableBody = `<tr><td colspan="4" style="text-align: center; padding: 20px;">Chưa có dữ liệu chi tiết cho ${currentMode === 'reading' ? 'passage' : 'section'} này</td></tr>`;
                 }
+
+                panesHtml += `
+                    <div class="tab-pane ${activeClass}" id="tab${p}">
+                        <h4 style="margin-bottom: 15px; color: #1e3a5f;">${currentMode === 'reading' ? 'Passage' : 'Section'} ${p}: ${name} (Câu ${startEnd.start}-${startEnd.end})</h4>
+                        <table class="answer-table">
+                            <thead><tr><th>Câu</th><th>Đáp án của bạn</th><th>Đáp án đúng</th><th>Kết quả</th></tr></thead>
+                            <tbody>${tableBody}</tbody>
+                        </table>
+                    </div>
+                `;
             }
+            panesContainer.innerHTML = panesHtml;
         }
 
         // ==================== CẬP NHẬT GIAO DIỆN ====================
@@ -730,12 +806,24 @@
                 : 0;
             document.getElementById('totalPercent').textContent = percent + '%';
             
-            // Tổng thời gian đã làm
-            const totalTimeFormatted = formatTime(data.totalElapsedSeconds);
-            document.getElementById('totalTime').textContent = totalTimeFormatted;
+            // Tổng thời gian đã làm (chỉ hiển thị nếu reading)
+            if (currentMode === 'reading') {
+                const totalTimeFormatted = formatTime(data.totalElapsedSeconds);
+                document.getElementById('totalTime').textContent = totalTimeFormatted;
+                document.getElementById('timeStatBox').style.display = 'block';
+                document.getElementById('maxTime').textContent = '60 phút';
+            } else {
+                document.getElementById('timeStatBox').style.display = 'none';
+                document.getElementById('maxTime').textContent = '—';
+            }
             
-            // Band
-            const band = calculateBandScore(data.totalCorrect);
+            // Tính band điểm theo mode
+            let band;
+            if (currentMode === 'reading') {
+                band = calculateReadingBandScore(data.totalCorrect);
+            } else {
+                band = calculateListeningBandScore(data.totalCorrect);
+            }
             document.getElementById('overallBand').textContent = band.toFixed(1);
             
             // Thời gian cập nhật
@@ -744,12 +832,16 @@
             // Hiển thị lựa chọn
             document.getElementById('selectedDisplay').textContent = `Vol ${currentVol} - Test ${currentTest}`;
             
+            // Tiêu đề
+            document.getElementById('overallTitle').textContent = `Kết quả tổng thể (${currentMode === 'reading' ? 'Reading' : 'Listening'})`;
+            document.getElementById('cardsTitle').textContent = currentMode === 'reading' ? 'Chi tiết từng bài đọc' : 'Chi tiết từng section';
+            
             // Render cards và bảng chi tiết
-            renderPassageCards(data);
-            renderAnswerDetails(data);
+            renderCards(data);
+            renderTabsAndTables(data);
         }
 
-        // ==================== XỬ LÝ DROPDOWN ====================
+        // ==================== XỬ LÝ DROPDOWN VÀ MODE ====================
         function populateVolTest() {
             const volSelect = document.getElementById('volSelect');
             const testSelect = document.getElementById('testSelect');
@@ -773,15 +865,20 @@
             // Đọc lựa chọn cuối cùng từ localStorage (nếu có)
             const savedVol = localStorage.getItem('dashboard_last_vol');
             const savedTest = localStorage.getItem('dashboard_last_test');
+            const savedMode = localStorage.getItem('dashboard_last_mode');
             if (savedVol && savedVol >= 1 && savedVol <= 7) {
                 currentVol = parseInt(savedVol);
             }
             if (savedTest && savedTest >= 1 && savedTest <= 10) {
                 currentTest = parseInt(savedTest);
             }
+            if (savedMode && (savedMode === 'reading' || savedMode === 'listening')) {
+                currentMode = savedMode;
+            }
 
             volSelect.value = currentVol;
             testSelect.value = currentTest;
+            updateModeButtons();
 
             // Lắng nghe sự kiện thay đổi
             volSelect.addEventListener('change', function() {
@@ -795,12 +892,42 @@
                 localStorage.setItem('dashboard_last_test', currentTest);
                 refreshData();
             });
+
+            // Mode buttons
+            document.getElementById('modeReading').addEventListener('click', function() {
+                if (currentMode === 'reading') return;
+                currentMode = 'reading';
+                localStorage.setItem('dashboard_last_mode', currentMode);
+                updateModeButtons();
+                refreshData();
+            });
+
+            document.getElementById('modeListening').addEventListener('click', function() {
+                if (currentMode === 'listening') return;
+                currentMode = 'listening';
+                localStorage.setItem('dashboard_last_mode', currentMode);
+                updateModeButtons();
+                refreshData();
+            });
+        }
+
+        function updateModeButtons() {
+            document.getElementById('modeReading').classList.toggle('active', currentMode === 'reading');
+            document.getElementById('modeListening').classList.toggle('active', currentMode === 'listening');
+            // Thêm class cho container để ẩn thời gian nếu cần (dùng CSS)
+            const container = document.getElementById('dashboardContainer');
+            if (currentMode === 'listening') {
+                container.classList.add('mode-listening');
+            } else {
+                container.classList.remove('mode-listening');
+            }
         }
 
         // ==================== XÓA DỮ LIỆU ====================
         function clearCurrentTest() {
-            if (confirm(`Bạn có chắc muốn xóa toàn bộ dữ liệu của Vol ${currentVol} - Test ${currentTest}?`)) {
-                for (let p = 1; p <= 3; p++) {
+            if (confirm(`Bạn có chắc muốn xóa toàn bộ dữ liệu của Vol ${currentVol} - Test ${currentTest} (${currentMode})?`)) {
+                const partCount = (currentMode === 'reading') ? 3 : 4;
+                for (let p = 1; p <= partCount; p++) {
                     const key = getStorageKey(p);
                     localStorage.removeItem(key);
                 }
@@ -810,12 +937,11 @@
         }
 
         function clearAllData() {
-            if (confirm('Bạn có chắc muốn xóa TẤT CẢ dữ liệu của mọi Vol và Test?')) {
-                // Xoá tất cả keys bắt đầu bằng "ielts_vol"
+            if (confirm('Bạn có chắc muốn xóa TẤT CẢ dữ liệu của mọi Vol và Test (cả Reading và Listening)?')) {
                 const keysToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (key && key.startsWith('ielts_vol')) {
+                    if (key && (key.startsWith('ielts_vol') || key.startsWith('ielts_listen'))) {
                         keysToRemove.push(key);
                     }
                 }
